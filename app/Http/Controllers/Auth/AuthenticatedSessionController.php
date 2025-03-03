@@ -33,7 +33,9 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard.mahasiswa', absolute: false));
+        //Meskipun sudah diatur di middleware tapi udah takkala mi
+        $ruleUserLoged = Auth::user()->role;
+        return redirect()->intended(route($ruleUserLoged . '.index', absolute: false));
     }
 
     /**
