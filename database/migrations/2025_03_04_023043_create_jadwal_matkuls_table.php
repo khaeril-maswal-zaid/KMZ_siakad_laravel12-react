@@ -15,10 +15,9 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('program_studi_id')->constrained()->onDelete('cascade');
-            $table->foreignId('dosen_id')->constrained('detail_dosen')->onDelete('cascade');
-            $table->foreignId('mata_kuliah_id')->constrained('mata_kuliah')->onDelete('cascade');
+            $table->foreignId('program_angkatan_id')->constrained()->onDelete('cascade');
 
-            $table->integer('semester');
+            $table->foreignId('dosen_id')->constrained()->onDelete('cascade');
             $table->string('hari');
             $table->string('waktu'); // Format: "08:00 - 10:00"
             $table->string('ruangan');

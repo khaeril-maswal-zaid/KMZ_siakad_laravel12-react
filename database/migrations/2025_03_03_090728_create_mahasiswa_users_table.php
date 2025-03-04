@@ -39,6 +39,7 @@ return new class extends Migration
             $table->string('nama_sekolah');
             $table->string('jurusan_sekolah')->nullable();
             $table->year('tahun_lulus_sekolah');
+            $table->string('image');
 
             $table->index(['program_studi_id', 'angkatan']);
             $table->timestamps();

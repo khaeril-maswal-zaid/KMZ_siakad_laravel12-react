@@ -7,6 +7,7 @@ use App\Models\KeuanganUser;
 use App\Models\MahasiswaUser;
 use App\Models\MataKuliah;
 use App\Models\ProdiUser;
+use App\Models\ProgramAngkatan;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -43,6 +44,7 @@ class DatabaseSeeder extends Seeder
         DosenUser::factory(20)->create();
         ProdiUser::factory(10)->create();
         KeuanganUser::factory(10)->create();
-        MataKuliah::factory(35)->create();
+        MataKuliah::factory(100)->create();
+        ProgramAngkatan::factory(100)->create();
     }
 }

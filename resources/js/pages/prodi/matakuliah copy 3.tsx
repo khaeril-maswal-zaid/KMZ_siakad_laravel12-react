@@ -5,12 +5,12 @@ import { Head } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Dashboard Admin Prodi',
+        title: 'Dashboard Prodi',
         href: '/dashboard-prodi',
     },
 ];
 
-export default function Index() {
+export default function jadwalPerkuliahan() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard Prodi" />

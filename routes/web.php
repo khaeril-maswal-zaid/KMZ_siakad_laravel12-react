@@ -1,9 +1,12 @@
 <?php
 
 use App\Http\Controllers\DosenUserController;
+use App\Http\Controllers\JadwalMatkulController;
 use App\Http\Controllers\KeuanganUserController;
 use App\Http\Controllers\MahaiswaUserController;
+use App\Http\Controllers\MataKuliahController;
 use App\Http\Controllers\ProdiUserController;
+use App\Http\Controllers\ProgramAngkatanController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
@@ -15,8 +18,7 @@ Route::get('/', function () {
 
 // ----------------- START MAHASISWA AREA -------------------------------------------------
 Route::middleware(['auth', 'verified', 'ruleUser:mahasiswa'])->group(function () {
-
-    Route::get('mahasiswa', [MahaiswaUserController::class, 'index'])->name('mahasiswa.index');
+    Route::get('/mahasiswa', [MahaiswaUserController::class, 'index'])->name('mahasiswa.index');
 });
 // ----------------- END MAHASISWA AREA -------------------------------------------------
 
@@ -24,21 +26,25 @@ Route::middleware(['auth', 'verified', 'ruleUser:mahasiswa'])->group(function ()
 // ----------------- START DOSEN AREA -------------------------------------------------
 
 Route::middleware(['auth', 'verified', 'ruleUser:dosen'])->group(function () {
-    Route::get('dosen', [DosenUserController::class, 'index'])->name('dosen.index');
+    Route::get('/dosen', [DosenUserController::class, 'index'])->name('dosen.index');
 });
 // ----------------- END DOSEN AREA -------------------------------------------------
 
 
 // ----------------- START KEUANGAN AREA -------------------------------------------------
 Route::middleware(['auth', 'verified', 'ruleUser:keuangan'])->group(function () {
-    Route::get('admin-keuangan', [KeuanganUserController::class, 'index'])->name('keuangan.index');
+    Route::get('/admin-keuangan', [KeuanganUserController::class, 'index'])->name('keuangan.index');
 });
 // ----------------- END KEUANGAN AREA -------------------------------------------------
 
 
 // ----------------- START PRODI AREA -------------------------------------------------
 Route::middleware(['auth', 'verified', 'ruleUser:prodi'])->group(function () {
-    Route::get('admin-prodi', [ProdiUserController::class, 'index'])->name('prodi.index');
+    Route::get('/admin-prodi', [ProdiUserController::class, 'index'])->name('prodi.index');
+    Route::get('/jadwal-perkuliahan', [JadwalMatkulController::class, 'index'])->name('jadwalperkuliahan.index');
+    Route::get('/program-angkatan', [ProgramAngkatanController::class, 'index'])->name('programangkatan.index');
+    Route::get('/data-mahasiswa', [MahaiswaUserController::class, 'index'])->name('mahasiswauser.index');
+    Route::get('/daftar-mata-kuliah', [MataKuliahController::class, 'index'])->name('matakuliah.index');
 });
 // ----------------- END PRODI AREA -------------------------------------------------
 
