@@ -11,8 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mahaiswas', function (Blueprint $table) {
+        Schema::create('program_studis', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('fakultas_id')->constrained()->onDelete('cascade');
+
+            $table->string('nama_prodi')->unique();
+            $table->string('singkatan_prodi')->unique();
+            $table->string('kode_prodi')->unique();
+
             $table->timestamps();
         });
     }
@@ -22,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('mahaiswas');
+        Schema::dropIfExists('program_studis');
     }
 };

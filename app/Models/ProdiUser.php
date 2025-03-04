@@ -5,8 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Mahaiswa extends Model
+class ProdiUser extends Model
 {
-    /** @use HasFactory<\Database\Factories\MahaiswaFactory> */
+    /** @use HasFactory<\Database\Factories\ProdiFactory> */
     use HasFactory;
 }

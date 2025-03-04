@@ -19,7 +19,7 @@ class RoleUserMiddleware
         //Hapus 'admin-' agar lansung sama di dtb role
         $replaced = Str::replace('admin-', '', $role);
 
-        if (!$request->user()->hasRole($replaced)) {
+        if (!$request->user()->hasRole($role)) {
             return redirect(route($request->user()->role . '.index'));
         }
 

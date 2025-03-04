@@ -1,10 +1,13 @@
 <?php
 
-use App\Http\Controllers\DosenController;
-use App\Http\Controllers\MahaiswaController;
-use App\Http\Controllers\ProdiController;
+use App\Http\Controllers\DosenUserController;
+use App\Http\Controllers\KeuanganUserController;
+use App\Http\Controllers\MahaiswaUserController;
+use App\Http\Controllers\ProdiUserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
+
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -13,7 +16,7 @@ Route::get('/', function () {
 // ----------------- START MAHASISWA AREA -------------------------------------------------
 Route::middleware(['auth', 'verified', 'ruleUser:mahasiswa'])->group(function () {
 
-    Route::get('mahasiswa', [MahaiswaController::class, 'index'])->name('mahasiswa.index');
+    Route::get('mahasiswa', [MahaiswaUserController::class, 'index'])->name('mahasiswa.index');
 });
 // ----------------- END MAHASISWA AREA -------------------------------------------------
 
@@ -21,23 +24,21 @@ Route::middleware(['auth', 'verified', 'ruleUser:mahasiswa'])->group(function ()
 // ----------------- START DOSEN AREA -------------------------------------------------
 
 Route::middleware(['auth', 'verified', 'ruleUser:dosen'])->group(function () {
-    Route::get('dosen', [DosenController::class, 'index'])->name('dosen.index');
+    Route::get('dosen', [DosenUserController::class, 'index'])->name('dosen.index');
 });
 // ----------------- END DOSEN AREA -------------------------------------------------
 
 
 // ----------------- START KEUANGAN AREA -------------------------------------------------
-Route::middleware(['auth', 'verified', 'ruleUser:admin-keuangan'])->group(function () {
-    Route::get('admin-keuangan', [ProdiController::class, 'index'])->name('keuangan.index');
+Route::middleware(['auth', 'verified', 'ruleUser:keuangan'])->group(function () {
+    Route::get('admin-keuangan', [KeuanganUserController::class, 'index'])->name('keuangan.index');
 });
 // ----------------- END KEUANGAN AREA -------------------------------------------------
 
 
 // ----------------- START PRODI AREA -------------------------------------------------
-Route::middleware(['auth', 'verified', 'ruleUser:admin-prodi'])->group(function () {
-    Route::get('admin-prodi', function () {
-        return Inertia::render('dashboardprodi');
-    })->name('prodi.index');
+Route::middleware(['auth', 'verified', 'ruleUser:prodi'])->group(function () {
+    Route::get('admin-prodi', [ProdiUserController::class, 'index'])->name('prodi.index');
 });
 // ----------------- END PRODI AREA -------------------------------------------------
 

@@ -2,20 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Dosen;
-use App\Http\Requests\StoreDosenRequest;
-use App\Http\Requests\UpdateDosenRequest;
-use Inertia\Inertia;
-use Inertia\Response;
+use App\Models\ProgramStudi;
+use App\Http\Requests\StoreProgramStudiRequest;
+use App\Http\Requests\UpdateProgramStudiRequest;
 
-class DosenController extends Controller
+class ProgramStudiController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(): Response
+    public function index()
     {
-        return Inertia::render('dashboardmahasiswa');
+        //
     }
 
     /**
@@ -29,7 +27,7 @@ class DosenController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreDosenRequest $request)
+    public function store(StoreProgramStudiRequest $request)
     {
         //
     }
@@ -37,7 +35,7 @@ class DosenController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Dosen $dosen)
+    public function show(ProgramStudi $programStudi)
     {
         //
     }
@@ -45,7 +43,7 @@ class DosenController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Dosen $dosen)
+    public function edit(ProgramStudi $programStudi)
     {
         //
     }
@@ -53,7 +51,7 @@ class DosenController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateDosenRequest $request, Dosen $dosen)
+    public function update(UpdateProgramStudiRequest $request, ProgramStudi $programStudi)
     {
         //
     }
@@ -61,7 +59,7 @@ class DosenController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Dosen $dosen)
+    public function destroy(ProgramStudi $programStudi)
     {
         //
     }

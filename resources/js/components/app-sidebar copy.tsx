@@ -7,11 +7,10 @@ import { Link, usePage } from '@inertiajs/react';
 import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
 import AppLogo from './app-logo';
 
-// Fungsi untuk mendapatkan navigasi berdasarkan role user
-const getMainNavItems = (auth: SharedData['auth']): NavItem[] => [
+const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
-        url: route(auth?.user?.role ? `${auth.user.role}.index` : 'home'),
+        url: '/dosen',
         icon: LayoutGrid,
     },
 ];
@@ -48,7 +47,7 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={getMainNavItems(auth)} />
+                <NavMain items={mainNavItems} />
             </SidebarContent>
 
             <SidebarFooter>
