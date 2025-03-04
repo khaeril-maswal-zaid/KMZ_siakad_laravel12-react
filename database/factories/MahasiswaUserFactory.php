@@ -23,6 +23,7 @@ class MahasiswaUserFactory extends Factory
             'program_studi_id' => ProgramStudi::inRandomOrder()->first()->id ?? ProgramStudi::factory()->create()->id,
 
             'nim' => $this->faker->unique()->numerify('2300###'),
+            'kelas' => $this->faker->randomElement(['A', 'B', 'C', 'D', 'E']),
             'angkatan' => $this->faker->year(),
             'nik' => $this->faker->numerify('##############'),
             'jenis_kelamin' => $this->faker->randomElement(['L', 'P']),

@@ -19,13 +19,13 @@ class JadwalMatkulController extends Controller
         $user = Auth::user();
 
         // Ambil program_studi_id dari relasi adminProdi
-        $programStudiId = $user->adminProdi->program_studi_id;
+        $prodiFromAdmin = $user->adminProdi->program_studi_id;
 
         // Ambil matkul berdasarkan program_studi_id
-        $matkul = MataKuliah::select('nama_matkul')->where('program_studi_id', $programStudiId)->get();
+        $matkul = MataKuliah::select('nama_matkul')->where('program_studi_id', $prodiFromAdmin)->get();
 
         // Ambil jadwal berdasarkan program_studi_id
-        $jadwal = JadwalMatkul::where('program_studi_id', $programStudiId)->get();
+        $jadwal = JadwalMatkul::where('program_studi_id', $prodiFromAdmin)->get();
 
         return Inertia::render('prodi/jadwalperkuliahan');
     }

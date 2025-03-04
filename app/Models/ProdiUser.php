@@ -15,4 +15,9 @@ class ProdiUser extends Model
     {
         return $this->belongsTo(ProgramStudi::class);
     }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

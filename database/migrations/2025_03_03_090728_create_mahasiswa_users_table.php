@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('program_studi_id')->constrained()->onDelete('cascade');
 
             $table->string('nim')->unique();
+            $table->string('kelas');
             $table->string('angkatan');
             $table->string('nik')->nullable();
             $table->enum('jenis_kelamin', ['L', 'P']);

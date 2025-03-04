@@ -18,6 +18,10 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(ProdiUser::class);
     }
 
+
+
+
+
     public function hasRole($role)
     {
         return $this->role === $role; // Asumsi ada kolom 'role' di database

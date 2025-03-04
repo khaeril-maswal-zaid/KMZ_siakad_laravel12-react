@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\ProdiUser;
 use App\Http\Requests\StoreProdiUserRequest;
 use App\Http\Requests\UpdateProdiUserRequest;
+use App\Models\ProgramStudi;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Facades\Auth;
 
 class ProdiUserController extends Controller
 {
@@ -15,7 +17,16 @@ class ProdiUserController extends Controller
      */
     public function index(): Response
     {
-        return Inertia::render('prodi/index');
+        $user = Auth::user();
+
+        // Ambil program_studi_id dari Admin yang sedang Login
+        $prodiIdAdminLogin = $user->adminProdi->program_studi_id;
+
+        $data = [
+            'namaProdi' => ProgramStudi::select('nama_prodi')->where('id', $prodiIdAdminLogin)->first()->nama_prodi
+        ];
+
+        return Inertia::render('prodi/index', $data);
     }
 
     /**

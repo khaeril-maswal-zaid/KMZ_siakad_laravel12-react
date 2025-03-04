@@ -1,16 +1,18 @@
 import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
-
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard Admin Prodi',
-        href: '/dashboard-prodi',
-    },
-];
+import { Head, usePage } from '@inertiajs/react';
 
 export default function Index() {
+    const { namaProdi } = usePage().props; // Menerima data dari Laravel
+
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: `Dashboard Admin Prodi ${namaProdi}`,
+            href: '/dashboard-prodi',
+        },
+    ];
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard Prodi" />
