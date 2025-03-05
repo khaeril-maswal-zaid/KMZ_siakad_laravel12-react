@@ -14,7 +14,7 @@ const getMainNavItems = (auth: SharedData['auth']): NavItem[] => {
     const commonMenu: NavItem[] = [
         {
             title: 'Dashboard',
-            url: route(role ? `${role}.index` : '/home'),
+            url: route(role ? `${role}.index` : '/'),
             icon: LayoutGrid,
         },
     ];

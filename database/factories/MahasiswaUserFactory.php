@@ -46,6 +46,7 @@ class MahasiswaUserFactory extends Factory
             'nama_sekolah' => $this->faker->company(),
             'jurusan_sekolah' => $this->faker->randomElement(['IPA', 'IPS', 'Bahasa', 'Teknik']),
             'tahun_lulus_sekolah' => $this->faker->year(),
+            'image' => $this->faker->imageUrl(),
         ];
     }
 }

@@ -20,7 +20,10 @@ class MahaiswaUserController extends Controller
         $prodiIdAdminLogin = $user->adminProdi->program_studi_id;
 
         $data = [
-            'mahasiswas' => MahasiswaUser::select(['nim', 'kelas', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'no_hp'])->where('program_studi_id', $prodiIdAdminLogin)->get(),
+            'mahasiswas' => MahasiswaUser::with('user:id,name,email')
+                ->select(['nim', 'kelas', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'no_hp', 'user_id'])
+                ->where('program_studi_id', $prodiIdAdminLogin)->latest()
+                ->paginate(15)
         ];
 
         return Inertia::render('prodi/mahasiswa', $data);
