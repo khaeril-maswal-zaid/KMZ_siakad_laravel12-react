@@ -8,7 +8,7 @@ export default function Index() {
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: `Dashboard Admin Prodi ${namaProdi}`,
+            title: `Dashboard Admin ${namaProdi}`,
             href: '/dashboard-prodi',
         },
     ];

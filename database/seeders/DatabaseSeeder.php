@@ -40,11 +40,11 @@ class DatabaseSeeder extends Seeder
             ProgramStudiSeeder::class,
         ]);
 
-        MahasiswaUser::factory(500)->create();
-        DosenUser::factory(20)->create();
+        MahasiswaUser::factory(1000)->create();
+        DosenUser::factory(500)->create();
         ProdiUser::factory(10)->create();
         KeuanganUser::factory(10)->create();
-        MataKuliah::factory(100)->create();
-        ProgramAngkatan::factory(100)->create();
+        MataKuliah::factory(300)->create();
+        ProgramAngkatan::factory(1000)->create();
     }
 }

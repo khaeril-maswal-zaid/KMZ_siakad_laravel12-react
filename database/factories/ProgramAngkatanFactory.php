@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\JadwalMatkul;
 use App\Models\MataKuliah;
 use App\Models\ProgramStudi;
 use Illuminate\Database\Eloquent\Factories\Factory;

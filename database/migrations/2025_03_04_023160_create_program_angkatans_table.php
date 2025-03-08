@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('mata_kuliah_id')->constrained()->onDelete('cascade');
             $table->integer('semester');
             $table->year('angkatan');
+            $table->foreignId('jadwal_matkul_id')->nullable()->constrained()->onDelete('cascade');
 
             $table->timestamps();
         });

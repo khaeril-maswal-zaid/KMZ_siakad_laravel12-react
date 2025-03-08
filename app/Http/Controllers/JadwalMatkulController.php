@@ -2,31 +2,67 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DosenUser;
 use App\Models\JadwalMatkul;
-use App\Models\MataKuliah;
+use App\Models\ProgramAngkatan;
+use App\Models\ProgramStudi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class JadwalMatkulController extends Controller
 {
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function index()
+    protected $prodiFromAdmin;
+
+    public function __construct()
     {
         // Ambil user yang sedang login
         $user = Auth::user();
 
         // Ambil program_studi_id dari relasi adminProdi
-        $prodiFromAdmin = $user->adminProdi->program_studi_id;
+        $this->prodiFromAdmin = $user->adminProdi->program_studi_id;
+    }
 
-        // Ambil matkul berdasarkan program_studi_id
-        $matkul = MataKuliah::select('nama_matkul')->where('program_studi_id', $prodiFromAdmin)->get();
-
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function index()
+    {
         // Ambil jadwal berdasarkan program_studi_id
-        $jadwal = JadwalMatkul::where('program_studi_id', $prodiFromAdmin)->get();
+        $jadwal = JadwalMatkul::where('program_studi_id', $this->prodiFromAdmin)->get();
 
         return Inertia::render('prodi/jadwalperkuliahan');
+    }
+
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create(Request $request)
+    {
+        $angkatanReq = $request->query('angkatan');
+        $semesterReq = $request->query('semester');
+
+        $data = [
+            // Ambil matkul & dosen berdasarkan program_studi_id
+            'fakultasProdi' => ProgramStudi::select(['fakultas_id', 'nama_prodi'])
+                ->with('fakultas:id,nama_fakultas')
+                ->where('id', $this->prodiFromAdmin)
+                ->first(),
+
+            'dosens' => DosenUser::select(['user_id', 'nidn'])
+                ->with('user:id,name')
+                ->where('program_studi_id', $this->prodiFromAdmin)
+                ->get(),
+
+            'resulstApiMatkuls' => ProgramAngkatan::select('mata_kuliah_id')
+                ->with('mataKuliah:id,sks,nama_matkul')
+                ->where('program_studi_id', $this->prodiFromAdmin)
+                ->where('angkatan', $angkatanReq)
+                ->where('semester', $semesterReq)
+                ->get(),
+        ];
+
+        return Inertia::render('prodi/jadwalperkuliahanadd', $data);
     }
 }

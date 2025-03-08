@@ -18,7 +18,7 @@ Route::get('/', function () {
 
 // ----------------- START MAHASISWA AREA -------------------------------------------------
 Route::middleware(['auth', 'verified', 'ruleUser:mahasiswa'])->group(function () {
-    Route::get('/mahasiswa', [MahaiswaUserController::class, 'index'])->name('mahasiswa.index');
+    Route::get('/mahasiswa', [MahaiswaUserController::class, 'show'])->name('mahasiswa.index'); //Sengaja beda nama route dengan method
 });
 // ----------------- END MAHASISWA AREA -------------------------------------------------
 
@@ -41,7 +41,10 @@ Route::middleware(['auth', 'verified', 'ruleUser:keuangan'])->group(function () 
 // ----------------- START PRODI AREA -------------------------------------------------
 Route::middleware(['auth', 'verified', 'ruleUser:prodi'])->group(function () {
     Route::get('/admin-prodi', [ProdiUserController::class, 'index'])->name('prodi.index');
+
     Route::get('/jadwal-perkuliahan', [JadwalMatkulController::class, 'index'])->name('jadwalperkuliahan.index');
+    Route::get('/jadwal-perkuliahan/add', [JadwalMatkulController::class, 'create'])->name('jadwalperkuliahan.create');
+
     Route::get('/program-angkatan', [ProgramAngkatanController::class, 'index'])->name('programangkatan.index');
     Route::get('/data-mahasiswa', [MahaiswaUserController::class, 'index'])->name('mahasiswauser.index');
     Route::get('/daftar-mata-kuliah', [MataKuliahController::class, 'index'])->name('matakuliah.index');
