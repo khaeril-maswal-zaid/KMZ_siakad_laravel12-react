@@ -1,8 +1,18 @@
-import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
+// Interface untuk type data tiap baris jadwal
+interface ScheduleRow {
+    dosen: number | ''; // pastikan nanti dikonversi ke number jika perlu
+    program_angkatan_id: number | '';
+    hari: string;
+    waktu: string;
+    ruangan: string;
+    kelas: string;
+    tahun_ajaran?: string;
+}
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -12,41 +22,97 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function jadwalPerkuliahan() {
-    const { dosens, fakultasProdi, resulstApiMatkuls } = usePage().props;
-    const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i);
+    const { fakultasProdi, tahunAjaran, dosens, resultApiMatkuls } = usePage().props;
+    const { errors } = usePage().props;
 
-    const [selectedYear, setSelectedYear] = useState();
-    const [selectedSemester, setSelectedSemester] = useState();
-
-    const handleYearChange = (year) => {
-        setSelectedYear(year);
-        if (selectedSemester) {
-            handleFilter(year, selectedSemester);
+    // Autofocus pada input pertama
+    const firstInputRef = useRef(null);
+    useEffect(() => {
+        if (firstInputRef.current) {
+            firstInputRef.current.focus();
         }
+    }, [resultApiMatkuls]);
+
+    // State untuk menyimpan data tiap baris di tabel
+    const [rows, setRows] = useState<ScheduleRow[]>([]);
+
+    // State untuk Kelas, di luar tabel (default sebagai string kosong)
+    const [selectedKelas, setSelectedKelas] = useState('');
+
+    // Inisialisasi state rows berdasarkan data API
+    useEffect(() => {
+        setRows(
+            resultApiMatkuls.map((data) => ({
+                dosen: '',
+                program_angkatan_id: data.id || '',
+                hari: '',
+                waktu: '',
+                ruangan: '',
+                kelas: '', // nanti akan diisi dari selectedKelas saat submit
+            })),
+        );
+    }, [resultApiMatkuls]);
+
+    // Handler untuk update data tiap baris
+    const handleRowChange = (index: number, field: keyof ScheduleRow, value: any) => {
+        setRows((prevRows) => {
+            const newRows = [...prevRows];
+            newRows[index] = { ...newRows[index], [field]: value };
+            return newRows;
+        });
     };
 
-    const handleSemesterChange = (semester) => {
-        setSelectedSemester(semester);
-        if (selectedYear) {
-            handleFilter(selectedYear, semester);
+    // Handler untuk filter berdasarkan semester
+    const handleSemesterChange = (semester: string) => {
+        router.get(route('jadwalperkuliahan.create'), { semester }, { preserveState: true });
+    };
+
+    // State untuk menyimpan error validasi
+    const [errorsf, setErrors] = useState({});
+
+    // Handler untuk submit data
+    const handleSubmit = () => {
+        // Cek apakah kelas sudah dipilih
+        if (!selectedKelas) {
+            setErrors((prev) => ({ ...prev, kelas: 'Kelas harus dipilih.' }));
+            return; // hentikan submit
+        } else {
+            setErrors((prev) => ({ ...prev, kelas: '' }));
         }
-    };
 
-    const handleFilter = (year, semester) => {
-        router.get(route('jadwalperkuliahan.create'), { angkatan: year, semester: semester }, { preserveState: true });
-    };
+        // Gabungkan data untuk tiap row
+        const schedules = rows.map((row) => ({
+            ...row,
+            dosen: row.dosen !== '' ? Number(row.dosen) : '',
+            tahun_ajaran: tahunAjaran?.tahun_ajar,
+            kelas: selectedKelas,
+        }));
 
-    console.log(resulstApiMatkuls);
+        // Kirim data ke backend:
+        router.post(route('jadwalperkuliahan.store'), { schedules });
+    };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <div className="grid auto-rows-min gap-4 md:grid-cols-5">
+                {Object.keys(errors).length > 0 && (
+                    <div className="alert alert-danger">
+                        <ul>
+                            {Object.values(errors)
+                                .flat()
+                                .map((error, index) => (
+                                    <li key={index}>{error}</li>
+                                ))}
+                        </ul>
+                    </div>
+                )}
+
+                <div className="grid auto-rows-min gap-2.5 md:grid-cols-5">
                     <div className="relative w-full">
                         <select
                             id="selectProdi"
-                            className="peer block w-full appearance-none rounded-lg border border-gray-300 p-2.5 px-3 py-2 pt-5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                            className="peer block w-full appearance-none rounded-lg border border-gray-300 bg-gray-100 p-2.5 px-3 py-2 pt-5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                         >
                             <option>{fakultasProdi?.fakultas?.nama_fakultas}</option>
                         </select>
@@ -73,7 +139,7 @@ export default function jadwalPerkuliahan() {
                     <div className="relative w-full">
                         <select
                             id="SelectProdi"
-                            className="peer block w-full appearance-none rounded-lg border border-gray-300 p-2.5 px-3 py-2 pt-5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                            className="peer block w-full appearance-none rounded-lg border border-gray-300 bg-gray-100 p-2.5 px-3 py-2 pt-5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                         >
                             <option>{fakultasProdi?.nama_prodi}</option>
                         </select>
@@ -98,23 +164,14 @@ export default function jadwalPerkuliahan() {
                     </div>
 
                     <div className="relative w-full">
-                        <select
-                            onChange={(e) => handleYearChange(e.target.value)}
-                            className="peer block w-full appearance-none rounded-lg border border-gray-300 p-2.5 px-3 py-2 pt-5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                        >
-                            <option value="">Pilih Angkatan</option>
-                            {years.map((year) => (
-                                <option key={year} value={year}>
-                                    {year}
-                                </option>
-                            ))}
+                        <select className="peer block w-full appearance-none rounded-lg border border-gray-300 bg-gray-100 p-2.5 px-3 py-2 pt-5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500">
+                            <option value="">{tahunAjaran?.tahun_ajar}</option>
                         </select>
-
                         <label
                             htmlFor="SelectAngkatan"
                             className="absolute start-2.5 top-4 z-10 origin-[0] -translate-y-3 scale-75 transform text-sm text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-3 peer-focus:scale-75 peer-focus:text-blue-600 rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4 dark:text-gray-400 peer-focus:dark:text-blue-500"
                         >
-                            Angkatan
+                            Tahun Ajaran
                         </label>
                         <svg
                             className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-gray-500"
@@ -133,19 +190,15 @@ export default function jadwalPerkuliahan() {
                     <div className="relative w-full">
                         <select
                             onChange={(e) => handleSemesterChange(e.target.value)}
-                            className="peer block w-full appearance-none rounded-lg border border-gray-300 p-2.5 px-3 py-2 pt-5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                            className="peer block w-full cursor-pointer appearance-none rounded-lg border border-gray-300 p-2.5 px-3 py-2 pt-5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                         >
                             <option value="">Pilih Semester</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
+                            {[...Array(8)].map((_, i) => (
+                                <option key={i} value={i + 1}>
+                                    {i + 1}
+                                </option>
+                            ))}
                         </select>
-
                         <label
                             htmlFor="SelectAngkatan"
                             className="absolute start-2.5 top-4 z-10 origin-[0] -translate-y-3 scale-75 transform text-sm text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-3 peer-focus:scale-75 peer-focus:text-blue-600 rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4 dark:text-gray-400 peer-focus:dark:text-blue-500"
@@ -168,12 +221,23 @@ export default function jadwalPerkuliahan() {
 
                     <div className="relative w-full">
                         <select
+                            value={selectedKelas}
+                            onChange={(e) => {
+                                setSelectedKelas(e.target.value);
+                                // Reset error jika user sudah memilih
+                                if (e.target.value) {
+                                    setErrors((prev) => ({ ...prev, kelas: '' }));
+                                }
+                            }}
                             id="SelectKelas"
-                            className="peer block w-full appearance-none rounded-lg border border-gray-300 p-2.5 px-3 py-2 pt-5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                            className="peer block w-full cursor-pointer appearance-none rounded-lg border border-gray-300 p-2.5 px-3 py-2 pt-5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                         >
-                            <option value="option1">Option 1</option>
-                            <option value="option2">Option 2</option>
-                            <option value="option3">Option 3</option>
+                            <option value="">Pilih Kelas</option>
+                            {['A', 'B', 'C', 'D', 'E', 'F', 'G'].map((klas) => (
+                                <option key={klas} value={klas}>
+                                    {klas}
+                                </option>
+                            ))}
                         </select>
                         <label
                             htmlFor="SelectKelas"
@@ -181,6 +245,7 @@ export default function jadwalPerkuliahan() {
                         >
                             Kelas
                         </label>
+                        {errorsf.kelas && <span className="mt-1 block text-xs text-red-500">{errorsf.kelas}</span>}
                         <svg
                             className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-gray-500"
                             xmlns="http://www.w3.org/2000/svg"
@@ -195,9 +260,96 @@ export default function jadwalPerkuliahan() {
                         </svg>
                     </div>
                 </div>
-                <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border md:min-h-min">
-                    <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
+
+                <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 overflow-hidden rounded-md border md:min-h-min">
+                    <table className="w-full border-collapse border border-gray-300">
+                        <thead>
+                            <tr className="bg-gray-100">
+                                <th className="border border-gray-300 px-4 py-1.5 text-xs">No</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-xs">Mata Kuliah</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-xs">Dosen</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-xs">Hari</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-xs">Waktu</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-xs">Ruangan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {resultApiMatkuls.map((data, index) => (
+                                <tr key={data.id || index}>
+                                    <td className="border border-gray-300 px-4 text-center text-xs">{index + 1}</td>
+
+                                    <td className="w-1/4 border border-gray-300 px-4 text-xs">
+                                        {data.mata_kuliah?.nama_matkul}
+                                        <input type="hidden" name={`rows[${index}].program_angkatan_id`} value={data.id || ''} />
+                                    </td>
+
+                                    <td className="w-1/4 pe-1 text-xs">
+                                        <select
+                                            id={`dosen-${index}`}
+                                            name={`rows[${index}].dosen`}
+                                            onChange={(e) => handleRowChange(index, 'dosen', e.target.value)}
+                                            value={rows[index]?.dosen}
+                                            className="block w-full cursor-pointer rounded-lg border border-gray-300 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                                        >
+                                            <option value="">Pilih Dosen</option>
+                                            {dosens.map((dosen, indexx) => (
+                                                <option key={indexx} value={dosen.user_id}>
+                                                    {dosen.user?.name} - {dosen.nidn}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </td>
+
+                                    <td className="w-1/5 pe-1 text-xs">
+                                        <select
+                                            id={`hari-${index}`}
+                                            name={`rows[${index}].hari`}
+                                            onChange={(e) => handleRowChange(index, 'hari', e.target.value)}
+                                            value={rows[index]?.hari || ''}
+                                            className="block w-full cursor-pointer rounded-lg border border-gray-300 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                                        >
+                                            <option value="">Pilih Hari</option>
+                                            <option value="Senin">Senin</option>
+                                            <option value="Selasa">Selasa</option>
+                                            <option value="Rabu">Rabu</option>
+                                            <option value="Kamis">Kamis</option>
+                                            <option value="Jumat">Jumat</option>
+                                            <option value="Sabtu">Sabtu</option>
+                                        </select>
+                                    </td>
+
+                                    <td className="pe-1 text-xs">
+                                        <input
+                                            type="text"
+                                            name={`rows[${index}].waktu`}
+                                            onChange={(e) => handleRowChange(index, 'waktu', e.target.value)}
+                                            value={rows[index]?.waktu || ''}
+                                            className="block w-full rounded-lg border border-gray-300 p-2 text-xs text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                                            ref={index === 0 ? firstInputRef : null}
+                                        />
+                                    </td>
+
+                                    <td className="text-xs">
+                                        <input
+                                            type="text"
+                                            name={`rows[${index}].ruangan`}
+                                            onChange={(e) => handleRowChange(index, 'ruangan', e.target.value)}
+                                            value={rows[index]?.ruangan || ''}
+                                            className="block w-full rounded-lg border border-gray-300 p-2 text-xs text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                                        />
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
+
+                <button
+                    onClick={handleSubmit}
+                    className="cursor-pointer rounded-md bg-green-700 px-3 py-2 text-sm font-medium text-white hover:bg-green-800 focus:ring-4 focus:ring-green-300 focus:outline-none dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                >
+                    Simpan Jadwal
+                </button>
             </div>
         </AppLayout>
     );

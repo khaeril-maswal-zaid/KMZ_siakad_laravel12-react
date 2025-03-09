@@ -44,6 +44,7 @@ Route::middleware(['auth', 'verified', 'ruleUser:prodi'])->group(function () {
 
     Route::get('/jadwal-perkuliahan', [JadwalMatkulController::class, 'index'])->name('jadwalperkuliahan.index');
     Route::get('/jadwal-perkuliahan/add', [JadwalMatkulController::class, 'create'])->name('jadwalperkuliahan.create');
+    Route::post('/jadwal-perkuliahan', [JadwalMatkulController::class, 'store'])->name('jadwalperkuliahan.store');
 
     Route::get('/program-angkatan', [ProgramAngkatanController::class, 'index'])->name('programangkatan.index');
     Route::get('/data-mahasiswa', [MahaiswaUserController::class, 'index'])->name('mahasiswauser.index');

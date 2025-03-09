@@ -1,11 +1,8 @@
 import { Link } from '@inertiajs/react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
 import { Filter } from 'lucide-react';
-import { useState } from 'react';
 
 export default function Jadwal() {
-    const [search, setSearch] = useState('');
-
     return (
         <div className="flex flex-1 justify-end gap-4">
             <DropdownMenu>

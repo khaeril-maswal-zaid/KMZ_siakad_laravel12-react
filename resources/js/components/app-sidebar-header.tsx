@@ -4,12 +4,14 @@ import { usePage } from '@inertiajs/react';
 
 // Import semua header
 import Jadwal from '@/components/kmz_headers/prodi_jadwal';
+import JadwalAdd from '@/components/kmz_headers/prodi_jadwal_add';
 import Mahasiswa from '@/components/kmz_headers/prodi_mahasiswa';
 
 // Mapping halaman ke komponen header
 const headerComponents = {
     'prodi/mahasiswa': Mahasiswa,
     'prodi/jadwalperkuliahan': Jadwal,
+    'prodi/jadwalperkuliahanadd': JadwalAdd,
 };
 
 export function AppSidebarHeader({ breadcrumbs = [] }) {

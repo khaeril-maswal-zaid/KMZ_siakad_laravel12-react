@@ -38,6 +38,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             FakultasSeeder::class,
             ProgramStudiSeeder::class,
+            KonfigurasiSeeder::class
         ]);
 
         MahasiswaUser::factory(1000)->create();
