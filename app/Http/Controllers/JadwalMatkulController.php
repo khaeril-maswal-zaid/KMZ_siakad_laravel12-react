@@ -79,7 +79,7 @@ class JadwalMatkulController extends Controller
 
             'tahunAjaran' => Konfigurasi::select(['tahun_ajar', 'semester'])->first(),
 
-            'dosens' => DosenUser::select(['user_id', 'nidn'])
+            'dosens' => DosenUser::select(['id', 'user_id', 'nidn'])
                 ->with('user:id,name')
                 ->where('program_studi_id', $this->prodiFromAdmin)
                 ->get(),
@@ -92,15 +92,29 @@ class JadwalMatkulController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request['schedules']);
-        $validated = $request['schedules']->validate([
-            'dosen' => 'required|integer|exists:dosens,id',
-            'program_angkatan_id' => 'required|integer|exists:program_angkatans,id',
-            'hari' => 'required|string',
-            'waktu' => 'required|string',
-            'ruang' => 'required|string',
-            'kelas' => 'required|string',
-            'tahun_ajaran' => 'required|string',
+        $validatedData = $request->validate([
+            'schedules' => 'required|array',
+            'schedules.*.dosen' => 'required|integer|exists:dosen_users,id',
+            'schedules.*.program_angkatan_id' => 'required|integer|exists:program_angkatans,id',
+            'schedules.*.hari' => 'required|string',
+            'schedules.*.waktu' => 'required|string',
+            'schedules.*.ruangan' => 'required|string',
+            'schedules.*.kelas' => 'required|string',
+            'schedules.*.tahun_ajaran' => 'required|string',
         ]);
+
+        foreach ($validatedData['schedules'] as $schedule) {
+            JadwalMatkul::create([
+                'dosen_user_id' => $schedule['dosen'],
+                'program_angkatan_id' => $schedule['program_angkatan_id'],
+                'hari' => $schedule['hari'],
+                'waktu' => $schedule['waktu'],
+                'ruangan' => $schedule['ruangan'],
+                'kelas' => $schedule['kelas'],
+                'tahun_ajaran' => $schedule['tahun_ajaran'],
+            ]);
+        }
+
+        return to_route('jadwalperkuliahan.index');
     }
 }

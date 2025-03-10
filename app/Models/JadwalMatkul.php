@@ -7,13 +7,24 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class JadwalMatkul extends Model
 {
+
+    protected $fillable = [
+        'dosen_user_id',
+        'program_angkatan_id',
+        'hari',
+        'waktu',
+        'ruangan',
+        'kelas',
+        'tahun_ajaran',
+    ];
+
+
     /**
      * The relationships that should always be loaded.
      *
      * @var array
      */
-    // protected $with = ['programStudi', 'mataKuliah', 'dosen'];
-
+    protected $with = ['programStudi', 'mataKuliah', 'dosen'];
 
     public function programStudi(): BelongsTo
     {

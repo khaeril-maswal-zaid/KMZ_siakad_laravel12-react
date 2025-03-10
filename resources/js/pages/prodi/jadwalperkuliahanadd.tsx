@@ -89,6 +89,7 @@ export default function jadwalPerkuliahan() {
         }));
 
         // Kirim data ke backend:
+        console.log(schedules);
         router.post(route('jadwalperkuliahan.store'), { schedules });
     };
 
@@ -293,7 +294,7 @@ export default function jadwalPerkuliahan() {
                                         >
                                             <option value="">Pilih Dosen</option>
                                             {dosens.map((dosen, indexx) => (
-                                                <option key={indexx} value={dosen.user_id}>
+                                                <option key={indexx} value={dosen.id}>
                                                     {dosen.user?.name} - {dosen.nidn}
                                                 </option>
                                             ))}
