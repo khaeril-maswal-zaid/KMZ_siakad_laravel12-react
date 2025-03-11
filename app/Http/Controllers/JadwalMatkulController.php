@@ -84,7 +84,7 @@ class JadwalMatkulController extends Controller
 
             'resultApiMatkuls' =>  $matkulProgram->where('angkatan', $tahunTerbaru)->get(),
 
-            'resultApijadwalMatkul' => JadwalMatkul::select(['program_angkatan_id', 'dosen_user_id', 'hari', 'waktu', 'ruangan', 'kelas'])
+            'resultApijadwalMatkul' => JadwalMatkul::select(['id', 'program_angkatan_id', 'dosen_user_id', 'hari', 'waktu', 'ruangan', 'kelas'])
                 ->whereHas('programAngkatan', function ($query) use ($request) {
                     $query->where('program_studi_id', $this->prodiFromAdmin)->where('semester', $request->query('semester'));
                 })
@@ -140,6 +140,39 @@ class JadwalMatkulController extends Controller
                 'kelas' => $schedule['kelas'],
                 'tahun_ajaran' => $schedule['tahun_ajaran'],
             ]);
+        }
+
+        return to_route('jadwalperkuliahan.index');
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request)
+    {
+        $validatedData = $request->validate([
+            'schedules' => 'required|array',
+            'schedules.*.id' => 'required|integer|exists:jadwal_matkuls,id',
+            'schedules.*.dosen' => 'required|integer|exists:dosen_users,id',
+            'schedules.*.program_angkatan_id' => 'required|integer|exists:program_angkatans,id',
+            'schedules.*.hari' => 'required|string',
+            'schedules.*.waktu' => 'required|string',
+            'schedules.*.ruangan' => 'required|string',
+            'schedules.*.kelas' => 'required|string',
+            'schedules.*.tahun_ajaran' => 'required|string',
+        ]);
+
+        foreach ($validatedData['schedules'] as $schedule) {
+            JadwalMatkul::where('id', $schedule['id'])
+                ->update([
+                    'dosen_user_id' => $schedule['dosen'],
+                    'program_angkatan_id' => $schedule['program_angkatan_id'],
+                    'hari' => $schedule['hari'],
+                    'waktu' => $schedule['waktu'],
+                    'ruangan' => $schedule['ruangan'],
+                    'kelas' => $schedule['kelas'],
+                    'tahun_ajaran' => $schedule['tahun_ajaran'],
+                ]);
         }
 
         return to_route('jadwalperkuliahan.index');
