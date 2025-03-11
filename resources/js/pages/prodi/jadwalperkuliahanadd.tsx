@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 
 // Interface untuk type data tiap baris jadwal
 interface ScheduleRow {
-    dosen: number | ''; // pastikan nanti dikonversi ke number jika perlu
+    dosen: number | '';
     program_angkatan_id: number | '';
     hari: string;
     waktu: string;
@@ -22,8 +22,10 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function jadwalPerkuliahan() {
-    const { fakultasProdi, tahunAjaran, dosens, resultApiMatkuls } = usePage().props;
+    const { fakultasProdi, tahunAjaran, dosens, resultApiMatkuls, resultApijadwalMatkul } = usePage().props;
     const { errors } = usePage().props;
+
+    console.log(resultApiMatkuls);
 
     // Autofocus pada input pertama
     const firstInputRef = useRef(null);
@@ -34,10 +36,7 @@ export default function jadwalPerkuliahan() {
     }, [resultApiMatkuls]);
 
     // State untuk menyimpan data tiap baris di tabel
-    const [rows, setRows] = useState<ScheduleRow[]>([]);
-
-    // State untuk Kelas, di luar tabel (default sebagai string kosong)
-    const [selectedKelas, setSelectedKelas] = useState('');
+    // const [rows, setRows] = useState<ScheduleRow[]>([]);
 
     // Inisialisasi state rows berdasarkan data API
     useEffect(() => {
@@ -48,24 +47,19 @@ export default function jadwalPerkuliahan() {
                 hari: '',
                 waktu: '',
                 ruangan: '',
-                kelas: '', // nanti akan diisi dari selectedKelas saat submit
+                kelas: '',
             })),
         );
     }, [resultApiMatkuls]);
 
     // Handler untuk update data tiap baris
-    const handleRowChange = (index: number, field: keyof ScheduleRow, value: any) => {
-        setRows((prevRows) => {
-            const newRows = [...prevRows];
-            newRows[index] = { ...newRows[index], [field]: value };
-            return newRows;
-        });
-    };
-
-    // Handler untuk filter berdasarkan semester
-    const handleSemesterChange = (semester: string) => {
-        router.get(route('jadwalperkuliahan.create'), { semester }, { preserveState: true });
-    };
+    // const handleRowChange = (index: number, field: keyof ScheduleRow, value: any) => {
+    //     setRows((prevRows) => {
+    //         const newRows = [...prevRows];
+    //         newRows[index] = { ...newRows[index], [field]: value };
+    //         return newRows;
+    //     });
+    // };
 
     // State untuk menyimpan error validasi
     const [errorsf, setErrors] = useState({});
@@ -89,8 +83,51 @@ export default function jadwalPerkuliahan() {
         }));
 
         // Kirim data ke backend:
-        console.log(schedules);
         router.post(route('jadwalperkuliahan.store'), { schedules });
+    };
+
+    // Inisialisasi state rows berdasarkan resultApiMatkuls dan resultApijadwalMatkul
+    const initialRows = resultApiMatkuls.map((data) => {
+        const jadwal = resultApijadwalMatkul.find((item) => item.program_angkatan_id === data.id) || {};
+        return {
+            program_angkatan_id: data.id,
+            dosen: jadwal.dosen_user_id || '',
+            hari: jadwal.hari || '',
+            waktu: jadwal.waktu || '',
+            ruangan: jadwal.ruangan || '',
+        };
+    });
+    const [rows, setRows] = useState(initialRows);
+
+    const handleRowChange = (index: number, field: keyof ScheduleRow, value: any) => {
+        const updatedRows = [...rows];
+        updatedRows[index] = {
+            ...updatedRows[index],
+            [field]: value,
+        };
+        setRows(updatedRows);
+    };
+
+    //-------------------------------------------
+    const [selectedKelas, setSelectedKelas] = useState();
+    const [selectedSemester, setSelectedSemester] = useState();
+
+    const handleKelasChange = (kelas) => {
+        setSelectedKelas(kelas);
+        if (selectedSemester) {
+            handleFilter(kelas, selectedSemester, tahunAjaran?.tahun_ajar);
+        }
+    };
+
+    const handleSemesterChange = (semester) => {
+        setSelectedSemester(semester);
+        if (selectedKelas) {
+            handleFilter(selectedKelas, semester, tahunAjaran?.tahun_ajar);
+        }
+    };
+
+    const handleFilter = (kelas, semester, tahunAjaran) => {
+        router.get(route('jadwalperkuliahan.create'), { kelas: kelas, semester: semester, tahunAjaran: tahunAjaran }, { preserveState: true });
     };
 
     return (
@@ -224,7 +261,7 @@ export default function jadwalPerkuliahan() {
                         <select
                             value={selectedKelas}
                             onChange={(e) => {
-                                setSelectedKelas(e.target.value);
+                                handleKelasChange(e.target.value);
                                 // Reset error jika user sudah memilih
                                 if (e.target.value) {
                                     setErrors((prev) => ({ ...prev, kelas: '' }));
@@ -275,7 +312,7 @@ export default function jadwalPerkuliahan() {
                             </tr>
                         </thead>
                         <tbody>
-                            {resultApiMatkuls.map((data, index) => (
+                            {/* {resultApiMatkuls.map((data, index) => (
                                 <tr key={data.id || index}>
                                     <td className="border border-gray-300 px-4 text-center text-xs">{index + 1}</td>
 
@@ -337,6 +374,149 @@ export default function jadwalPerkuliahan() {
                                             onChange={(e) => handleRowChange(index, 'ruangan', e.target.value)}
                                             value={rows[index]?.ruangan || ''}
                                             className="block w-full rounded-lg border border-gray-300 p-2 text-xs text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                                        />
+                                    </td>
+                                </tr>
+                            ))} */}
+
+                            {/* {resultApiMatkuls.map((data, index) => {
+                                // Cari jadwal yang sudah tersimpan berdasarkan program_angkatan_id
+                                const jadwal = resultApijadwalMatkul.find((item) => item.program_angkatan_id === data.id) || {};
+
+                                return (
+                                    <tr key={data.id || index}>
+                                        <td className="border border-gray-300 px-4 text-center text-xs">{index + 1}</td>
+
+                                        <td className="w-1/4 border border-gray-300 px-4 text-xs">
+                                            {data.mata_kuliah?.nama_matkul}
+                                            <input type="hidden" name={`rows[${index}].program_angkatan_id`} value={data.id || ''} />
+                                        </td>
+
+                                        <td className="w-1/4 pe-1 text-xs">
+                                            <select
+                                                id={`dosen-${index}`}
+                                                name={`rows[${index}].dosen`}
+                                                onChange={(e) => handleRowChange(index, 'dosen', e.target.value)}
+                                                value={jadwal.dosen_user_id || ''}
+                                                className="block w-full cursor-pointer rounded-lg border border-gray-300 p-2 text-sm text-gray-900"
+                                            >
+                                                <option value="">Pilih Dosen</option>
+                                                {dosens.map((dosen, indexx) => (
+                                                    <option key={indexx} value={dosen.id}>
+                                                        {dosen.user?.name} - {dosen.nidn}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </td>
+
+                                        <td className="w-1/5 pe-1 text-xs">
+                                            <select
+                                                id={`hari-${index}`}
+                                                name={`rows[${index}].hari`}
+                                                onChange={(e) => handleRowChange(index, 'hari', e.target.value)}
+                                                value={jadwal.hari || ''}
+                                                className="block w-full cursor-pointer rounded-lg border border-gray-300 p-2 text-sm text-gray-900"
+                                            >
+                                                <option value="">Pilih Hari</option>
+                                                <option value="Senin">Senin</option>
+                                                <option value="Selasa">Selasa</option>
+                                                <option value="Rabu">Rabu</option>
+                                                <option value="Kamis">Kamis</option>
+                                                <option value="Jumat">Jumat</option>
+                                                <option value="Sabtu">Sabtu</option>
+                                            </select>
+                                        </td>
+
+                                        <td className="pe-1 text-xs">
+                                            <input
+                                                type="text"
+                                                name={`rows[${index}].waktu`}
+                                                onChange={(e) => handleRowChange(index, 'waktu', e.target.value)}
+                                                value={jadwal.waktu || ''}
+                                                className="block w-full rounded-lg border border-gray-300 p-2 text-xs text-gray-900"
+                                                ref={index === 0 ? firstInputRef : null}
+                                            />
+                                        </td>
+
+                                        <td className="text-xs">
+                                            <input
+                                                type="text"
+                                                name={`rows[${index}].ruangan`}
+                                                onChange={(e) => handleRowChange(index, 'ruangan', e.target.value)}
+                                                value={jadwal.ruangan || ''}
+                                                className="block w-full rounded-lg border border-gray-300 p-2 text-xs text-gray-900"
+                                            />
+                                        </td>
+                                    </tr>
+                                );
+                            })} */}
+
+                            {resultApiMatkuls.map((data, index) => (
+                                <tr key={data.id || index}>
+                                    <td className="border border-gray-300 px-4 text-center text-xs">{index + 1}</td>
+
+                                    <td className="w-1/4 border border-gray-300 px-4 text-xs">
+                                        {data.mata_kuliah?.nama_matkul}
+                                        <input type="hidden" name={`rows[${index}].program_angkatan_id`} value={data.id || ''} />
+                                    </td>
+
+                                    {/* Select untuk dosen */}
+                                    <td className="w-1/4 pe-1 text-xs">
+                                        <select
+                                            id={`dosen-${index}`}
+                                            name={`rows[${index}].dosen`}
+                                            onChange={(e) => handleRowChange(index, 'dosen', e.target.value)}
+                                            value={rows[index]?.dosen || ''}
+                                            className="block w-full cursor-pointer rounded-lg border border-gray-300 p-2 text-sm text-gray-900"
+                                        >
+                                            <option value="">Pilih Dosen</option>
+                                            {dosens.map((dosen, indexx) => (
+                                                <option key={indexx} value={dosen.id}>
+                                                    {dosen.user?.name} - {dosen.nidn}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </td>
+
+                                    {/* Select untuk hari */}
+                                    <td className="w-1/5 pe-1 text-xs">
+                                        <select
+                                            id={`hari-${index}`}
+                                            name={`rows[${index}].hari`}
+                                            onChange={(e) => handleRowChange(index, 'hari', e.target.value)}
+                                            value={rows[index]?.hari || ''}
+                                            className="block w-full cursor-pointer rounded-lg border border-gray-300 p-2 text-sm text-gray-900"
+                                        >
+                                            <option value="">Pilih Hari</option>
+                                            <option value="Senin">Senin</option>
+                                            <option value="Selasa">Selasa</option>
+                                            <option value="Rabu">Rabu</option>
+                                            <option value="Kamis">Kamis</option>
+                                            <option value="Jumat">Jumat</option>
+                                            <option value="Sabtu">Sabtu</option>
+                                        </select>
+                                    </td>
+
+                                    {/* Input untuk waktu */}
+                                    <td className="pe-1 text-xs">
+                                        <input
+                                            type="text"
+                                            name={`rows[${index}].waktu`}
+                                            onChange={(e) => handleRowChange(index, 'waktu', e.target.value)}
+                                            value={rows[index]?.waktu || ''}
+                                            className="block w-full rounded-lg border border-gray-300 p-2 text-xs text-gray-900"
+                                            ref={index === 0 ? firstInputRef : null}
+                                        />
+                                    </td>
+
+                                    {/* Input untuk ruangan */}
+                                    <td className="text-xs">
+                                        <input
+                                            type="text"
+                                            name={`rows[${index}].ruangan`}
+                                            onChange={(e) => handleRowChange(index, 'ruangan', e.target.value)}
+                                            value={rows[index]?.ruangan || ''}
+                                            className="block w-full rounded-lg border border-gray-300 p-2 text-xs text-gray-900"
                                         />
                                     </td>
                                 </tr>

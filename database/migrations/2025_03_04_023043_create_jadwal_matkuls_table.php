@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('kelas');
             $table->string('tahun_ajaran');
 
+            $table->unique(['program_angkatan_id', 'tahun_ajaran', 'kelas']);
+
             $table->timestamps();
         });
     }

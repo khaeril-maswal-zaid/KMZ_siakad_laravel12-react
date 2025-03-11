@@ -24,20 +24,15 @@ class JadwalMatkul extends Model
      *
      * @var array
      */
-    protected $with = ['programStudi', 'mataKuliah', 'dosen'];
+    protected $with = ['programAngkatan', 'dosen'];
 
-    public function programStudi(): BelongsTo
+    public function dosen()
     {
-        return $this->belongsTo(ProgramStudi::class);
+        return $this->belongsTo(DosenUser::class, 'dosen_user_id', 'id');
     }
 
-    public function mataKuliah(): BelongsTo
+    public function programAngkatan(): BelongsTo
     {
-        return $this->belongsTo(MataKuliah::class);
-    }
-
-    public function dosen(): BelongsTo
-    {
-        return $this->belongsTo(DosenUser::class);
+        return $this->belongsTo(ProgramAngkatan::class, 'program_angkatan_id', 'id');
     }
 }

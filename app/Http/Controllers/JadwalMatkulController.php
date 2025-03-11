@@ -61,12 +61,10 @@ class JadwalMatkulController extends Controller
      */
     public function create(Request $request)
     {
-        $semesterReq = $request->query('semester');
-
         $matkulProgram = ProgramAngkatan::select(['id', 'mata_kuliah_id'])
             ->with('mataKuliah:id,sks,nama_matkul')
             ->where('program_studi_id', $this->prodiFromAdmin)
-            ->where('semester', $semesterReq);
+            ->where('semester', $request->query('semester'));
 
         // Ambil tahun terbaru
         $tahunTerbaru = $matkulProgram->max('angkatan');
@@ -85,6 +83,21 @@ class JadwalMatkulController extends Controller
                 ->get(),
 
             'resultApiMatkuls' =>  $matkulProgram->where('angkatan', $tahunTerbaru)->get(),
+
+            'resultApijadwalMatkul' => JadwalMatkul::select(['program_angkatan_id', 'dosen_user_id', 'hari', 'waktu', 'ruangan', 'kelas'])
+                ->whereHas('programAngkatan', function ($query) use ($request) {
+                    $query->where('program_studi_id', $this->prodiFromAdmin)->where('semester', $request->query('semester'));
+                })
+                ->with([
+                    'dosen:id,user_id,nidn', // Pastikan 'user_id' ikut diambil agar bisa dipakai di relasi berikutnya
+                    'dosen.user:id,name', // Ambil 'name' dari tabel users
+
+                    'programAngkatan:id,mata_kuliah_id,semester',
+                    'programAngkatan.mataKuliah:id,nama_matkul,sks',
+                ])
+                ->where('tahun_ajaran', $request->tahunAjaran)
+                ->where('kelas', $request->kelas)
+                ->get(),
         ];
 
         return Inertia::render('prodi/jadwalperkuliahanadd', $data);
@@ -101,6 +114,20 @@ class JadwalMatkulController extends Controller
             'schedules.*.ruangan' => 'required|string',
             'schedules.*.kelas' => 'required|string',
             'schedules.*.tahun_ajaran' => 'required|string',
+
+            // Validasi kombinasi unik
+            'schedules.*' => [
+                function ($attribute, $value, $fail) {
+                    $exists = JadwalMatkul::where('program_angkatan_id', $value['program_angkatan_id'])
+                        ->where('tahun_ajaran', $value['tahun_ajaran'])
+                        ->where('kelas', $value['kelas'])
+                        ->exists();
+
+                    if ($exists) {
+                        $fail("Jadwal dengan program angkatan {$value['program_angkatan_id']}, tahun ajaran {$value['tahun_ajaran']}, dan kelas {$value['kelas']} sudah ada.");
+                    }
+                }
+            ]
         ]);
 
         foreach ($validatedData['schedules'] as $schedule) {
