@@ -29,9 +29,6 @@ class JadwalMatkulController extends Controller
      */
     public function index(Request $request)
     {
-        $angkatanReq = $request->query('angkatan');
-        $semesterReq = $request->query('semester');
-
         $data = [
             'fakultasProdi' => ProgramStudi::select(['fakultas_id', 'nama_prodi'])
                 ->with('fakultas:id,nama_fakultas')
@@ -40,17 +37,25 @@ class JadwalMatkulController extends Controller
 
             'tahunAjaran' => Konfigurasi::select(['tahun_ajar', 'semester'])->first(),
 
-            'dosens' => DosenUser::select(['user_id', 'nidn'])
-                ->with('user:id,name')
-                ->where('program_studi_id', $this->prodiFromAdmin)
+            'resulstApiJadwal' => JadwalMatkul::select(['program_angkatan_id', 'dosen_user_id', 'hari', 'waktu', 'ruangan', 'kelas'])
+                ->whereHas('programAngkatan', function ($query) use ($request) {
+                    $query->where('program_studi_id', $this->prodiFromAdmin)->where('angkatan', $request->angkatan);
+                })
+                ->with([
+                    'dosen:id,user_id,nidn', // Pastikan 'user_id' ikut diambil agar bisa dipakai di relasi berikutnya
+                    'dosen.user:id,name', // Ambil 'name' dari tabel users
+
+                    'programAngkatan:id', // formalitas
+                ])
+                ->where('kelas', $request->kelas)
                 ->get(),
 
-            'resulstApiMatkuls' => ProgramAngkatan::select('mata_kuliah_id')
-                ->with('mataKuliah:id,sks,nama_matkul')
+            'programAngkatan' => ProgramAngkatan::select(['id', 'mata_kuliah_id', 'semester'])
+                ->with('mataKuliah:id,nama_matkul,sks')
                 ->where('program_studi_id', $this->prodiFromAdmin)
-                ->where('angkatan', $angkatanReq)
-                ->where('semester', $semesterReq)
-                ->get(),
+                ->where('angkatan', $request->angkatan)
+                ->orderBy('semester', 'asc')
+                ->get()
         ];
 
         return Inertia::render('prodi/jadwalperkuliahan', $data);
@@ -92,8 +97,8 @@ class JadwalMatkulController extends Controller
                     'dosen:id,user_id,nidn', // Pastikan 'user_id' ikut diambil agar bisa dipakai di relasi berikutnya
                     'dosen.user:id,name', // Ambil 'name' dari tabel users
 
-                    'programAngkatan:id,mata_kuliah_id,semester',
-                    'programAngkatan.mataKuliah:id,nama_matkul,sks',
+                    'programAngkatan:id,mata_kuliah_id',
+                    'programAngkatan.mataKuliah:id,nama_matkul',
                 ])
                 ->where('tahun_ajaran', $request->tahunAjaran)
                 ->where('kelas', $request->kelas)

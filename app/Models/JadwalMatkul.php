@@ -35,4 +35,9 @@ class JadwalMatkul extends Model
     {
         return $this->belongsTo(ProgramAngkatan::class, 'program_angkatan_id', 'id');
     }
+
+    // public function getApiJadwal($prodiAdmin, $angkatan, $kelas)
+    // {
+    //     return   $this->
+    // }
 }

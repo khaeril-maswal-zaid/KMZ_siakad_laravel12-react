@@ -146,13 +146,13 @@ export default function jadwalPerkuliahan() {
                 <div className="grid auto-rows-min gap-2.5 md:grid-cols-5">
                     <div className="relative w-full">
                         <select
-                            id="selectProdi"
+                            id="selectFakultas"
                             className="peer block w-full appearance-none rounded-lg border border-gray-300 bg-gray-100 p-2.5 px-3 py-2 pt-5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                         >
                             <option>{fakultasProdi?.fakultas?.nama_fakultas}</option>
                         </select>
                         <label
-                            htmlFor="selectProdi"
+                            htmlFor="selectFakultas"
                             className="absolute start-2.5 top-4 z-10 origin-[0] -translate-y-3 scale-75 transform text-sm text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-3 peer-focus:scale-75 peer-focus:text-blue-600 rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4 dark:text-gray-400 peer-focus:dark:text-blue-500"
                         >
                             Fakultas
@@ -199,11 +199,14 @@ export default function jadwalPerkuliahan() {
                     </div>
 
                     <div className="relative w-full">
-                        <select className="peer block w-full appearance-none rounded-lg border border-gray-300 bg-gray-100 p-2.5 px-3 py-2 pt-5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500">
+                        <select
+                            id="TahunAjaran"
+                            className="peer block w-full appearance-none rounded-lg border border-gray-300 bg-gray-100 p-2.5 px-3 py-2 pt-5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                        >
                             <option value="">{tahunAjaran?.tahun_ajar}</option>
                         </select>
                         <label
-                            htmlFor="SelectAngkatan"
+                            htmlFor="TahunAjaran"
                             className="absolute start-2.5 top-4 z-10 origin-[0] -translate-y-3 scale-75 transform text-sm text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-3 peer-focus:scale-75 peer-focus:text-blue-600 rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4 dark:text-gray-400 peer-focus:dark:text-blue-500"
                         >
                             Tahun Ajaran
@@ -224,6 +227,7 @@ export default function jadwalPerkuliahan() {
 
                     <div className="relative w-full">
                         <select
+                            id="SelectSemester"
                             onChange={(e) => handleSemesterChange(e.target.value, tahunAjaran?.tahun_ajar)}
                             className="peer block w-full cursor-pointer appearance-none rounded-lg border border-gray-300 p-2.5 px-3 py-2 pt-5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                         >
@@ -235,7 +239,7 @@ export default function jadwalPerkuliahan() {
                             ))}
                         </select>
                         <label
-                            htmlFor="SelectAngkatan"
+                            htmlFor="SelectSemester"
                             className="absolute start-2.5 top-4 z-10 origin-[0] -translate-y-3 scale-75 transform text-sm text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-3 peer-focus:scale-75 peer-focus:text-blue-600 rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4 dark:text-gray-400 peer-focus:dark:text-blue-500"
                         >
                             Semester
@@ -303,6 +307,7 @@ export default function jadwalPerkuliahan() {
                             <tr className="bg-gray-100">
                                 <th className="border border-gray-300 px-4 py-1.5 text-xs">No</th>
                                 <th className="border border-gray-300 px-4 py-1.5 text-xs">Mata Kuliah</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-xs">SKS</th>
                                 <th className="border border-gray-300 px-4 py-1.5 text-xs">Dosen</th>
                                 <th className="border border-gray-300 px-4 py-1.5 text-xs">Hari</th>
                                 <th className="border border-gray-300 px-4 py-1.5 text-xs">Waktu</th>
@@ -318,11 +323,13 @@ export default function jadwalPerkuliahan() {
                                     <tr key={data.id || index}>
                                         <td className="border border-gray-300 px-4 text-center text-xs">{index + 1}</td>
 
-                                        <td className="w-1/4 border border-gray-300 px-4 text-xs">
+                                        <td className="w-1/5 border border-gray-300 px-4 text-xs">
                                             {data.mata_kuliah?.nama_matkul}
                                             <input type="hidden" name={`rows[${index}].program_angkatan_id`} value={data.id || ''} />
                                             <input type="hidden" name={`rows[${index}].id`} value={jadwal.id || ''} />
                                         </td>
+
+                                        <td className="w-1/12 border border-gray-300 px-4 text-center text-xs">{data.mata_kuliah?.sks}</td>
 
                                         <td className="w-1/4 pe-1 text-xs">
                                             <select
@@ -341,7 +348,7 @@ export default function jadwalPerkuliahan() {
                                             </select>
                                         </td>
 
-                                        <td className="w-1/5 pe-1 text-xs">
+                                        <td className="w-1/6 pe-1 text-xs">
                                             <select
                                                 id={`hari-${index}`}
                                                 name={`rows[${index}].hari`}
