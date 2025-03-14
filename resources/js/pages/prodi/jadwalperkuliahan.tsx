@@ -219,7 +219,9 @@ export default function jadwalPerkuliahan() {
                                         <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs">{data.mata_kuliah?.sks}</td>
                                         <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs">{data.semester}</td>
                                         <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs">
-                                            {jadwal.dosen?.user?.name} _ {jadwal.dosen?.nidn}
+                                            {(jadwal.dosen?.user?.name || '') +
+                                                (jadwal.dosen?.user?.name && jadwal.dosen?.nidn ? ' _ ' : '') +
+                                                (jadwal.dosen?.nidn || '')}
                                         </td>
                                         <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs">{jadwal.hari}</td>
                                         <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs">{jadwal.waktu}</td>
