@@ -187,6 +187,19 @@ class JadwalMatkulController extends Controller
 
     public function mengajar()
     {
-        dd('mengajar');
+        $tahunAjaran = Konfigurasi::select(['tahun_ajar', 'semester'])->first();
+
+        $data = [
+            'jadwalMengajar' => JadwalMatkul::select(['program_angkatan_id', 'hari', 'waktu', 'ruangan', 'kelas'])
+                ->with([
+                    'programAngkatan:id,mata_kuliah_id',
+                    'programAngkatan.mataKuliah:id,nama_matkul',
+                ])
+                ->where('dosen_user_id', Auth::user()->dosen->id)
+                ->where('tahun_ajaran', $tahunAjaran->tahun_ajar)
+                ->get(),
+        ];
+
+        return Inertia::render('dosen/jadwalMengajar', $data);
     }
 }
