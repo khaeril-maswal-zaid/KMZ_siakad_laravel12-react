@@ -27,6 +27,7 @@ Route::middleware(['auth', 'verified', 'ruleUser:mahasiswa'])->group(function ()
 
 Route::middleware(['auth', 'verified', 'ruleUser:dosen'])->group(function () {
     Route::get('/dosen', [DosenUserController::class, 'index'])->name('dosen.index');
+    Route::get('/jadwal-mengajar', [JadwalMatkulController::class, 'mengajar'])->name('jadwalperkuliahan.mengajar');
 });
 // ----------------- END DOSEN AREA -------------------------------------------------
 

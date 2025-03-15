@@ -29,7 +29,7 @@ const getMainNavItems = (auth: SharedData['auth']): NavItem[] => {
             { title: 'Daftar Mata Kuliah', url: route('matakuliah.index'), icon: BookOpen },
         ],
         dosen: [
-            { title: 'Mata Kuliah', url: '/', icon: FileText },
+            { title: 'Jadwal Mengajar', url: route('jadwalperkuliahan.mengajar'), icon: FileText },
             { title: 'Mahasiswa', url: '/', icon: GraduationCap },
         ],
         mahasiswa: [
