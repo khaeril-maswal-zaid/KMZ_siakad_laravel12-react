@@ -35,29 +35,29 @@ export default function jadwalPerkuliahan() {
                     <table className="w-full border-collapse border border-gray-300">
                         <thead>
                             <tr className="bg-gray-100">
-                                <th className="border border-gray-300 px-4 py-1.5 text-xs">No</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-xs">NIM</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-xs">Nama</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-xs">Kelas</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-xs">Email</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-xs">JK</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-xs">Tanggal Lahir</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-xs">No Hp</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-xs">Aksi</th>
+                                <th className="w-5 border border-gray-300 px-2 py-1.5 text-xs">No</th>
+                                <th className="border border-gray-300 px-2 py-1.5 text-xs">NIM</th>
+                                <th className="border border-gray-300 px-2 py-1.5 text-xs">Nama</th>
+                                <th className="border border-gray-300 px-2 py-1.5 text-xs">Kelas</th>
+                                <th className="border border-gray-300 px-2 py-1.5 text-xs">Email</th>
+                                <th className="border border-gray-300 px-2 py-1.5 text-xs">JK</th>
+                                <th className="border border-gray-300 px-2 py-1.5 text-xs">Tanggal Lahir</th>
+                                <th className="border border-gray-300 px-2 py-1.5 text-xs">No Hp</th>
+                                <th className="border border-gray-300 px-2 py-1.5 text-xs">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             {mahasiswas.data.map((mhs, index) => (
                                 <tr key={mhs.nim}>
-                                    <td className="border border-gray-300 px-4 py-1.5 text-center text-xs">{index + 1}</td>
-                                    <td className="border border-gray-300 px-4 py-1.5 text-center text-xs">{mhs.nim}</td>
-                                    <td className="border border-gray-300 px-4 py-1.5 text-xs">{mhs.user?.name || '-'}</td>
-                                    <td className="border border-gray-300 px-4 py-1.5 text-center text-xs">{mhs.kelas}</td>
-                                    <td className="border border-gray-300 px-4 py-1.5 text-xs">{mhs.user?.email || '-'}</td>
-                                    <td className="border border-gray-300 px-4 py-1.5 text-center text-xs">{mhs.jenis_kelamin}</td>
-                                    <td className="border border-gray-300 px-4 py-1.5 text-xs">{mhs.tanggal_lahir}</td>
-                                    <td className="border border-gray-300 px-4 py-1.5 text-xs">{mhs.no_hp}</td>
-                                    <td className="border border-gray-300 px-4 text-center text-xs">
+                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-xs">{index + 1}</td>
+                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-xs">{mhs.nim}</td>
+                                    <td className="border border-gray-300 px-2 py-1.5 text-xs">{mhs.user?.name || '-'}</td>
+                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-xs">{mhs.kelas}</td>
+                                    <td className="border border-gray-300 px-2 py-1.5 text-xs">{mhs.user?.email || '-'}</td>
+                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-xs">{mhs.jenis_kelamin}</td>
+                                    <td className="border border-gray-300 px-2 py-1.5 text-xs">{mhs.tanggal_lahir}</td>
+                                    <td className="border border-gray-300 px-2 py-1.5 text-xs">{mhs.no_hp}</td>
+                                    <td className="border border-gray-300 px-2 text-center text-xs">
                                         <DropdownMenu.Root>
                                             <DropdownMenu.Trigger asChild>
                                                 <button className="cursor-pointer rounded-full bg-gray-200 p-1 hover:bg-gray-300">

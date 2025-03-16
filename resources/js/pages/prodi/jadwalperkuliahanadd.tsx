@@ -337,7 +337,7 @@ export default function jadwalPerkuliahan() {
                                                 name={`rows[${index}].dosen`}
                                                 onChange={(e) => handleRowChange(index, 'dosen', e.target.value)}
                                                 value={rows[index]?.dosen || jadwal.dosen_user_id || ''}
-                                                className="block w-full cursor-pointer rounded-lg border border-gray-300 p-2 text-sm text-gray-900"
+                                                className="block w-full cursor-pointer rounded-lg border border-gray-300 p-2 text-xs text-gray-900"
                                             >
                                                 <option value="">Pilih Dosen</option>
                                                 {dosens.map((dosen, indexx) => (
@@ -354,7 +354,7 @@ export default function jadwalPerkuliahan() {
                                                 name={`rows[${index}].hari`}
                                                 onChange={(e) => handleRowChange(index, 'hari', e.target.value)}
                                                 value={rows[index]?.hari || jadwal.hari || ''}
-                                                className="block w-full cursor-pointer rounded-lg border border-gray-300 p-2 text-sm text-gray-900"
+                                                className="block w-full cursor-pointer rounded-lg border border-gray-300 p-2 text-xs text-gray-900"
                                             >
                                                 <option value="">Pilih Hari</option>
                                                 <option value="Senin">Senin</option>

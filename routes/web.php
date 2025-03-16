@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\DosenUserController;
 use App\Http\Controllers\JadwalMatkulController;
 use App\Http\Controllers\KeuanganUserController;
 use App\Http\Controllers\MahaiswaUserController;
 use App\Http\Controllers\MataKuliahController;
+use App\Http\Controllers\NilaiMahasiswaController;
 use App\Http\Controllers\ProdiUserController;
 use App\Http\Controllers\ProgramAngkatanController;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +30,12 @@ Route::middleware(['auth', 'verified', 'ruleUser:mahasiswa'])->group(function ()
 Route::middleware(['auth', 'verified', 'ruleUser:dosen'])->group(function () {
     Route::get('/dosen', [DosenUserController::class, 'index'])->name('dosen.index');
     Route::get('/jadwal-mengajar', [JadwalMatkulController::class, 'mengajar'])->name('jadwalperkuliahan.mengajar');
+
+    Route::get('/nilai-mahaiswa/create', [NilaiMahasiswaController::class, 'create'])->name('nilaimahasiswa.create');
+
+    //HARUS POST, INI SEMENTARA
+    Route::get('/absensi-perkuliahan/create', [AbsensiController::class, 'create'])->name('absensi.create');
+    Route::post('/absensi-perkuliahan/store', [AbsensiController::class, 'store'])->name('absensi.store');
 });
 // ----------------- END DOSEN AREA -------------------------------------------------
 

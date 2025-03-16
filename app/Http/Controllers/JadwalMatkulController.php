@@ -192,8 +192,8 @@ class JadwalMatkulController extends Controller
         $data = [
             'jadwalMengajar' => JadwalMatkul::select(['program_angkatan_id', 'hari', 'waktu', 'ruangan', 'kelas'])
                 ->with([
-                    'programAngkatan:id,mata_kuliah_id',
-                    'programAngkatan.mataKuliah:id,nama_matkul',
+                    'programAngkatan:id,mata_kuliah_id,angkatan',
+                    'programAngkatan.mataKuliah:id,nama_matkul,sks',
                 ])
                 ->where('dosen_user_id', Auth::user()->dosen->id)
                 ->where('tahun_ajaran', $tahunAjaran->tahun_ajar)

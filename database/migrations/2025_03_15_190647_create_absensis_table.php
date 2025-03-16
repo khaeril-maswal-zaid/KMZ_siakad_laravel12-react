@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('program_studis', function (Blueprint $table) {
+        Schema::create('absensis', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('fakultas_id')->constrained()->onDelete('cascade');
 
-            $table->string('nama_prodi')->unique();
-            $table->string('singkatan_prodi')->unique();
-            $table->string('kode_prodi')->unique();
+            $table->foreignId('jadwal_matkuls_id')->constrained()->onDelete('cascade');
+            $table->foreignId('mahasiswa_user_id')->constrained()->onDelete('cascade');
+            $table->string('keterangan')->max(1); // Format: "H", "A", "I", "S"
+            $table->string('pertemuan')->max(2);
 
             $table->timestamps();
         });
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('program_studis');
+        Schema::dropIfExists('absensis');
     }
 };

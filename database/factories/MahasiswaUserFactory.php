@@ -24,7 +24,7 @@ class MahasiswaUserFactory extends Factory
 
             'nim' => $this->faker->unique()->numerify('2300###'),
             'kelas' => $this->faker->randomElement(['A', 'B', 'C', 'D', 'E']),
-            'angkatan' => $this->faker->year(),
+            'angkatan' => $this->faker->randomElement([2020, 2021, 2022, 2023, 2024, 2025]),
             'nik' => $this->faker->numerify('##############'),
             'jenis_kelamin' => $this->faker->randomElement(['L', 'P']),
             'tempat_lahir' => $this->faker->city(),
