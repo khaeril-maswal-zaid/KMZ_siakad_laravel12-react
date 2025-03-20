@@ -26,14 +26,17 @@ Route::middleware(['auth', 'verified', 'ruleUser:mahasiswa'])->group(function ()
 
 
 // ----------------- START DOSEN AREA -------------------------------------------------
-
 Route::middleware(['auth', 'verified', 'ruleUser:dosen'])->group(function () {
     Route::get('/dosen', [DosenUserController::class, 'index'])->name('dosen.index');
     Route::get('/jadwal-mengajar', [JadwalMatkulController::class, 'mengajar'])->name('jadwalperkuliahan.mengajar');
 
+    Route::get('/nilai-mahaiswa/paramsession', [NilaiMahasiswaController::class, 'paramNilaiSession'])->name('nilaimahasiswa.paramSession');
+    Route::get('/nilai-mahaiswa', [NilaiMahasiswaController::class, 'index'])->name('nilaimahasiswa.index');
     Route::get('/nilai-mahaiswa/create', [NilaiMahasiswaController::class, 'create'])->name('nilaimahasiswa.create');
+    Route::post('/nilai-mahaiswa/create', [NilaiMahasiswaController::class, 'store'])->name('nilaimahasiswa.store');
 
-    //HARUS POST, INI SEMENTARA
+    Route::get('/absensi-perkuliahan/paramsession', [AbsensiController::class, 'paramAbsensiSession'])->name('absensi.paramSession');
+    Route::get('/absensi-perkuliahan', [AbsensiController::class, 'index'])->name('absensi.index');
     Route::get('/absensi-perkuliahan/create', [AbsensiController::class, 'create'])->name('absensi.create');
     Route::post('/absensi-perkuliahan/store', [AbsensiController::class, 'store'])->name('absensi.store');
 });

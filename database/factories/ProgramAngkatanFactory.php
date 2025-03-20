@@ -23,7 +23,7 @@ class ProgramAngkatanFactory extends Factory
             'program_studi_id' => ProgramStudi::inRandomOrder()->first()->id,
             'mata_kuliah_id' => MataKuliah::inRandomOrder()->first()->id,
             'semester' => $this->faker->randomElement([1, 2, 3, 4, 5, 6, 7, 8]),
-            'angkatan' => $this->faker->randomElement([2020, 2021, 2022, 2023, 2024, 2025]),
+            'angkatan' => $this->faker->randomElement([2021, 2022, 2023, 2024, 2025]),
         ];
     }
 }

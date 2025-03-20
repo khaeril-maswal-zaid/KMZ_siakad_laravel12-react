@@ -18,7 +18,7 @@ class MataKuliahFactory extends Factory
     public function definition(): array
     {
         return [
-            'program_studi_id' => ProgramStudi::inRandomOrder()->first()->id ?? ProgramStudi::factory()->create()->id,
+            'program_studi_id' => ProgramStudi::inRandomOrder()->first()->id,
             'kode_matkul' => $this->faker->unique()->bothify('MK###'),
             'nama_matkul' => $this->faker->words(mt_rand(1, 2), true),
             'singkatan_matkul' => $this->faker->words(1, true),

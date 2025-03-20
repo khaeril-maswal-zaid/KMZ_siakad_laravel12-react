@@ -13,12 +13,21 @@ use Inertia\Inertia;
 
 class JadwalMatkulController extends Controller
 {
+    private $tahunAjaran;
+
+    public function __construct()
+    {
+        $tahunAjaran = Konfigurasi::select(['tahun_ajar'])->first();
+        $this->tahunAjaran = $tahunAjaran->tahun_ajar;
+    }
 
     /**
      * Show the form for creating a new resource.
      */
     public function index(Request $request)
     {
+        $request->session()->forget(['redAngkatan']);
+
         // Ambil user yang sedang login
         $user = Auth::user();
 
@@ -26,13 +35,6 @@ class JadwalMatkulController extends Controller
         $prodiFromAdmin = $user->adminProdi->program_studi_id;
 
         $data = [
-            'fakultasProdi' => ProgramStudi::select(['fakultas_id', 'nama_prodi'])
-                ->with('fakultas:id,nama_fakultas')
-                ->where('id', $prodiFromAdmin)
-                ->first(),
-
-            'tahunAjaran' => Konfigurasi::select(['tahun_ajar', 'semester'])->first(),
-
             'resulstApiJadwal' => JadwalMatkul::select(['program_angkatan_id', 'dosen_user_id', 'hari', 'waktu', 'ruangan', 'kelas'])
                 ->whereHas('programAngkatan', function ($query) use ($request, $prodiFromAdmin) {
                     $query->where('program_studi_id', $prodiFromAdmin)->where('angkatan', $request->angkatan);
@@ -68,28 +70,30 @@ class JadwalMatkulController extends Controller
         // Ambil program_studi_id dari relasi adminProdi
         $prodiFromAdmin = $user->adminProdi->program_studi_id;
 
-        $matkulProgram = ProgramAngkatan::select(['id', 'mata_kuliah_id'])
-            ->with('mataKuliah:id,sks,nama_matkul')
-            ->where('program_studi_id', $prodiFromAdmin)
-            ->where('semester', $request->query('semester'));
+        //--------------------------------------------------------------------------------
+        $semester = $request->query('semester');
 
-        // Ambil tahun terbaru
-        $tahunTerbaru = $matkulProgram->max('angkatan');
+        list($tahunAwal, $tahunAkhir) = explode('/', $this->tahunAjaran);
+        $tahunAwal = (int)$tahunAwal;
+
+        $angkatan = ($semester <= 2) ? $tahunAwal : $tahunAwal - ceil(($semester - 2) / 2);
+        $request->session()->put('redAngkatan', $angkatan);
+        //-----------------------------------------------------------------------------
 
         $data = [
-            'fakultasProdi' => ProgramStudi::select(['fakultas_id', 'nama_prodi'])
-                ->with('fakultas:id,nama_fakultas')
-                ->where('id', $prodiFromAdmin)
-                ->first(),
-
-            'tahunAjaran' => Konfigurasi::select(['tahun_ajar', 'semester'])->first(),
-
+            'angkatan' =>  $angkatan,
             'dosens' => DosenUser::select(['id', 'user_id', 'nidn'])
                 ->with('user:id,name')
                 ->where('program_studi_id', $prodiFromAdmin)
                 ->get(),
 
-            'resultApiMatkuls' =>  $matkulProgram->where('angkatan', $tahunTerbaru)->get(),
+            'resultApiMatkuls' =>  ProgramAngkatan::select(['id', 'mata_kuliah_id'])
+                ->with('mataKuliah:id,sks,nama_matkul')
+                ->where('program_studi_id', $prodiFromAdmin)
+                ->where('angkatan',  $angkatan)
+                ->where('semester', $request->query('semester'))
+                ->get(),
+
 
             'resultApijadwalMatkul' => JadwalMatkul::select(['id', 'program_angkatan_id', 'dosen_user_id', 'hari', 'waktu', 'ruangan', 'kelas'])
                 ->whereHas('programAngkatan', function ($query) use ($request, $prodiFromAdmin) {
@@ -102,7 +106,7 @@ class JadwalMatkulController extends Controller
                     'programAngkatan:id,mata_kuliah_id',
                     'programAngkatan.mataKuliah:id,nama_matkul',
                 ])
-                ->where('tahun_ajaran', $request->tahunAjaran)
+                ->where('tahun_ajaran', $this->tahunAjaran)
                 ->where('kelas', $request->kelas)
                 ->get(),
         ];
@@ -120,21 +124,26 @@ class JadwalMatkulController extends Controller
             'schedules.*.waktu' => 'required|string',
             'schedules.*.ruangan' => 'required|string',
             'schedules.*.kelas' => 'required|string',
-            'schedules.*.tahun_ajaran' => 'required|string',
 
             // Validasi kombinasi unik
             'schedules.*' => [
                 function ($attribute, $value, $fail) {
                     $exists = JadwalMatkul::where('program_angkatan_id', $value['program_angkatan_id'])
-                        ->where('tahun_ajaran', $value['tahun_ajaran'])
+                        ->where('tahun_ajaran', $this->tahunAjaran)
                         ->where('kelas', $value['kelas'])
                         ->exists();
 
                     if ($exists) {
-                        $fail("Jadwal dengan program angkatan {$value['program_angkatan_id']}, tahun ajaran {$value['tahun_ajaran']}, dan kelas {$value['kelas']} sudah ada.");
+                        $fail("Jadwal dengan program angkatan {$value['program_angkatan_id']}, tahun ajaran {$this->tahunAjaran}, dan kelas {$value['kelas']} sudah ada.");
                     }
                 }
             ]
+        ], [
+            'schedules.*.dosen.required'       => 'Wajib menentukan dosen !',
+            'schedules.*.hari.required'       => 'Wajib memilih hari !',
+            'schedules.*.waktu.required'       => 'Waktu mengajar wajib diisi !',
+            'schedules.*.ruangan.required'       => 'Ruangan  mengajar wajib diisi !',
+            'schedules.*.kelas.required'       => 'Wajib menentukan kelas !',
         ]);
 
         foreach ($validatedData['schedules'] as $schedule) {
@@ -145,11 +154,12 @@ class JadwalMatkulController extends Controller
                 'waktu' => $schedule['waktu'],
                 'ruangan' => $schedule['ruangan'],
                 'kelas' => $schedule['kelas'],
-                'tahun_ajaran' => $schedule['tahun_ajaran'],
+                'tahun_ajaran' => $this->tahunAjaran,
             ]);
         }
 
-        return to_route('jadwalperkuliahan.index');
+        $request->session()->flash('message', 'Entri jadwal perkuliahan berhasil !');
+        return redirect()->route('jadwalperkuliahan.index', "angkatan=" . $request->session()->get('redAngkatan') . "&kelas=" . $schedule['kelas']);
     }
 
     /**
@@ -167,6 +177,12 @@ class JadwalMatkulController extends Controller
             'schedules.*.ruangan' => 'required|string',
             'schedules.*.kelas' => 'required|string',
             'schedules.*.tahun_ajaran' => 'required|string',
+        ], [
+            'schedules.*.dosen.required'       => 'Wajib menentukan dosen saat update !',
+            'schedules.*.hari.required'       => 'Wajib memilih hari !',
+            'schedules.*.waktu.required'       => 'Waktu mengajar wajib diisi !',
+            'schedules.*.ruangan.required'       => 'Ruangan  mengajar wajib diisi !',
+            'schedules.*.kelas.required'       => 'Wajib menentukan kelas !',
         ]);
 
         foreach ($validatedData['schedules'] as $schedule) {
@@ -185,18 +201,18 @@ class JadwalMatkulController extends Controller
         return to_route('jadwalperkuliahan.index');
     }
 
-    public function mengajar()
+    public function mengajar(Request $request)
     {
-        $tahunAjaran = Konfigurasi::select(['tahun_ajar', 'semester'])->first();
+        $request->session()->forget(['paramNilaiSession', 'paramAbsensiSession']);
 
         $data = [
-            'jadwalMengajar' => JadwalMatkul::select(['program_angkatan_id', 'hari', 'waktu', 'ruangan', 'kelas'])
+            'jadwalMengajar' => JadwalMatkul::select(['id', 'program_angkatan_id', 'hari', 'waktu', 'ruangan', 'kelas'])
                 ->with([
                     'programAngkatan:id,mata_kuliah_id,angkatan',
                     'programAngkatan.mataKuliah:id,nama_matkul,sks',
                 ])
                 ->where('dosen_user_id', Auth::user()->dosen->id)
-                ->where('tahun_ajaran', $tahunAjaran->tahun_ajar)
+                ->where('tahun_ajaran', $this->tahunAjaran)
                 ->get(),
         ];
 

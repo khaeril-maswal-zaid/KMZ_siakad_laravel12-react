@@ -16,8 +16,10 @@ return new class extends Migration
 
             $table->foreignId('jadwal_matkuls_id')->constrained()->onDelete('cascade');
             $table->foreignId('mahasiswa_user_id')->constrained()->onDelete('cascade');
-            $table->string('keterangan')->max(1); // Format: "H", "A", "I", "S"
-            $table->string('pertemuan')->max(2);
+            $table->string('keterangan', 1)->nullable(); // Format: "H", "A", "I", "S"
+            $table->string('pertemuan', 2);
+
+            $table->unique(['jadwal_matkuls_id', 'mahasiswa_user_id', 'pertemuan']);
 
             $table->timestamps();
         });

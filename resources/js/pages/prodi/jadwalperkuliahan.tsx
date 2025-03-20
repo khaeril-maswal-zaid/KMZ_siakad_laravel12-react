@@ -11,7 +11,11 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function jadwalPerkuliahan() {
-    const { fakultasProdi, tahunAjaran, resulstApiJadwal, programAngkatan } = usePage().props;
+    const { konfigurasi, fakultasProdi, flash } = usePage<SharedData>().props;
+    const { resulstApiJadwal, programAngkatan } = usePage().props;
+
+    const [showAlert, setShowAlert] = useState(true);
+
     const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i);
 
     const [selectedAngkatan, setSelectedAngkatan] = useState();
@@ -20,9 +24,6 @@ export default function jadwalPerkuliahan() {
     const handleAngkatanChange = (year) => {
         setSelectedAngkatan(year);
         handleFilter(year, selectedKelas);
-        // if (selectedKelas) {
-        //     handleFilter(year, selectedKelas);
-        // }
     };
 
     const handleKelasChange = (kelas) => {
@@ -40,6 +41,42 @@ export default function jadwalPerkuliahan() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
+                {flash.message && showAlert && (
+                    <div
+                        className="mb-4 flex items-center rounded-lg border border-green-200 bg-green-50 p-4 text-green-800 dark:bg-gray-800 dark:text-green-400"
+                        role="alert"
+                    >
+                        <svg
+                            className="h-4 w-4 shrink-0"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                        >
+                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 1 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                        </svg>
+                        <span className="sr-only">Info</span>
+                        <div className="ms-3 text-sm font-medium">{flash.message}</div>
+                        <button
+                            type="button"
+                            className="-mx-1.5 -my-1.5 ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-green-50 p-1.5 text-green-500 hover:bg-green-200 focus:ring-2 focus:ring-green-400 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"
+                            aria-label="Close"
+                            onClick={() => setShowAlert(false)}
+                        >
+                            <span className="sr-only">Close</span>
+                            <svg className="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                <path
+                                    stroke="currentColor"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                                />
+                            </svg>
+                        </button>
+                    </div>
+                )}
+
                 <div className="grid auto-rows-min gap-4 md:grid-cols-5">
                     <div className="relative w-full">
                         <select
@@ -100,7 +137,7 @@ export default function jadwalPerkuliahan() {
                             id="SelectTahunAjaran"
                             className="peer block w-full cursor-pointer appearance-none rounded-lg border border-gray-300 bg-gray-100 p-2.5 px-3 py-2 pt-5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                         >
-                            <option value="">{tahunAjaran?.tahun_ajar}</option>
+                            <option value="">{konfigurasi.tahun_ajar}</option>
                         </select>
 
                         <label
@@ -195,6 +232,35 @@ export default function jadwalPerkuliahan() {
                     </div>
                 </div>
                 <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 overflow-hidden rounded-md border md:min-h-min">
+                    <table className="mx-3 my-5 w-full text-xs">
+                        <tbody>
+                            <tr>
+                                <td className="w-28 pe-3 pb-1">Fakultas/ Prodi</td>
+                                <td className="w-2 pe-2 pb-1">:</td>
+                                <td className="pb-1">
+                                    {fakultasProdi?.fakultas?.nama_fakultas}/ {fakultasProdi?.nama_prodi}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="pe-3 pb-1">Tahun Ajaran</td>
+                                <td className="pe-2 pb-1">:</td>
+                                <td className="pb-1">{konfigurasi.tahun_ajar}</td>
+                            </tr>
+                            <tr>
+                                <td className="pe-3 pb-1">Angkatan/ Kelas</td>
+                                <td className="pe-2 pb-1">:</td>
+                                <td className="pb-1">
+                                    {selectedAngkatan}/ {selectedKelas}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="pe-3">Keti/ No. Hp</td>
+                                <td className="pe-2">:</td>
+                                <td className="">[BELUM]</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
                     <table className="w-full border-collapse border border-gray-300">
                         <thead>
                             <tr className="bg-gray-100">
@@ -203,32 +269,54 @@ export default function jadwalPerkuliahan() {
                                 <th className="w-1/12 border border-gray-300 px-4 py-1.5 text-xs">SKS</th>
                                 <th className="w-1/12 border border-gray-300 px-4 py-1.5 text-xs">Semester</th>
                                 <th className="w-1/5border border-gray-300 px-4 py-1.5 text-xs">Dosen</th>
-                                <th className="w-1/12 border border-gray-300 px-4 py-1.5 text-xs">Hari</th>
-                                <th className="w-1/12 border border-gray-300 px-4 py-1.5 text-xs">Waktu</th>
-                                <th className="w-1/12 border border-gray-300 px-4 py-1.5 text-xs">Ruangan</th>
+                                <th className="w-1/10 border border-gray-300 px-4 py-1.5 text-xs">Hari</th>
+                                <th className="w-1/10 border border-gray-300 px-4 py-1.5 text-xs">Waktu</th>
+                                <th className="w-1/10 border border-gray-300 px-4 py-1.5 text-xs">Ruangan</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {programAngkatan.map((data, index) => {
-                                const jadwal = resulstApiJadwal.find((item) => item.program_angkatan_id === data.id) || {};
+                            {programAngkatan.length > 0 ? (
+                                programAngkatan.map((data, index) => {
+                                    const jadwal = resulstApiJadwal.find((item) => item.program_angkatan_id === data.id) || {};
 
-                                return (
-                                    <tr key={data.id || index}>
-                                        <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs">{index + 1}</td>
-                                        <td className="border border-gray-300 px-2.5 py-1.5 text-xs">{data.mata_kuliah?.nama_matkul}</td>
-                                        <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs">{data.mata_kuliah?.sks}</td>
-                                        <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs">{data.semester}</td>
-                                        <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs">
-                                            {(jadwal.dosen?.user?.name || '') +
-                                                (jadwal.dosen?.user?.name && jadwal.dosen?.nidn ? ' _ ' : '') +
-                                                (jadwal.dosen?.nidn || '')}
-                                        </td>
-                                        <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs">{jadwal.hari}</td>
-                                        <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs">{jadwal.waktu}</td>
-                                        <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs">{jadwal.ruangan}</td>
-                                    </tr>
-                                );
-                            })}
+                                    return (
+                                        <tr key={data.id || index}>
+                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                                {index + 1}
+                                            </td>
+                                            <td className="border border-gray-300 px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-600">
+                                                {data.mata_kuliah?.nama_matkul}
+                                            </td>
+                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                                {data.mata_kuliah?.sks}
+                                            </td>
+                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                                {data.semester}
+                                            </td>
+                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                                {(jadwal.dosen?.user?.name || '') +
+                                                    (jadwal.dosen?.user?.name && jadwal.dosen?.nidn ? ' _ ' : '') +
+                                                    (jadwal.dosen?.nidn || '')}
+                                            </td>
+                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                                {jadwal.hari}
+                                            </td>
+                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                                {jadwal.waktu}
+                                            </td>
+                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                                {jadwal.ruangan}
+                                            </td>
+                                        </tr>
+                                    );
+                                })
+                            ) : (
+                                <tr>
+                                    <td colSpan={7} className="border border-gray-300 px-4 py-7 text-center text-sm">
+                                        Pilih Angkatan & kelas
+                                    </td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </div>

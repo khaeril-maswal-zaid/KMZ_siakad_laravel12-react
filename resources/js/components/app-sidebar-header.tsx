@@ -3,6 +3,8 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 import { usePage } from '@inertiajs/react';
 
 // Import semua header
+import Absensi from '@/components/kmz_headers/dosen_absensi';
+import Nilai from '@/components/kmz_headers/dosen_nilai';
 import Jadwal from '@/components/kmz_headers/prodi_jadwal';
 import JadwalAdd from '@/components/kmz_headers/prodi_jadwal_add';
 import Mahasiswa from '@/components/kmz_headers/prodi_mahasiswa';
@@ -12,6 +14,8 @@ const headerComponents = {
     'prodi/mahasiswa': Mahasiswa,
     'prodi/jadwalperkuliahan': Jadwal,
     'prodi/jadwalperkuliahanadd': JadwalAdd,
+    'dosen/absensiPerkuliahan': Absensi,
+    'dosen/nilaiMahasiswa': Nilai,
 };
 
 export function AppSidebarHeader({ breadcrumbs = [] }) {

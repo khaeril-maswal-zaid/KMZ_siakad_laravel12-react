@@ -23,8 +23,8 @@ class MahasiswaUserFactory extends Factory
             'program_studi_id' => ProgramStudi::inRandomOrder()->first()->id ?? ProgramStudi::factory()->create()->id,
 
             'nim' => $this->faker->unique()->numerify('2300###'),
-            'kelas' => $this->faker->randomElement(['A', 'B', 'C', 'D', 'E']),
-            'angkatan' => $this->faker->randomElement([2020, 2021, 2022, 2023, 2024, 2025]),
+            'kelas' => $this->faker->randomElement(['A', 'B', 'C']),
+            'angkatan' => $this->faker->randomElement([2023, 2024, 2025]),
             'nik' => $this->faker->numerify('##############'),
             'jenis_kelamin' => $this->faker->randomElement(['L', 'P']),
             'tempat_lahir' => $this->faker->city(),

@@ -20,7 +20,7 @@ class ProdiUserFactory extends Factory
     {
         return [
             'user_id' => User::factory()->create(['role' => 'prodi'])->id,
-            'program_studi_id' => ProgramStudi::inRandomOrder()->first()->id ?? ProgramStudi::factory()->create()->id,
+            'program_studi_id' => ProgramStudi::inRandomOrder()->first()->id,
 
             'nik' => $this->faker->optional()->numerify('##############'),
             'jenis_kelamin' => $this->faker->randomElement(['L', 'P']),
