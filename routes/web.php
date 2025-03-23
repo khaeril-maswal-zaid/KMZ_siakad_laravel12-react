@@ -60,6 +60,8 @@ Route::middleware(['auth', 'verified', 'ruleUser:prodi'])->group(function () {
     Route::post('/jadwal-perkuliahan/update', [JadwalMatkulController::class, 'update'])->name('jadwalperkuliahan.update');
 
     Route::get('/program-angkatan', [ProgramAngkatanController::class, 'index'])->name('programangkatan.index');
+    Route::get('/program-angkatan/{programAngkatan:angkatan}', [ProgramAngkatanController::class, 'index'])->name('programangkatan.showindex');
+
     Route::get('/data-mahasiswa', [MahaiswaUserController::class, 'index'])->name('mahasiswauser.index');
     Route::get('/daftar-mata-kuliah', [MataKuliahController::class, 'index'])->name('matakuliah.index');
 });

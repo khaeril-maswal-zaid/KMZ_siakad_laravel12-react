@@ -30,8 +30,6 @@ class JadwalMatkulController extends Controller
 
         // Ambil user yang sedang login
         $user = Auth::user();
-
-        // Ambil program_studi_id dari relasi adminProdi
         $prodiFromAdmin = $user->adminProdi->program_studi_id;
 
         $data = [
