@@ -8,6 +8,7 @@ import Nilai from '@/components/kmz_headers/dosen_nilai';
 import Jadwal from '@/components/kmz_headers/prodi_jadwal';
 import JadwalAdd from '@/components/kmz_headers/prodi_jadwal_add';
 import Mahasiswa from '@/components/kmz_headers/prodi_mahasiswa';
+import ProgramAngkatan from '@/components/kmz_headers/prodi_program_angkatan';
 
 // Mapping halaman ke komponen header
 const headerComponents = {
@@ -16,6 +17,7 @@ const headerComponents = {
     'prodi/jadwalperkuliahanadd': JadwalAdd,
     'dosen/absensiPerkuliahan': Absensi,
     'dosen/nilaiMahasiswa': Nilai,
+    'prodi/programangkatan': ProgramAngkatan,
 };
 
 export function AppSidebarHeader({ breadcrumbs = [] }) {

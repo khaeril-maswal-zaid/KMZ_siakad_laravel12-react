@@ -6,7 +6,7 @@ import { MoreHorizontal } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Program Angkatan',
+        title: 'Program Akademik Angkatan',
         href: '/program-angkatan',
     },
 ];

@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\ProgramAngkatan;
 use App\Http\Requests\StoreProgramAngkatanRequest;
 use App\Http\Requests\UpdateProgramAngkatanRequest;
+use App\Models\MataKuliah;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class ProgramAngkatanController extends Controller
 {
@@ -34,7 +36,7 @@ class ProgramAngkatanController extends Controller
             'prolan' => ProgramAngkatan::select(['angkatan'])
                 ->where('program_studi_id', $prodiFromAdmin)
                 ->orderBy('angkatan', 'desc')
-                ->limit(7)
+                ->limit(10)
                 ->distinct()
                 ->get(),
 
@@ -56,15 +58,28 @@ class ProgramAngkatanController extends Controller
      */
     public function create()
     {
-        //
+        // Ambil user yang sedang login
+        $user = Auth::user();
+        $prodiFromAdmin = $user->adminProdi->program_studi_id;
+
+        $data = [
+            'mataKuliahs' => MataKuliah::select(['id', 'kode_matkul', 'nama_matkul', 'singkatan_matkul', 'sks'])
+                ->where('program_studi_id', $prodiFromAdmin)
+                ->get()
+        ];
+
+        return Inertia::render('prodi/programangkatancreate', $data);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProgramAngkatanRequest $request)
+    public function store(Request $request)
     {
-        //
+        dd($request->all());
+
+        KASIK JUGA PESAN VALIDASI AGAR WAJIB MEMILIH MATKUL SEBELUM TEKAN SUBMIT
+        "Program akademik berhasil dibuat untuk angkatan ";
     }
 
     /**
