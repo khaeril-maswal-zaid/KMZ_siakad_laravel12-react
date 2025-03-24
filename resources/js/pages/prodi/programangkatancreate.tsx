@@ -19,7 +19,15 @@ export default function programAngkatanCreate() {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedMatkul, setSelectedMatkul] = useState([]);
     const [angkatan, setAngkatan] = useState('');
-    const [errorAngkatan, setErrorAngkatan] = useState(false); // 🔥 State untuk validasi angkatan
+    const [errorAngkatan, setErrorAngkatan] = useState(false); // untuk validasi angkatan
+    const [errorProdi, setErrorProdi] = useState(false); // untuk validasi pemilihan mata kuliah (prodi)
+
+    // Variabel untuk menyaring mata kuliah berdasarkan searchTerm
+    const filteredMataKuliahs = mataKuliahs.filter(
+        (matkul) =>
+            matkul.nama_matkul.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            matkul.kode_matkul.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
 
     // Tambah atau hapus mata kuliah ke daftar yang dipilih
     const handleSelectMatkul = (matkul) => {
@@ -38,11 +46,21 @@ export default function programAngkatanCreate() {
 
     // Fungsi submit
     const handleSubmit = () => {
+        let valid = true;
         if (!angkatan) {
-            setErrorAngkatan(true); // 🔥 Tampilkan error
-            return;
+            setErrorAngkatan(true);
+            valid = false;
+        } else {
+            setErrorAngkatan(false);
         }
-        setErrorAngkatan(false); // 🔥 Reset error jika sudah pilih
+        if (selectedMatkul.length === 0) {
+            setErrorProdi(true);
+            valid = false;
+        } else {
+            setErrorProdi(false);
+        }
+
+        if (!valid) return;
 
         router.post(route('programangkatan.store', { angkatan, selectedMatkul }));
     };
@@ -55,7 +73,8 @@ export default function programAngkatanCreate() {
                 <div className="container mx-auto p-4">
                     <div className="flex flex-col gap-4 md:flex-row">
                         {/* Panel Kiri: Daftar Mata Kuliah */}
-                        <div className="md:w-1/2">
+                        <div className={`md:w-1/2 ${errorProdi ? 'rounded border border-red-500' : ''}`}>
+                            {errorProdi && <div className="mb-2 rounded bg-red-100 p-2 text-xs text-red-500">Anda harus memilih mata kuliah!</div>}
                             <div className="mb-4">
                                 <input
                                     type="text"
@@ -69,7 +88,7 @@ export default function programAngkatanCreate() {
                             <div className="rounded bg-white p-4 shadow">
                                 <h2 className="mb-2 text-xl font-semibold">Daftar Mata Kuliah {fakultasProdi.nama_prodi}</h2>
                                 <ul>
-                                    {mataKuliahs.map((matkul) => (
+                                    {filteredMataKuliahs.map((matkul) => (
                                         <li key={matkul.id} className="flex items-center justify-between border-b pt-1.5 pb-0.5">
                                             <div>
                                                 <p className="text-sm font-medium">{matkul.nama_matkul}</p>
@@ -107,7 +126,7 @@ export default function programAngkatanCreate() {
                                             <option value="">Pilih Angkatan</option>
                                             <option value="2023">2023</option>
                                             <option value="2024">2024</option>
-                                            <option value="2025">2025</option>
+                                            <option value="2027">2027</option>
                                         </select>
                                         {errorAngkatan && <span className="mt-1 text-xs text-red-500">Wajib pilih angkatan dulu!</span>}
                                     </div>

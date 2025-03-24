@@ -76,10 +76,34 @@ class ProgramAngkatanController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
+        // Ambil user yang sedang login
+        $user = Auth::user();
+        $prodiFromAdmin = $user->adminProdi->program_studi_id;
 
-        KASIK JUGA PESAN VALIDASI AGAR WAJIB MEMILIH MATKUL SEBELUM TEKAN SUBMIT
-        "Program akademik berhasil dibuat untuk angkatan ";
+        // Validasi input dari request
+        $validated = $request->validate(
+            [
+                'angkatan'                      => 'required|integer',
+                'selectedMatkul'                => 'required|array',
+                'selectedMatkul.*.id'           => 'required|integer|exists:mata_kuliahs,id',
+                'selectedMatkul.*.semester'     => 'required|integer', // misalnya nilai A, B, dst.
+            ],
+            [
+                'selectedMatkul.*.id.required'       => 'Wajib memilih mata kuliah!'
+            ]
+        );
+
+        foreach ($validated['selectedMatkul'] as $item) {
+            ProgramAngkatan::create([
+                'program_studi_id' => $prodiFromAdmin,
+                'mata_kuliah_id' => $item['id'],
+                'semester' => $item['semester'],
+                'angkatan' => $validated['angkatan'],
+            ],);
+        }
+
+        $request->session()->flash('message', "Program akademik berhasil dibuat untuk angkatan " . $validated['angkatan']);
+        return redirect()->route('programangkatan.index');
     }
 
     /**
