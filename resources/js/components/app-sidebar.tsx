@@ -21,8 +21,8 @@ const getMainNavItems = (auth: SharedData['auth']): NavItem[] => {
 
     const roleMenus: Record<string, NavItem[]> = {
         prodi: [
-            { title: 'Data Nilai', url: route('datanilai.index'), icon: GraduationCap },
-            { title: 'Absensi Mahasiswa', url: '/', icon: ClipboardList },
+            { title: 'Data Nilai', url: route('jadwalperkuliahan.nilai'), icon: GraduationCap },
+            { title: 'Absensi Mahasiswa', url: route('jadwalperkuliahan.absensi'), icon: ClipboardList },
             { title: 'Jadwal Perkuliahan', url: route('jadwalperkuliahan.index'), icon: Calendar },
             { title: 'Program Angkatan', url: route('programangkatan.index'), icon: SquarePen },
             { title: 'Data Mahasiswa', url: route('mahasiswauser.index'), icon: Users },

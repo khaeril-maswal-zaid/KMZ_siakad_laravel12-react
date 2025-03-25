@@ -33,8 +33,6 @@ Route::middleware(['auth', 'verified', 'ruleUser:dosen'])->group(function () {
     Route::get('/nilai-mahaiswa/create', [NilaiMahasiswaController::class, 'create'])->name('nilaimahasiswa.create');
     Route::post('/nilai-mahaiswa/create', [NilaiMahasiswaController::class, 'store'])->name('nilaimahasiswa.store');
 
-    Route::get('/absensi-perkuliahan/paramsession', [AbsensiController::class, 'paramAbsensiSession'])->name('absensi.paramSession');
-    Route::get('/absensi-perkuliahan', [AbsensiController::class, 'index'])->name('absensi.index');
     Route::get('/absensi-perkuliahan/create', [AbsensiController::class, 'create'])->name('absensi.create');
     Route::post('/absensi-perkuliahan/store', [AbsensiController::class, 'store'])->name('absensi.store');
 });
@@ -52,12 +50,13 @@ Route::middleware(['auth', 'verified', 'ruleUser:keuangan'])->group(function () 
 Route::middleware(['auth', 'verified', 'ruleUser:prodi'])->group(function () {
     Route::get('/admin-prodi', [ProdiUserController::class, 'index'])->name('prodi.index');
 
-    Route::get('/data-nilai', [NilaiMahasiswaController::class, 'berlansung'])->name('datanilai.index');
-
     Route::get('/jadwal-perkuliahan', [JadwalMatkulController::class, 'index'])->name('jadwalperkuliahan.index');
     Route::get('/jadwal-perkuliahan/create', [JadwalMatkulController::class, 'create'])->name('jadwalperkuliahan.create');
     Route::post('/jadwal-perkuliahan', [JadwalMatkulController::class, 'store'])->name('jadwalperkuliahan.store');
     Route::post('/jadwal-perkuliahan/update', [JadwalMatkulController::class, 'update'])->name('jadwalperkuliahan.update');
+
+    Route::get('/jadwal-perkuliahan/data-nilai', [JadwalMatkulController::class, 'berlansung'])->defaults("key", "nilai")->name('jadwalperkuliahan.nilai');
+    Route::get('/jadwal-perkuliahan/absensi-mahasiswa', [JadwalMatkulController::class, 'berlansung'])->defaults("key", "absensi")->name('jadwalperkuliahan.absensi');
 
     Route::get('/program-angkatan', [ProgramAngkatanController::class, 'index'])->name('programangkatan.index');
     Route::get('/program-angkatan/create', [ProgramAngkatanController::class, 'create'])->name('programangkatan.create');
@@ -72,6 +71,9 @@ Route::middleware(['auth', 'verified', 'ruleUser:prodi'])->group(function () {
 Route::middleware(['auth', 'verified',])->group(function () {
     Route::get('/nilai-mahaiswa/paramsession', [NilaiMahasiswaController::class, 'paramNilaiSession'])->name('nilaimahasiswa.paramSession');
     Route::get('/nilai-mahaiswa', [NilaiMahasiswaController::class, 'index'])->name('nilaimahasiswa.index');
+
+    Route::get('/absensi-perkuliahan/paramsession', [AbsensiController::class, 'paramAbsensiSession'])->name('absensi.paramSession');
+    Route::get('/absensi-perkuliahan', [AbsensiController::class, 'index'])->name('absensi.index');
 });
 
 

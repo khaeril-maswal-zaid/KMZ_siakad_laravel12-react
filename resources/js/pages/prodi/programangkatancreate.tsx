@@ -86,7 +86,7 @@ export default function programAngkatanCreate() {
                                 />
                             </div>
                             <div className="rounded bg-white p-4 shadow">
-                                <h2 className="mb-2 text-xl font-semibold">Daftar Mata Kuliah {fakultasProdi.nama_prodi}</h2>
+                                <h2 className="mb-2 font-semibold">Daftar Mata Kuliah {fakultasProdi.nama_prodi}</h2>
                                 <ul>
                                     {filteredMataKuliahs.map((matkul) => (
                                         <li key={matkul.id} className="flex items-center justify-between border-b pt-1.5 pb-0.5">
@@ -116,7 +116,7 @@ export default function programAngkatanCreate() {
                         <div className="md:w-1/2">
                             <div className="rounded bg-white p-4 shadow">
                                 <div className="mb-3 flex items-center justify-between">
-                                    <h2 className="text-xl font-semibold">Program Akademik Angkatan</h2>
+                                    <h2 className="font-semibold">Program Akademik Angkatan</h2>
                                     <div className="flex flex-col text-xs">
                                         <select
                                             value={angkatan}

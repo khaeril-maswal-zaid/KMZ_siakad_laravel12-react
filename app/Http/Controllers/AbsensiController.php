@@ -29,8 +29,15 @@ class AbsensiController extends Controller
         }
 
         // Ambil user yang sedang login
-        $user = Auth::user();
-        $prodiFromAdmin = $user->dosen->program_studi_id;
+        switch (Auth::user()->role) {
+            case 'dosen':
+                $prodiFromAdmin = Auth::user()->dosen->program_studi_id;
+                break;
+
+            case 'prodi':
+                $prodiFromAdmin = Auth::user()->adminProdi->program_studi_id;
+                break;
+        }
 
         $data = [
             'jadwalMatkul' => JadwalMatkul::select('dosen_user_id', 'program_angkatan_id', 'kelas')

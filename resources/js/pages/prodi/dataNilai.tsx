@@ -11,7 +11,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function programAngkatan() {
     const { konfigurasi, fakultasProdi, flash, auth } = usePage<SharedData>().props;
-    const { berlansung } = usePage().props;
+    const { berlansung, key } = usePage().props;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -21,11 +21,14 @@ export default function programAngkatan() {
                     <table className="mx-3 my-5 w-full text-xs">
                         <tbody>
                             <tr>
-                                <td className="w-28 pe-3 pb-1">Fakultas/ Prodi</td>
+                                <td className="w-28 pe-3 pb-1">Fakultas</td>
                                 <td className="w-2 pe-2 pb-1">:</td>
-                                <td className="pb-1">
-                                    {fakultasProdi?.fakultas?.nama_fakultas}/ {fakultasProdi?.nama_prodi}
-                                </td>
+                                <td className="pb-1">{fakultasProdi?.fakultas?.nama_fakultas}</td>
+                            </tr>
+                            <tr>
+                                <td className="w-28 pe-3 pb-1">Prodi</td>
+                                <td className="w-2 pe-2 pb-1">:</td>
+                                <td className="pb-1">{fakultasProdi?.nama_prodi}</td>
                             </tr>
                             <tr>
                                 <td className="pe-3 pb-1">Tahun Ajaran</td>
@@ -78,18 +81,35 @@ export default function programAngkatan() {
                                             {data.program_angkatan?.semester}
                                         </td>
                                         <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
-                                            <button
-                                                onClick={() => {
-                                                    router.get(route('nilaimahasiswa.paramSession'), {
-                                                        angkatan: data.program_angkatan?.angkatan,
-                                                        kelas: data.kelas,
-                                                        idJadwal: data.id,
-                                                    });
-                                                }}
-                                                className="cursor-pointer rounded-md bg-green-600 px-2.5 py-1 text-xs text-white shadow-md transition-all duration-200 hover:bg-green-800 hover:shadow-lg focus:ring-3 focus:ring-green-300 focus:outline-none active:scale-95 active:bg-green-900"
-                                            >
-                                                Show Nilai
-                                            </button>
+                                            {key == 'nilai' && (
+                                                <button
+                                                    onClick={() => {
+                                                        router.get(route('nilaimahasiswa.paramSession'), {
+                                                            angkatan: data.program_angkatan?.angkatan,
+                                                            kelas: data.kelas,
+                                                            idJadwal: data.id,
+                                                        });
+                                                    }}
+                                                    className="cursor-pointer rounded-md bg-green-600 px-2.5 py-1 text-xs text-white shadow-md transition-all duration-200 hover:bg-green-800 hover:shadow-lg focus:ring-3 focus:ring-green-300 focus:outline-none active:scale-95 active:bg-green-900"
+                                                >
+                                                    Show Nilai
+                                                </button>
+                                            )}
+
+                                            {key != 'nilai' && (
+                                                <button
+                                                    onClick={() => {
+                                                        router.get(route('absensi.paramSession'), {
+                                                            angkatan: data.program_angkatan?.angkatan,
+                                                            kelas: data.kelas,
+                                                            idJadwal: data.id,
+                                                        });
+                                                    }}
+                                                    className="cursor-pointer rounded-md bg-green-600 px-2.5 py-1 text-xs text-white shadow-md transition-all duration-200 hover:bg-green-800 hover:shadow-lg focus:ring-3 focus:ring-green-300 focus:outline-none active:scale-95 active:bg-green-900"
+                                                >
+                                                    Show Absensi
+                                                </button>
+                                            )}
                                         </td>
                                     </tr>
                                 );
