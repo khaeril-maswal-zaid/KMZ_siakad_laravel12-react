@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\JadwalMatkul;
+use App\Models\Konfigurasi;
 use App\Models\MahasiswaUser;
 use App\Models\NilaiMahasiswa;
 use Inertia\Inertia;
@@ -14,7 +15,6 @@ class NilaiMahasiswaController extends Controller
     public function paramNilaiSession(Request $request)
     {
         $request->session()->put('paramNilaiSession', $request->all());
-
         return redirect()->route('nilaimahasiswa.index');
     }
 
@@ -28,9 +28,15 @@ class NilaiMahasiswaController extends Controller
             return redirect()->route('jadwalperkuliahan.mengajar');
         }
 
-        // Ambil user yang sedang login
-        $user = Auth::user();
-        $prodiFromAdmin = $user->dosen->program_studi_id;
+        switch (Auth::user()->role) {
+            case 'dosen':
+                $prodiFromAdmin = Auth::user()->dosen->program_studi_id;
+                break;
+
+            case 'prodi':
+                $prodiFromAdmin = Auth::user()->adminProdi->program_studi_id;
+                break;
+        }
 
         $data = [
             'jadwalMatkul' => JadwalMatkul::select('dosen_user_id', 'program_angkatan_id', 'kelas')
@@ -148,5 +154,32 @@ class NilaiMahasiswaController extends Controller
 
         $request->session()->flash('message', 'Entri nilai mahasiswa berhasil !');
         return redirect()->route('nilaimahasiswa.index');
+    }
+
+    public function berlansung()
+    {
+        // Ambil user yang sedang login
+        $user = Auth::user();
+        $prodiFromAdmin = $user->adminProdi->program_studi_id;
+
+        $tahunAjaran = Konfigurasi::select(['tahun_ajar'])->first()->tahun_ajar;
+
+        $data = [
+            'berlansung' => JadwalMatkul::select(['dosen_user_id', 'program_angkatan_id', 'kelas', 'id'])
+                ->whereHas('programAngkatan', function ($query) use ($prodiFromAdmin) {
+                    $query->where('program_studi_id', $prodiFromAdmin);
+                })
+                ->where('tahun_ajaran', $tahunAjaran)
+                ->with([
+                    'dosen:id,user_id,nidn', // Pastikan 'user_id' ikut diambil agar bisa dipakai di relasi berikutnya
+                    'dosen.user:id,name', // Ambil 'name' dari tabel users
+
+                    'programAngkatan:id,mata_kuliah_id,semester,angkatan',
+                    'programAngkatan.mataKuliah:id,nama_matkul,sks',
+                ])
+                ->get()
+        ];
+
+        return Inertia::render('prodi/dataNilai', $data);
     }
 }

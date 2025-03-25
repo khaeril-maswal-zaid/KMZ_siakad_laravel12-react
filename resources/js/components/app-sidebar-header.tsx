@@ -22,6 +22,7 @@ const headerComponents = {
 
 export function AppSidebarHeader({ breadcrumbs = [] }) {
     const { component } = usePage();
+    const { auth } = usePage<SharedData>().props;
 
     const HeaderComponent = headerComponents[component]; // Ambil komponen sesuai halaman
 
@@ -31,9 +32,8 @@ export function AppSidebarHeader({ breadcrumbs = [] }) {
                 <SidebarTrigger className="-ml-1" />
                 <Breadcrumbs breadcrumbs={breadcrumbs} />
             </div>
-
             {/* Render komponen header sesuai halaman */}
-            {HeaderComponent ? <HeaderComponent /> : null}
+            {HeaderComponent && component.split('/')[0] === auth.user?.role ? <HeaderComponent /> : null}
         </header>
     );
 }

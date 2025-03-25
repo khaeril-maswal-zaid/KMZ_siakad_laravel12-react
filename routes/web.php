@@ -30,8 +30,6 @@ Route::middleware(['auth', 'verified', 'ruleUser:dosen'])->group(function () {
     Route::get('/dosen', [DosenUserController::class, 'index'])->name('dosen.index');
     Route::get('/jadwal-mengajar', [JadwalMatkulController::class, 'mengajar'])->name('jadwalperkuliahan.mengajar');
 
-    Route::get('/nilai-mahaiswa/paramsession', [NilaiMahasiswaController::class, 'paramNilaiSession'])->name('nilaimahasiswa.paramSession');
-    Route::get('/nilai-mahaiswa', [NilaiMahasiswaController::class, 'index'])->name('nilaimahasiswa.index');
     Route::get('/nilai-mahaiswa/create', [NilaiMahasiswaController::class, 'create'])->name('nilaimahasiswa.create');
     Route::post('/nilai-mahaiswa/create', [NilaiMahasiswaController::class, 'store'])->name('nilaimahasiswa.store');
 
@@ -54,6 +52,8 @@ Route::middleware(['auth', 'verified', 'ruleUser:keuangan'])->group(function () 
 Route::middleware(['auth', 'verified', 'ruleUser:prodi'])->group(function () {
     Route::get('/admin-prodi', [ProdiUserController::class, 'index'])->name('prodi.index');
 
+    Route::get('/data-nilai', [NilaiMahasiswaController::class, 'berlansung'])->name('datanilai.index');
+
     Route::get('/jadwal-perkuliahan', [JadwalMatkulController::class, 'index'])->name('jadwalperkuliahan.index');
     Route::get('/jadwal-perkuliahan/create', [JadwalMatkulController::class, 'create'])->name('jadwalperkuliahan.create');
     Route::post('/jadwal-perkuliahan', [JadwalMatkulController::class, 'store'])->name('jadwalperkuliahan.store');
@@ -69,6 +69,10 @@ Route::middleware(['auth', 'verified', 'ruleUser:prodi'])->group(function () {
 });
 // ----------------- END PRODI AREA -------------------------------------------------
 
+Route::middleware(['auth', 'verified',])->group(function () {
+    Route::get('/nilai-mahaiswa/paramsession', [NilaiMahasiswaController::class, 'paramNilaiSession'])->name('nilaimahasiswa.paramSession');
+    Route::get('/nilai-mahaiswa', [NilaiMahasiswaController::class, 'index'])->name('nilaimahasiswa.index');
+});
 
 
 require __DIR__ . '/settings.php';

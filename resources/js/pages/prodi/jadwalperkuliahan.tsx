@@ -231,6 +231,7 @@ export default function jadwalPerkuliahan() {
                         </svg>
                     </div>
                 </div>
+
                 <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 overflow-hidden rounded-md border md:min-h-min">
                     <table className="mx-3 my-5 w-full text-xs">
                         <tbody>
