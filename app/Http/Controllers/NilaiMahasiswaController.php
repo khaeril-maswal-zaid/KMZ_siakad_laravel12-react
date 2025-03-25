@@ -115,17 +115,14 @@ class NilaiMahasiswaController extends Controller
     public function store(Request $request)
     {
         // Validasi input dari request
-        $validated = $request->validate(
-            [
-                'jadwal_matkuls_id'         => 'required|integer|exists:jadwal_matkuls,id',
-                'nilai'                     => 'required|array',
-                'nilai.*.mahasiswa_user_id' => 'required|integer|exists:users,id',
-                'nilai.*.nilai'             => 'required|string|max:1', // misalnya nilai A, B, dst.
-            ],
-            [
-                'nilai.*.nilai.required'       => 'Wajib mengisikan nilai mahasiswa !'
-            ]
-        );
+        $validated = $request->validate([
+            'jadwal_matkuls_id'         => 'required|integer|exists:jadwal_matkuls,id',
+            'nilai'                     => 'required|array',
+            'nilai.*.mahasiswa_user_id' => 'required|integer|exists:users,id',
+            'nilai.*.nilai'             => 'required|string|max:1', // misalnya nilai A, B, dst.
+        ], [
+            'nilai.*.nilai.required'       => 'Wajib mengisikan nilai mahasiswa !'
+        ]);
 
         // Ambil data dari session
         $paramNilaiSession = $request->session()->get('paramNilaiSession');

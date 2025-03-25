@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, usePage } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -10,10 +10,26 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function jadwalPerkuliahan() {
+export default function mataKuliah() {
     const { konfigurasi, fakultasProdi, flash, auth } = usePage<SharedData>().props;
-    const { mataKuliahs } = usePage().props;
+    const { mataKuliahs, errors } = usePage().props;
     const [showAlert, setShowAlert] = useState(true);
+
+    const { data, setData, post, processing, reset } = useForm({
+        kode: '',
+        nama: '',
+        singkatan: '',
+        sks: '',
+    });
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        post(route('matakuliah.store'), {
+            onSuccess: () => {
+                reset();
+            },
+        });
+    };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -55,6 +71,34 @@ export default function jadwalPerkuliahan() {
                     </div>
                 )}
 
+                {Object.keys(errors).length > 0 && (
+                    <div
+                        className="mb-4 flex rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800 dark:bg-gray-800 dark:text-red-400"
+                        role="alert"
+                    >
+                        <svg
+                            className="me-3 mt-[2px] inline h-4 w-4 shrink-0"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                        >
+                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                        </svg>
+                        <span className="sr-only">Danger</span>
+                        <div>
+                            <span className="font-medium">Jadwal Gagal Divalidasi:</span>
+                            <ul className="mt-1.5 list-inside list-disc">
+                                {Object.values(errors)
+                                    .flat()
+                                    .map((error, index) => (
+                                        <li key={index}>{error}</li>
+                                    ))}
+                            </ul>
+                        </div>
+                    </div>
+                )}
+
                 <div className="grid auto-rows-min gap-4 md:grid-cols-2">
                     <div className="border-sidebar-border/70 dark:border-sidebar-border rounded-md border">
                         <table className="w-full border-collapse border border-gray-300">
@@ -92,7 +136,78 @@ export default function jadwalPerkuliahan() {
                             </tbody>
                         </table>
                     </div>
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border rounded-md border"></div>
+                    <div className="border-sidebar-border/70 dark:border-sidebar-border rounded-md border bg-gray-50 p-4">
+                        <h2 className="mb-2 font-semibold">Tambah Mata Kuliah</h2>
+                        <hr className="mb-4 border border-b-gray-300" />
+
+                        <form onSubmit={handleSubmit}>
+                            <div className="mb-5">
+                                <label htmlFor="kode" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                                    Kode Mata Kuliah
+                                </label>
+                                <input
+                                    type="text"
+                                    name="kode"
+                                    value={data.kode}
+                                    onChange={(e) => setData('kode', e.target.value)}
+                                    className="block w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+                                    required
+                                />
+                            </div>
+
+                            <div className="mb-5">
+                                <label htmlFor="nama" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                                    Nama Mata Kuliah
+                                </label>
+                                <input
+                                    type="text"
+                                    name="nama"
+                                    value={data.nama}
+                                    onChange={(e) => setData('nama', e.target.value)}
+                                    className="block w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+                                    required
+                                />
+                            </div>
+
+                            <div className="mb-5">
+                                <label htmlFor="singkatan" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                                    Nama Singkatan Mata Kuliah
+                                </label>
+                                <input
+                                    type="text"
+                                    name="singkatan"
+                                    value={data.singkatan}
+                                    onChange={(e) => setData('singkatan', e.target.value)}
+                                    className="block w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+                                    required
+                                />
+                            </div>
+
+                            <div className="mb-6">
+                                <label htmlFor="singkatan" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                                    Jumlah SKS
+                                </label>
+                                <input
+                                    type="number"
+                                    name="sks"
+                                    value={data.sks}
+                                    onChange={(e) => setData('sks', e.target.value)}
+                                    className="block w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+                                    required
+                                />
+                            </div>
+
+                            <div className="">
+                                <button
+                                    type="submit"
+                                    className="cursor-pointer rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                                    disabled={processing}
+                                >
+                                    {processing ? 'Processing...' : 'Submit'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </AppLayout>

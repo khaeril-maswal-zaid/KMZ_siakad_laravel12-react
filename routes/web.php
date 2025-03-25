@@ -64,7 +64,9 @@ Route::middleware(['auth', 'verified', 'ruleUser:prodi'])->group(function () {
     Route::get('/program-angkatan/{programAngkatan:angkatan}', [ProgramAngkatanController::class, 'index'])->name('programangkatan.showindex');
 
     Route::get('/data-mahasiswa', [MahaiswaUserController::class, 'index'])->name('mahasiswauser.index');
+
     Route::get('/daftar-mata-kuliah', [MataKuliahController::class, 'index'])->name('matakuliah.index');
+    Route::post('/daftar-mata-kuliah/store', [MataKuliahController::class, 'store'])->name('matakuliah.store');
 });
 // ----------------- END PRODI AREA -------------------------------------------------
 
