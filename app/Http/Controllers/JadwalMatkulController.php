@@ -218,7 +218,7 @@ class JadwalMatkulController extends Controller
     }
 
 
-    public function berlansung($key)
+    public function terjadwal($key)
     {
         // Ambil user yang sedang login
         $user = Auth::user();
@@ -243,6 +243,32 @@ class JadwalMatkulController extends Controller
             'key' => $key //untuk control button
         ];
 
-        return Inertia::render('prodi/dataNilai', $data);
+        return Inertia::render('prodi/terjadwal', $data);
+    }
+
+    public function berlansung()
+    {
+        // Ambil user yang sedang login
+        $user = Auth::user();
+        $prodiFromAdmin = $user->adminProdi->program_studi_id;
+
+        $tahunAjaran = Konfigurasi::select(['tahun_ajar'])->first()->tahun_ajar;
+
+        $data = [
+            'berlansung' => JadwalMatkul::select(['dosen_user_id', 'program_angkatan_id', 'waktu', 'ruangan', 'hari', 'kelas', 'id'])
+                ->whereHas('programAngkatan', function ($query) use ($prodiFromAdmin) {
+                    $query->where('program_studi_id', $prodiFromAdmin);
+                })
+                ->where('tahun_ajaran', $tahunAjaran)
+                ->with([
+                    'dosen:id,user_id,nidn', // Pastikan 'user_id' ikut diambil agar bisa dipakai di relasi berikutnya
+                    'dosen.user:id,name', // Ambil 'name' dari tabel users
+
+                    'programAngkatan:id,mata_kuliah_id,semester,angkatan',
+                    'programAngkatan.mataKuliah:id,nama_matkul,sks',
+                ])
+                ->get(),
+        ];
+        return Inertia::render('prodi/jadwalperkuliahanberlansung', $data);
     }
 }

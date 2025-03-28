@@ -9,7 +9,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function programAngkatan() {
+export default function terjadwal() {
     const { konfigurasi, fakultasProdi, flash, auth } = usePage<SharedData>().props;
     const { berlansung, key } = usePage().props;
 

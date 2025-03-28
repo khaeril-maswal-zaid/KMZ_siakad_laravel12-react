@@ -55,8 +55,9 @@ Route::middleware(['auth', 'verified', 'ruleUser:prodi'])->group(function () {
     Route::post('/jadwal-perkuliahan', [JadwalMatkulController::class, 'store'])->name('jadwalperkuliahan.store');
     Route::post('/jadwal-perkuliahan/update', [JadwalMatkulController::class, 'update'])->name('jadwalperkuliahan.update');
 
-    Route::get('/jadwal-perkuliahan/data-nilai', [JadwalMatkulController::class, 'berlansung'])->defaults("key", "nilai")->name('jadwalperkuliahan.nilai');
-    Route::get('/jadwal-perkuliahan/absensi-mahasiswa', [JadwalMatkulController::class, 'berlansung'])->defaults("key", "absensi")->name('jadwalperkuliahan.absensi');
+    Route::get('/jadwal-perkuliahan/data-nilai', [JadwalMatkulController::class, 'terjadwal'])->defaults("key", "nilai")->name('jadwalperkuliahan.nilai');
+    Route::get('/jadwal-perkuliahan/absensi-mahasiswa', [JadwalMatkulController::class, 'terjadwal'])->defaults("key", "absensi")->name('jadwalperkuliahan.absensi');
+    Route::get('/jadwal-perkuliahan/berlansung', [JadwalMatkulController::class, 'berlansung'])->name('jadwalperkuliahan.berlansung');
 
     Route::get('/program-angkatan', [ProgramAngkatanController::class, 'index'])->name('programangkatan.index');
     Route::get('/program-angkatan/create', [ProgramAngkatanController::class, 'create'])->name('programangkatan.create');
