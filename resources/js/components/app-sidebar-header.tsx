@@ -7,6 +7,7 @@ import Absensi from '@/components/kmz_headers/dosen_absensi';
 import Nilai from '@/components/kmz_headers/dosen_nilai';
 import Jadwal from '@/components/kmz_headers/prodi_jadwal';
 import JadwalAdd from '@/components/kmz_headers/prodi_jadwal_add';
+import JadwalBerlansung from '@/components/kmz_headers/prodi_jadwal_berlansung';
 import Mahasiswa from '@/components/kmz_headers/prodi_mahasiswa';
 import ProgramAngkatan from '@/components/kmz_headers/prodi_program_angkatan';
 
@@ -15,6 +16,7 @@ const headerComponents = {
     'prodi/mahasiswa': Mahasiswa,
     'prodi/jadwalperkuliahan': Jadwal,
     'prodi/jadwalperkuliahanadd': JadwalAdd,
+    'prodi/jadwalperkuliahanberlansung': JadwalBerlansung,
     'dosen/absensiPerkuliahan': Absensi,
     'dosen/nilaiMahasiswa': Nilai,
     'prodi/programangkatan': ProgramAngkatan,
@@ -22,6 +24,7 @@ const headerComponents = {
 
 export function AppSidebarHeader({ breadcrumbs = [] }) {
     const { component } = usePage();
+    const { auth } = usePage<SharedData>().props;
 
     const HeaderComponent = headerComponents[component]; // Ambil komponen sesuai halaman
 
@@ -33,7 +36,7 @@ export function AppSidebarHeader({ breadcrumbs = [] }) {
             </div>
 
             {/* Render komponen header sesuai halaman */}
-            {HeaderComponent ? <HeaderComponent /> : null}
+            {HeaderComponent && component.split('/')[0] === auth.user?.role ? <HeaderComponent /> : null}
         </header>
     );
 }

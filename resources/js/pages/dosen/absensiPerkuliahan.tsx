@@ -71,16 +71,16 @@ export default function AbsensiPerkuliahan() {
                         </button>
                     </div>
 
-                    <table className="mx-3 my-5 w-10/12 text-xs">
+                    <table className="mx-3 my-5 text-xs">
                         <tbody>
                             <tr>
                                 <td className="w-28 pe-3 pb-1">Fakultas</td>
                                 <td className="w-2 pe-2 pb-1">:</td>
-                                <td className="w-1/6 pb-1">{fakultasProdi?.fakultas?.nama_fakultas}</td>
+                                <td className="w-auto pe-7 pb-1 whitespace-nowrap">{fakultasProdi?.fakultas?.nama_fakultas}</td>
 
                                 <td className="w-28 pe-3 pb-1">Mata Kuliah</td>
                                 <td className="w-2 pe-2 pb-1">:</td>
-                                <td className="pb-1">{jadwalMatkul.program_angkatan?.mata_kuliah?.nama_matkul}</td>
+                                <td className="pe-9 pb-1">{jadwalMatkul.program_angkatan?.mata_kuliah?.nama_matkul}</td>
                             </tr>
                             <tr>
                                 <td className="pe-3 pb-1">Program Studi</td>

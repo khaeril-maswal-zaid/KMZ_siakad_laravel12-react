@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\JadwalMatkul;
+use App\Models\Konfigurasi;
 use App\Models\MahasiswaUser;
 use App\Models\NilaiMahasiswa;
 use Inertia\Inertia;
@@ -14,7 +15,6 @@ class NilaiMahasiswaController extends Controller
     public function paramNilaiSession(Request $request)
     {
         $request->session()->put('paramNilaiSession', $request->all());
-
         return redirect()->route('nilaimahasiswa.index');
     }
 
@@ -28,9 +28,15 @@ class NilaiMahasiswaController extends Controller
             return redirect()->route('jadwalperkuliahan.mengajar');
         }
 
-        // Ambil user yang sedang login
-        $user = Auth::user();
-        $prodiFromAdmin = $user->dosen->program_studi_id;
+        switch (Auth::user()->role) {
+            case 'dosen':
+                $prodiFromAdmin = Auth::user()->dosen->program_studi_id;
+                break;
+
+            case 'prodi':
+                $prodiFromAdmin = Auth::user()->adminProdi->program_studi_id;
+                break;
+        }
 
         $data = [
             'jadwalMatkul' => JadwalMatkul::select('dosen_user_id', 'program_angkatan_id', 'kelas')
@@ -109,17 +115,14 @@ class NilaiMahasiswaController extends Controller
     public function store(Request $request)
     {
         // Validasi input dari request
-        $validated = $request->validate(
-            [
-                'jadwal_matkuls_id'         => 'required|integer|exists:jadwal_matkuls,id',
-                'nilai'                     => 'required|array',
-                'nilai.*.mahasiswa_user_id' => 'required|integer|exists:users,id',
-                'nilai.*.nilai'             => 'required|string|max:1', // misalnya nilai A, B, dst.
-            ],
-            [
-                'nilai.*.nilai.required'       => 'Wajib mengisikan nilai mahasiswa !'
-            ]
-        );
+        $validated = $request->validate([
+            'jadwal_matkuls_id'         => 'required|integer|exists:jadwal_matkuls,id',
+            'nilai'                     => 'required|array',
+            'nilai.*.mahasiswa_user_id' => 'required|integer|exists:users,id',
+            'nilai.*.nilai'             => 'required|string|max:1', // misalnya nilai A, B, dst.
+        ], [
+            'nilai.*.nilai.required'       => 'Wajib mengisikan nilai mahasiswa !'
+        ]);
 
         // Ambil data dari session
         $paramNilaiSession = $request->session()->get('paramNilaiSession');

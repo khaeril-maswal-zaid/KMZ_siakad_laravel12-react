@@ -85,7 +85,7 @@ export default function programAngkatan() {
                                 <tr className="bg-gray-100">
                                     <th className="border border-gray-300 px-4 py-1.5 text-xs">No</th>
                                     <th className="border border-gray-300 px-4 py-1.5 text-xs">Angkatan</th>
-                                    <th className="border border-gray-300 px-4 py-1.5 text-xs">Jumlah SKS</th>
+                                    <th className="border border-gray-300 px-4 py-1.5 text-xs">Total SKS</th>
                                     <th className="border border-gray-300 px-4 py-1.5 text-xs">Jumlah Matkul</th>
                                     <th className="border border-gray-300 px-4 py-1.5 text-xs">Aksi</th>
                                 </tr>
@@ -100,8 +100,12 @@ export default function programAngkatan() {
                                             <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
                                                 {item.angkatan}
                                             </td>
-                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600"></td>
-                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600"></td>
+                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                                {item.totalSks}
+                                            </td>
+                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                                {item.jumlahMatkul}
+                                            </td>
                                             <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
                                                 <DropdownMenu.Root>
                                                     <DropdownMenu.Trigger asChild>

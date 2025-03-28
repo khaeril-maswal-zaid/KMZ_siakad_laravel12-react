@@ -231,15 +231,19 @@ export default function jadwalPerkuliahan() {
                         </svg>
                     </div>
                 </div>
+
                 <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 overflow-hidden rounded-md border md:min-h-min">
                     <table className="mx-3 my-5 w-full text-xs">
                         <tbody>
                             <tr>
-                                <td className="w-28 pe-3 pb-1">Fakultas/ Prodi</td>
+                                <td className="w-28 pe-3 pb-1">Fakultas</td>
                                 <td className="w-2 pe-2 pb-1">:</td>
-                                <td className="pb-1">
-                                    {fakultasProdi?.fakultas?.nama_fakultas}/ {fakultasProdi?.nama_prodi}
-                                </td>
+                                <td className="pb-1">{fakultasProdi?.fakultas?.nama_fakultas}</td>
+                            </tr>
+                            <tr>
+                                <td className="w-28 pe-3 pb-1">Prodi</td>
+                                <td className="w-2 pe-2 pb-1">:</td>
+                                <td className="pb-1">{fakultasProdi?.nama_prodi}</td>
                             </tr>
                             <tr>
                                 <td className="pe-3 pb-1">Tahun Ajaran</td>
@@ -312,7 +316,7 @@ export default function jadwalPerkuliahan() {
                                 })
                             ) : (
                                 <tr>
-                                    <td colSpan={7} className="border border-gray-300 px-4 py-7 text-center text-sm">
+                                    <td colSpan={8} className="border border-gray-300 px-4 py-7 text-center text-sm">
                                         Pilih Angkatan & kelas
                                     </td>
                                 </tr>
