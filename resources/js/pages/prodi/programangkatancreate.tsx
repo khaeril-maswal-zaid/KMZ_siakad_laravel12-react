@@ -14,7 +14,9 @@ const semesters = [1, 2, 3, 4, 5, 6, 7, 8];
 
 export default function programAngkatanCreate() {
     const { konfigurasi, fakultasProdi, flash, auth } = usePage<SharedData>().props;
-    const { mataKuliahs } = usePage().props;
+    const { mataKuliahs, errors } = usePage().props;
+
+    const years = Array.from({ length: 2 }, (_, i) => new Date().getFullYear() + i);
 
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedMatkul, setSelectedMatkul] = useState([]);
@@ -70,6 +72,34 @@ export default function programAngkatanCreate() {
             <Head title={breadcrumbs[0].title} />
 
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
+                {Object.keys(errors).length > 0 && (
+                    <div
+                        className="mb-4 flex rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800 dark:bg-gray-800 dark:text-red-400"
+                        role="alert"
+                    >
+                        <svg
+                            className="me-3 mt-[2px] inline h-4 w-4 shrink-0"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                        >
+                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                        </svg>
+                        <span className="sr-only">Danger</span>
+                        <div>
+                            <span className="font-medium">Nilai Gagal Divalidasi:</span>
+                            <ul className="mt-1.5 list-inside list-disc">
+                                {Object.values(errors)
+                                    .flat()
+                                    .map((error, index) => (
+                                        <li key={index}>{error}</li>
+                                    ))}
+                            </ul>
+                        </div>
+                    </div>
+                )}
+
                 <div className="container mx-auto p-4">
                     <div className="flex flex-col gap-4 md:flex-row">
                         {/* Panel Kiri: Daftar Mata Kuliah */}
@@ -124,9 +154,11 @@ export default function programAngkatanCreate() {
                                             className={`rounded border px-2 py-1 ${errorAngkatan ? 'border-red-500' : 'border-gray-300'}`}
                                         >
                                             <option value="">Pilih Angkatan</option>
-                                            <option value="2023">2023</option>
-                                            <option value="2024">2024</option>
-                                            <option value="2027">2027</option>
+                                            {years.map((year) => (
+                                                <option key={year} value={year}>
+                                                    {year}
+                                                </option>
+                                            ))}
                                         </select>
                                         {errorAngkatan && <span className="mt-1 text-xs text-red-500">Wajib pilih angkatan dulu!</span>}
                                     </div>

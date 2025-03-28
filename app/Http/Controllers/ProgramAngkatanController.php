@@ -30,7 +30,8 @@ class ProgramAngkatanController extends Controller
             ->where('angkatan', $angkatan)
             ->with([
                 'mataKuliah:id,nama_matkul,kode_matkul,sks'
-            ]);
+            ])
+            ->orderBy('semester', 'asc');
 
         $data = [
             'prolan' => ProgramAngkatan::select(['angkatan'])
@@ -65,6 +66,7 @@ class ProgramAngkatanController extends Controller
         $data = [
             'mataKuliahs' => MataKuliah::select(['id', 'kode_matkul', 'nama_matkul', 'singkatan_matkul', 'sks'])
                 ->where('program_studi_id', $prodiFromAdmin)
+                ->orderBy('nama_matkul', 'asc')
                 ->get()
         ];
 
@@ -83,13 +85,15 @@ class ProgramAngkatanController extends Controller
         // Validasi input dari request
         $validated = $request->validate(
             [
-                'angkatan'                      => 'required|integer',
+                'angkatan'                      => 'required|integer|unique:program_angkatans,angkatan',
                 'selectedMatkul'                => 'required|array',
                 'selectedMatkul.*.id'           => 'required|integer|exists:mata_kuliahs,id',
                 'selectedMatkul.*.semester'     => 'required|integer', // misalnya nilai A, B, dst.
             ],
             [
-                'selectedMatkul.*.id.required'       => 'Wajib memilih mata kuliah!'
+                'selectedMatkul.*.id.required'       => 'Wajib memilih mata kuliah!',
+                'angkatan.required'       => 'Wajib memilih mata angkatan!',
+                'angkatan.unique'       => 'Program Akademik Angkatan ' . $request['angkatan'] . ' telah tersediah',
             ]
         );
 
