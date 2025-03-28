@@ -25,28 +25,43 @@ class ProgramAngkatanController extends Controller
         $user = Auth::user();
         $prodiFromAdmin = $user->adminProdi->program_studi_id;
 
-        $programAngkatan =   ProgramAngkatan::select(['id', 'angkatan', 'mata_kuliah_id', 'semester'])
+        $show =   ProgramAngkatan::select(['id', 'angkatan', 'mata_kuliah_id', 'semester'])
             ->where('program_studi_id', $prodiFromAdmin)
             ->where('angkatan', $angkatan)
             ->with([
                 'mataKuliah:id,nama_matkul,kode_matkul,sks'
             ]);
 
+        // 1) Ambil data Eloquent
+        $programAngkatan = ProgramAngkatan::select(['id', 'angkatan', 'mata_kuliah_id'])
+            ->where('program_studi_id', $prodiFromAdmin) // <- sesuaikan dengan variable
+            ->orderBy('angkatan', 'desc')
+            ->with([
+                'mataKuliah:id,sks' // minimal kita butuh kolom 'sks'
+            ])
+            ->get();
+
+        // 2) Kelompokkan berdasarkan 'angkatan'
+        $grouped = $programAngkatan->groupBy('angkatan')->map(function ($items, $angkatan) {
+            return [
+                'angkatan'      => $angkatan,
+                'jumlahMatkul' => $items->count(),
+                'totalSks'     => $items->sum(function ($item) {
+                    return $item->mataKuliah->sks;
+                }),
+            ];
+        });
+
         $data = [
-            'prolan' => ProgramAngkatan::select(['angkatan'])
-                ->where('program_studi_id', $prodiFromAdmin)
-                ->orderBy('angkatan', 'desc')
-                ->limit(10)
-                ->distinct()
-                ->get(),
+            'prolan' => $grouped->values(),
 
-            'details' =>  $programAngkatan->get(),
+            'details' =>  $show->get(),
 
-            'totalSks' => $programAngkatan
+            'totalSks' => $show
                 ->get()
                 ->sum(fn($item) => $item->mataKuliah->sks ?? 0),
 
-            'jumlahMatkul' =>  $programAngkatan->count(),
+            'jumlahMatkul' =>  $show->count(),
             'angkatan' => $angkatan
         ];
 
