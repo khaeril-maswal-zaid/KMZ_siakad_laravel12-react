@@ -1,19 +1,12 @@
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { useEffect, useRef } from 'react';
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Create Nilai Mahasiswa',
-        href: '/nilai-mahasiswa',
-    },
-];
-
 export default function NilaiMahasiswaAdd() {
-    // Ambil data dari page props
-    const { konfigurasi, fakultasProdi } = usePage<SharedData>().props;
-    const { paramNilaiSession, mahasiswas, nilaiSaved, jadwalMatkul } = usePage().props;
+    // Ambil data dari page props, gunakan dataNilai yang sudah menggabungkan data mahasiswa, nilai, dan absensi
+
+    const { konfigurasi, fakultasProdi, flash } = usePage<SharedData>().props;
+    const { paramNilaiSession, dataNilai, jadwalMatkul } = usePage().props;
 
     // Autofocus untuk input pertama
     const firstInputRef = useRef(null);
@@ -23,42 +16,40 @@ export default function NilaiMahasiswaAdd() {
         }
     }, []);
 
-    // Inisialisasi form dengan nilai default, jika ada nilai yang sudah tersimpan, gunakan nilai tersebut
+    // Inisialisasi form
     const { data, setData, post, processing, errors } = useForm({
         jadwal_matkuls_id: paramNilaiSession.idJadwal,
-        nilai: mahasiswas.map((mhs) => {
-            // Cari data nilai yang sudah tersimpan untuk mahasiswa ini
-            const saved = nilaiSaved.find((item) => item.mahasiswa_user_id === mhs.id);
-            return {
-                mahasiswa_user_id: mhs.id,
-                nilai: saved ? saved.nilai : '',
-            };
-        }),
+        // dataNilai sudah mengandung informasi lengkap per mahasiswa
+        dataNilai: dataNilai.map((mhs) => ({
+            mahasiswa_user_id: mhs.id,
+            nilai: mhs.nilai,
+            rekap_absensi: mhs.rekap_absensi,
+            // jika diperlukan, Anda juga bisa menambahkan properti nama dan nim di sini
+            user: mhs.user,
+            nim: mhs.nim,
+        })),
     });
 
-    // Fungsi untuk menangani perubahan select tiap mahasiswa
+    // Fungsi untuk menangani perubahan select nilai tiap mahasiswa
     const handleChange = (index, value) => {
-        const newNilai = [...data.nilai];
-        newNilai[index].nilai = value;
-        setData('nilai', newNilai);
+        const newDataNilai = [...data.dataNilai];
+        newDataNilai[index].nilai = value;
+        setData('dataNilai', newDataNilai);
     };
 
     // Submit form
     const handleSubmit = (e) => {
         e.preventDefault();
-        post(route('nilaimahasiswa.store')); // Pastikan route 'nilaimahasiswa.store' telah di-define di Laravel
+        post(route('nilaimahasiswa.store'));
     };
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout breadcrumbs={[{ title: 'Create Nilai Mahasiswa', href: '/nilai-mahasiswa' }]}>
             <Head title="Nilai Mahasiswa" />
 
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 {Object.keys(errors).length > 0 && (
-                    <div
-                        className="mb-4 flex rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800 dark:bg-gray-800 dark:text-red-400"
-                        role="alert"
-                    >
+                    <div className="mb-4 flex rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800" role="alert">
                         <svg
                             className="me-3 mt-[2px] inline h-4 w-4 shrink-0"
                             aria-hidden="true"
@@ -83,7 +74,8 @@ export default function NilaiMahasiswaAdd() {
                 )}
 
                 <form onSubmit={handleSubmit}>
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 overflow-hidden rounded-md border md:min-h-min">
+                    {/* Informasi Header */}
+                    <div className="border-sidebar-border/70 relative min-h-[100vh] flex-1 overflow-hidden rounded-md border md:min-h-min">
                         <table className="mx-3 my-5 w-10/12 text-xs">
                             <tbody>
                                 <tr>
@@ -127,6 +119,7 @@ export default function NilaiMahasiswaAdd() {
                             </tbody>
                         </table>
 
+                        {/* Tabel Input Nilai & Rekap Absensi */}
                         <table className="w-full border-collapse border border-gray-300">
                             <thead>
                                 <tr className="bg-gray-100">
@@ -154,16 +147,16 @@ export default function NilaiMahasiswaAdd() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {mahasiswas.map((mhs, index) => (
-                                    <tr key={mhs.id} className="text-sm">
-                                        <td className="border border-gray-300 py-1.5 text-center text-sm">{index + 1}</td>
-                                        <td className="border border-gray-300 px-2.5 py-1.5 text-sm">{mhs.user?.name}</td>
-                                        <td className="border border-gray-300 px-2 py-1.5 text-center text-sm">{mhs.nim}</td>
-                                        <td className="text-center text-sm">
+                                {data.dataNilai.map((item, index) => (
+                                    <tr key={item.mahasiswa_user_id} className="text-sm">
+                                        <td className="border border-gray-300 py-1.5 text-center">{index + 1}</td>
+                                        <td className="border border-gray-300 px-2.5 py-1.5">{item.user?.name}</td>
+                                        <td className="border border-gray-300 px-2 py-1.5 text-center">{item.nim}</td>
+                                        <td className="text-center">
                                             <select
                                                 ref={index === 0 ? firstInputRef : null}
-                                                className="w-full cursor-pointer rounded-lg border border-gray-300 p-1.5 px-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                                                value={data.nilai[index].nilai}
+                                                className="w-full cursor-pointer rounded-lg border border-gray-300 p-1.5 px-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                                value={item.nilai}
                                                 onChange={(e) => handleChange(index, e.target.value)}
                                             >
                                                 <option value="">Pilih Nilai</option>
@@ -174,11 +167,10 @@ export default function NilaiMahasiswaAdd() {
                                                 ))}
                                             </select>
                                         </td>
-                                        {/* Kolom Absensi hanya untuk tampilan */}
-                                        <td className="border border-gray-300 px-2 py-1.5 text-center text-sm"></td>
-                                        <td className="border border-gray-300 px-2 py-1.5 text-center text-sm"></td>
-                                        <td className="border border-gray-300 px-2 py-1.5 text-center text-sm"></td>
-                                        <td className="border border-gray-300 px-2 py-1.5 text-center text-sm"></td>
+                                        <td className="border border-gray-300 py-1.5 text-center">{item.rekap_absensi.H}</td>
+                                        <td className="border border-gray-300 py-1.5 text-center">{item.rekap_absensi.S}</td>
+                                        <td className="border border-gray-300 py-1.5 text-center">{item.rekap_absensi.I}</td>
+                                        <td className="border border-gray-300 py-1.5 text-center">{item.rekap_absensi.A}</td>
                                     </tr>
                                 ))}
                             </tbody>

@@ -12,15 +12,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function AbsensiPerkuliahan() {
     const { konfigurasi, fakultasProdi, flash } = usePage<SharedData>().props;
-    const { mahasiswas, absensi, jadwalMatkul, paramAbsensiSession } = usePage().props;
-
-    // Buat 'dictionary' dengan key: "userId-pertemuan"
-    const absensiMap = {};
-    absensi.forEach((item) => {
-        // contoh key: "262-1", "346-1", dst
-        const key = `${item.mahasiswa_user_id}-${item.pertemuan}`;
-        absensiMap[key] = item.keterangan;
-    });
+    const { dataAbsensi, jadwalMatkul, paramAbsensiSession } = usePage().props;
 
     const [showAlert, setShowAlert] = useState(true);
 
@@ -139,7 +131,6 @@ export default function AbsensiPerkuliahan() {
                                         {index + 1}
                                     </th>
                                 ))}
-
                                 <th className="w-10 border border-gray-300 py-2 text-xs">Hadir</th>
                                 <th className="w-10 border border-gray-300 py-2 text-xs">Sakit</th>
                                 <th className="w-10 border border-gray-300 py-2 text-xs">Izin</th>
@@ -147,31 +138,22 @@ export default function AbsensiPerkuliahan() {
                             </tr>
                         </thead>
                         <tbody>
-                            {mahasiswas.map((mhs, index) => (
+                            {dataAbsensi.map((mhs, index) => (
                                 <tr key={mhs.id} className="text-sm">
                                     <td className="border border-gray-300 py-1.5 text-center text-xs">{index + 1}</td>
                                     <td className="border border-gray-300 px-2.5 py-1.5 text-xs">{mhs.user?.name}</td>
                                     <td className="border border-gray-300 px-2 py-1.5 text-center text-xs">{mhs.nim}</td>
-
-                                    {/* Asumsikan kita punya 16 pertemuan */}
-                                    {[...Array(16)].map((_, i) => {
-                                        const pertemuan = i + 1;
-                                        // key untuk mencari di absensiMap
-                                        const key = `${mhs.user_id}-${pertemuan}`;
-
-                                        // ambil keterangan
-                                        const keterangan = absensiMap[key] || ''; // kalau tidak ada, kosong
-                                        return (
-                                            <td key={pertemuan} className="border border-gray-300 py-1.5 text-center text-xs">
-                                                {keterangan}
-                                            </td>
-                                        );
-                                    })}
-
-                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-xs"></td>
-                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-xs"></td>
-                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-xs"></td>
-                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-xs"></td>
+                                    {/* Tampilkan data per pertemuan */}
+                                    {[...Array(16)].map((_, i) => (
+                                        <td key={i + 1} className="border border-gray-300 py-1.5 text-center text-xs">
+                                            {mhs.absensi[i + 1]}
+                                        </td>
+                                    ))}
+                                    {/* Tampilkan rekap */}
+                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-xs">{mhs.rekap_absensi.H}</td>
+                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-xs">{mhs.rekap_absensi.S}</td>
+                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-xs">{mhs.rekap_absensi.I}</td>
+                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-xs">{mhs.rekap_absensi.A}</td>
                                 </tr>
                             ))}
                         </tbody>

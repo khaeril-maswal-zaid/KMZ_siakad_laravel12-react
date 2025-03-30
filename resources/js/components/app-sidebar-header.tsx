@@ -8,6 +8,7 @@ import Nilai from '@/components/kmz_headers/dosen_nilai';
 import Jadwal from '@/components/kmz_headers/prodi_jadwal';
 import JadwalAdd from '@/components/kmz_headers/prodi_jadwal_add';
 import JadwalBerlansung from '@/components/kmz_headers/prodi_jadwal_berlansung';
+import Terjadwal from '@/components/kmz_headers/prodi_jadwal_terjadwal';
 import Mahasiswa from '@/components/kmz_headers/prodi_mahasiswa';
 import ProgramAngkatan from '@/components/kmz_headers/prodi_program_angkatan';
 
@@ -17,6 +18,7 @@ const headerComponents = {
     'prodi/jadwalperkuliahan': Jadwal,
     'prodi/jadwalperkuliahanadd': JadwalAdd,
     'prodi/jadwalperkuliahanberlansung': JadwalBerlansung,
+    'prodi/jadwalperkuliahanterjadwal': Terjadwal,
     'dosen/absensiPerkuliahan': Absensi,
     'dosen/nilaiMahasiswa': Nilai,
     'prodi/programangkatan': ProgramAngkatan,

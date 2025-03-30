@@ -11,7 +11,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function berlansung() {
     const { konfigurasi, fakultasProdi, flash, auth } = usePage<SharedData>().props;
-    const { berlansung, key } = usePage().props;
+    const { berlansung, tahunAjaran } = usePage().props;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -33,7 +33,7 @@ export default function berlansung() {
                             <tr>
                                 <td className="pe-3 pb-1">Tahun Ajaran</td>
                                 <td className="pe-2 pb-1">:</td>
-                                <td className="pb-1">{konfigurasi.tahun_ajar}</td>
+                                <td className="pb-1">{tahunAjaran}</td>
                             </tr>
                         </tbody>
                     </table>

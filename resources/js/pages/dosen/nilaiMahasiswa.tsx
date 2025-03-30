@@ -12,7 +12,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function nilaiMahasiswa() {
     const { konfigurasi, fakultasProdi, flash } = usePage<SharedData>().props;
-    const { paramNilaiSession, mahasiswas, nilaiSaved, jadwalMatkul } = usePage().props;
+    const { paramNilaiSession, dataNilai, jadwalMatkul } = usePage().props;
 
     const [showAlert, setShowAlert] = useState(true);
 
@@ -133,18 +133,16 @@ export default function nilaiMahasiswa() {
                             </tr>
                         </thead>
                         <tbody>
-                            {mahasiswas.map((mhs, index) => (
+                            {dataNilai.map((mhs, index) => (
                                 <tr key={mhs.id} className="text-sm">
                                     <td className="border border-gray-300 py-1.5 text-center text-xs">{index + 1}</td>
                                     <td className="border border-gray-300 px-2.5 py-1.5 text-xs">{mhs.user?.name}</td>
                                     <td className="border border-gray-300 px-2 py-1.5 text-center text-xs">{mhs.nim}</td>
-                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-xs">
-                                        {nilaiSaved.find((item) => item.mahasiswa_user_id === mhs.id)?.nilai || '-'}{' '}
-                                    </td>
-                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-xs"></td>
-                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-xs"></td>
-                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-xs"></td>
-                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-xs"></td>
+                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-xs">{mhs.nilai} </td>
+                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-xs">{mhs.rekap_absensi.H}</td>
+                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-xs">{mhs.rekap_absensi.S}</td>
+                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-xs">{mhs.rekap_absensi.I}</td>
+                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-xs">{mhs.rekap_absensi.A}</td>
                                 </tr>
                             ))}
                         </tbody>

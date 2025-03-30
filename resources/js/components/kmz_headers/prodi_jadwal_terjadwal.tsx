@@ -1,8 +1,8 @@
-import { Link, router, usePage } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
-export default function JadwalBerlansung() {
-    const { histori } = usePage().props; // Ambil tahun ajaran dari backend
+export default function Absensi() {
+    const { histori, key } = usePage().props; // Ambil tahun ajaran dari backend
 
     const [selectedTahun, setSelectedTahun] = useState(histori.length > 0 ? histori[0].tahun_ajaran : '');
 
@@ -11,7 +11,11 @@ export default function JadwalBerlansung() {
         setSelectedTahun(value);
 
         // Kirim permintaan ke backend dengan parameter di URL
-        router.get(route('jadwalperkuliahan.berlansung'), { tahun_ajaran: value }, { preserveState: true, preserveScroll: true });
+        if (key == 'nilai') {
+            router.get(route('jadwalperkuliahan.absensi'), { tahun_ajaran: value }, { preserveState: true, preserveScroll: true });
+        } else if (key == 'absensi') {
+            router.get(route('jadwalperkuliahan.absensi'), { tahun_ajaran: value }, { preserveState: true, preserveScroll: true });
+        }
     };
 
     return (
@@ -31,13 +35,6 @@ export default function JadwalBerlansung() {
                     </option>
                 ))}
             </select>
-
-            <Link
-                href={route('jadwalperkuliahan.index')}
-                className="ms-2.5 cursor-pointer rounded-md bg-blue-700 px-3 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            >
-                Kembali
-            </Link>
         </div>
     );
 }

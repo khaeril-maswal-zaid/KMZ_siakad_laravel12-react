@@ -39,6 +39,63 @@ class AbsensiController extends Controller
                 break;
         }
 
+        //-----------------------------------------
+        // Ambil data absensi
+        $absensis = Absensi::select(['pertemuan', 'mahasiswa_user_id', 'keterangan', 'jadwal_matkuls_id'])
+            ->where('jadwal_matkuls_id', $paramAbsensiSession['idJadwal'])
+            ->get();
+
+        // Buat mapping absensi per mahasiswa per pertemuan
+        $absensiMap = [];
+        foreach ($absensis as $absensi) {
+            // Gunakan key dengan format "mahasiswa_user_id-pertemuan"
+            $key = $absensi->mahasiswa_user_id . '-' . $absensi->pertemuan;
+            $absensiMap[$key] = $absensi->keterangan;
+        }
+
+        // Hitung rekap absensi per mahasiswa
+        $rekapAbsensi = $absensis->groupBy('mahasiswa_user_id')->map(function ($absensiMahasiswa) {
+            return [
+                'H' => $absensiMahasiswa->where('keterangan', 'H')->count(),
+                'I' => $absensiMahasiswa->where('keterangan', 'I')->count(),
+                'S' => $absensiMahasiswa->where('keterangan', 'S')->count(),
+                'A' => $absensiMahasiswa->where('keterangan', 'A')->count(),
+            ];
+        });
+
+        // Ambil data mahasiswa (misalnya sudah include relasi user)
+        $mahasiswas = MahasiswaUser::select('id', 'user_id', 'nim')
+            ->with('user:id,name')
+            ->where('program_studi_id', $prodiFromAdmin)
+            ->where('angkatan', $paramAbsensiSession['angkatan'])
+            ->where('kelas', $paramAbsensiSession['kelas'])
+            ->orderBy('nim', 'asc')
+            ->get();
+
+        // Gabungkan data absensi (per pertemuan) dan rekap ke masing-masing mahasiswa
+        $dataAbsensi = $mahasiswas->map(function ($mhs) use ($absensiMap, $rekapAbsensi) {
+            // Siapkan array untuk absensi per pertemuan (misalnya untuk 16 pertemuan)
+            $absensiPertemuan = [];
+            for ($i = 1; $i <= 16; $i++) {
+                $key = $mhs->user_id . '-' . $i;
+                // Jika tidak ada data, anggap kosong atau sesuai aturan
+                $absensiPertemuan[$i] = isset($absensiMap[$key]) ? $absensiMap[$key] : '';
+            }
+            // Ambil rekap; jika tidak ada, set default 0
+            $rekap = $rekapAbsensi->get($mhs->user_id, [
+                'H' => 0,
+                'I' => 0,
+                'S' => 0,
+                'A' => 0,
+            ]);
+
+            // Gabungkan hasilnya ke object mahasiswa
+            $mhs->absensi = $absensiPertemuan;
+            $mhs->rekap_absensi = $rekap;
+            return $mhs;
+        });
+
+
         $data = [
             'jadwalMatkul' => JadwalMatkul::select('dosen_user_id', 'program_angkatan_id', 'kelas')
                 ->with([
@@ -51,18 +108,8 @@ class AbsensiController extends Controller
                 ->where('id', $paramAbsensiSession['idJadwal'])
                 ->first(),
 
-            'mahasiswas' => MahasiswaUser::select('id', 'user_id', 'nim')
-                ->with('user:id,name')
-                ->where('program_studi_id', $prodiFromAdmin)
-                ->where('angkatan', $paramAbsensiSession['angkatan'])
-                ->where('kelas', $paramAbsensiSession['kelas'])
-                ->get(),
-
-            'absensi' => Absensi::select(['pertemuan', 'mahasiswa_user_id', 'keterangan', 'jadwal_matkuls_id'])
-                ->where('jadwal_matkuls_id', $paramAbsensiSession['idJadwal'])
-                ->get(),
-
-            'paramAbsensiSession' => $paramAbsensiSession
+            'dataAbsensi' => $dataAbsensi,
+            'paramAbsensiSession' => $paramAbsensiSession,
         ];
 
         return Inertia::render('dosen/absensiPerkuliahan', $data);
@@ -101,6 +148,7 @@ class AbsensiController extends Controller
                 ->where('program_studi_id', $prodiFromAdmin)
                 ->where('angkatan', $paramAbsensiSession['angkatan'])
                 ->where('kelas', $paramAbsensiSession['kelas'])
+                ->orderBy('nim', 'asc')
                 ->get(),
 
             'absensi' => Absensi::select(['pertemuan', 'mahasiswa_user_id', 'keterangan', 'jadwal_matkuls_id'])

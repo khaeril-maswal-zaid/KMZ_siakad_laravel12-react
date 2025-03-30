@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Absensi;
 use App\Models\JadwalMatkul;
 use App\Models\Konfigurasi;
 use App\Models\MahasiswaUser;
@@ -38,6 +39,58 @@ class NilaiMahasiswaController extends Controller
                 break;
         }
 
+        // Query data mahasiswa
+        $mahasiswas = MahasiswaUser::select('id', 'user_id', 'nim')
+            ->with('user:id,name')
+            ->where('program_studi_id', $prodiFromAdmin)
+            ->where('angkatan', $paramNilaiSession['angkatan'])
+            ->where('kelas', $paramNilaiSession['kelas'])
+            ->orderBy('nim', 'asc')
+            ->get();
+
+        // Query data nilai final (misalnya huruf: A, B, C, dst)
+        $nilaiSaved = NilaiMahasiswa::select('mahasiswa_user_id', 'nilai')
+            ->where('jadwal_matkuls_id', $paramNilaiSession['idJadwal'])
+            ->get();
+
+        // Query data absensi
+        $absensis = Absensi::select('mahasiswa_user_id', 'keterangan', 'jadwal_matkuls_id')
+            ->where('jadwal_matkuls_id', $paramNilaiSession['idJadwal'])
+            ->get();
+
+        // Buat mapping nilai: key = mahasiswa_user_id, value = nilai (huruf)
+        $nilaiMap = [];
+        foreach ($nilaiSaved as $nilai) {
+            $nilaiMap[$nilai->mahasiswa_user_id] = $nilai->nilai;
+        }
+
+        // Hitung rekap absensi per mahasiswa, hanya menghitung jika keterangan ada (null tidak dihitung)
+        $rekapAbsensi = $absensis->groupBy('mahasiswa_user_id')->map(function ($absensiGroup) {
+            return [
+                'H' => $absensiGroup->where('keterangan', 'H')->count(),
+                'I' => $absensiGroup->where('keterangan', 'I')->count(),
+                'S' => $absensiGroup->where('keterangan', 'S')->count(),
+                'A' => $absensiGroup->where('keterangan', 'A')->count(),
+            ];
+        });
+
+        // Gabungkan nilai dan rekap absensi ke masing-masing mahasiswa
+        $dataNilai = $mahasiswas->map(function ($mhs) use ($nilaiMap, $rekapAbsensi) {
+            // Ambil nilai final, jika tidak ada set kosong
+            $nilai = $nilaiMap[$mhs->id] ?? '';
+            // Ambil rekap absensi untuk mahasiswa, default jika belum ada
+            $rekap = $rekapAbsensi->get($mhs->id, [
+                'H' => 0,
+                'S' => 0,
+                'I' => 0,
+                'A' => 0,
+            ]);
+
+            $mhs->nilai = $nilai;
+            $mhs->rekap_absensi = $rekap;
+            return $mhs;
+        });
+
         $data = [
             'jadwalMatkul' => JadwalMatkul::select('dosen_user_id', 'program_angkatan_id', 'kelas')
                 ->with([
@@ -50,19 +103,10 @@ class NilaiMahasiswaController extends Controller
                 ->where('id', $paramNilaiSession['idJadwal'])
                 ->first(),
 
-            'mahasiswas' => MahasiswaUser::select('id', 'user_id', 'nim')
-                ->with('user:id,name')
-                ->where('program_studi_id', $prodiFromAdmin)
-                ->where('angkatan', $paramNilaiSession['angkatan'])
-                ->where('kelas', $paramNilaiSession['kelas'])
-                ->orderBy('nim', 'asc')
-                ->get(),
 
             'paramNilaiSession' => $paramNilaiSession,
 
-            'nilaiSaved' => NilaiMahasiswa::select('mahasiswa_user_id', 'nilai')
-                ->where('jadwal_matkuls_id', $paramNilaiSession['idJadwal'])
-                ->get()
+            'dataNilai' => $dataNilai
         ];
 
         return Inertia::render('dosen/nilaiMahasiswa', $data);
@@ -78,9 +122,67 @@ class NilaiMahasiswaController extends Controller
             return redirect()->route('jadwalperkuliahan.mengajar');
         }
 
-        // Ambil user yang sedang login
-        $user = Auth::user();
-        $prodiFromAdmin = $user->dosen->program_studi_id;
+        switch (Auth::user()->role) {
+            case 'dosen':
+                $prodiFromAdmin = Auth::user()->dosen->program_studi_id;
+                break;
+
+            case 'prodi':
+                $prodiFromAdmin = Auth::user()->adminProdi->program_studi_id;
+                break;
+        }
+
+        // Query data mahasiswa
+        $mahasiswas = MahasiswaUser::select('id', 'user_id', 'nim')
+            ->with('user:id,name')
+            ->where('program_studi_id', $prodiFromAdmin)
+            ->where('angkatan', $paramNilaiSession['angkatan'])
+            ->where('kelas', $paramNilaiSession['kelas'])
+            ->orderBy('nim', 'asc')
+            ->get();
+
+        // Query data nilai final (misalnya huruf: A, B, C, dst)
+        $nilaiSaved = NilaiMahasiswa::select('mahasiswa_user_id', 'nilai')
+            ->where('jadwal_matkuls_id', $paramNilaiSession['idJadwal'])
+            ->get();
+
+        // Query data absensi
+        $absensis = Absensi::select('mahasiswa_user_id', 'keterangan', 'jadwal_matkuls_id')
+            ->where('jadwal_matkuls_id', $paramNilaiSession['idJadwal'])
+            ->get();
+
+        // Buat mapping nilai: key = mahasiswa_user_id, value = nilai (huruf)
+        $nilaiMap = [];
+        foreach ($nilaiSaved as $nilai) {
+            $nilaiMap[$nilai->mahasiswa_user_id] = $nilai->nilai;
+        }
+
+        // Hitung rekap absensi per mahasiswa, hanya menghitung jika keterangan ada (null tidak dihitung)
+        $rekapAbsensi = $absensis->groupBy('mahasiswa_user_id')->map(function ($absensiGroup) {
+            return [
+                'H' => $absensiGroup->where('keterangan', 'H')->count(),
+                'I' => $absensiGroup->where('keterangan', 'I')->count(),
+                'S' => $absensiGroup->where('keterangan', 'S')->count(),
+                'A' => $absensiGroup->where('keterangan', 'A')->count(),
+            ];
+        });
+
+        // Gabungkan nilai dan rekap absensi ke masing-masing mahasiswa
+        $dataNilai = $mahasiswas->map(function ($mhs) use ($nilaiMap, $rekapAbsensi) {
+            // Ambil nilai final, jika tidak ada set kosong
+            $nilai = $nilaiMap[$mhs->id] ?? '';
+            // Ambil rekap absensi untuk mahasiswa, default jika belum ada
+            $rekap = $rekapAbsensi->get($mhs->id, [
+                'H' => 0,
+                'S' => 0,
+                'I' => 0,
+                'A' => 0,
+            ]);
+
+            $mhs->nilai = $nilai;
+            $mhs->rekap_absensi = $rekap;
+            return $mhs;
+        });
 
         $data = [
             'jadwalMatkul' => JadwalMatkul::select('dosen_user_id', 'program_angkatan_id', 'kelas')
@@ -94,34 +196,28 @@ class NilaiMahasiswaController extends Controller
                 ->where('id', $paramNilaiSession['idJadwal'])
                 ->first(),
 
-            'mahasiswas' => MahasiswaUser::select('id', 'user_id', 'nim')
-                ->with('user:id,name')
-                ->where('program_studi_id', $prodiFromAdmin)
-                ->where('angkatan', $paramNilaiSession['angkatan'])
-                ->where('kelas', $paramNilaiSession['kelas'])
-                ->orderBy('nim', 'asc')
-                ->get(),
 
             'paramNilaiSession' => $paramNilaiSession,
 
-            'nilaiSaved' => NilaiMahasiswa::select('mahasiswa_user_id', 'nilai')
-                ->where('jadwal_matkuls_id', $paramNilaiSession['idJadwal'])
-                ->get()
+            'dataNilai' => $dataNilai
         ];
 
         return Inertia::render('dosen/nilaiMahasiswaAdd', $data);
     }
 
+
     public function store(Request $request)
     {
+        // dd($request->all());
+
         // Validasi input dari request
         $validated = $request->validate([
             'jadwal_matkuls_id'         => 'required|integer|exists:jadwal_matkuls,id',
-            'nilai'                     => 'required|array',
-            'nilai.*.mahasiswa_user_id' => 'required|integer|exists:users,id',
-            'nilai.*.nilai'             => 'required|string|max:1', // misalnya nilai A, B, dst.
+            'dataNilai'                     => 'required|array',
+            'dataNilai.*.mahasiswa_user_id' => 'required|integer|exists:users,id',
+            'dataNilai.*.nilai'             => 'required|string|max:1', // misalnya nilai A, B, dst.
         ], [
-            'nilai.*.nilai.required'       => 'Wajib mengisikan nilai mahasiswa !'
+            'dataNilai.*.nilai.required'       => 'Wajib mengisikan nilai mahasiswa !'
         ]);
 
         // Ambil data dari session
@@ -137,7 +233,7 @@ class NilaiMahasiswaController extends Controller
         }
 
 
-        foreach ($validated['nilai'] as $item) {
+        foreach ($validated['dataNilai'] as $item) {
             NilaiMahasiswa::updateOrCreate(
                 [
                     'jadwal_matkuls_id' => $validated['jadwal_matkuls_id'],

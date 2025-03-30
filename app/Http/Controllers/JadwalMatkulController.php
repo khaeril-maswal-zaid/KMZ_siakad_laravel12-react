@@ -218,13 +218,15 @@ class JadwalMatkulController extends Controller
     }
 
 
-    public function terjadwal($key)
+    public function terjadwal(Request $request, $key)
     {
+
+        $tahunAjaran = $request->tahun_ajaran ?? Konfigurasi::value('tahun_ajar');
+
+
         // Ambil user yang sedang login
         $user = Auth::user();
         $prodiFromAdmin = $user->adminProdi->program_studi_id;
-
-        $tahunAjaran = Konfigurasi::select(['tahun_ajar'])->first()->tahun_ajar;
 
         $data = [
             'berlansung' => JadwalMatkul::select(['dosen_user_id', 'program_angkatan_id', 'kelas', 'id'])
@@ -240,19 +242,27 @@ class JadwalMatkulController extends Controller
                     'programAngkatan.mataKuliah:id,nama_matkul,sks',
                 ])
                 ->get(),
-            'key' => $key //untuk control button
+
+            'histori' => JadwalMatkul::select('tahun_ajaran')
+                ->distinct()
+                ->orderBy('tahun_ajaran', 'desc')
+                ->get(),
+
+            'key' => $key, //untuk control button
+            'tahunAjaran' => $tahunAjaran
         ];
 
-        return Inertia::render('prodi/terjadwal', $data);
+        return Inertia::render('prodi/jadwalperkuliahanterjadwal', $data);
     }
 
-    public function berlansung()
+    public function berlansung(Request $request)
     {
         // Ambil user yang sedang login
         $user = Auth::user();
         $prodiFromAdmin = $user->adminProdi->program_studi_id;
 
-        $tahunAjaran = Konfigurasi::select(['tahun_ajar'])->first()->tahun_ajar;
+        $tahunAjaran = $request->tahun_ajaran ?? Konfigurasi::value('tahun_ajar');
+
 
         $data = [
             'berlansung' => JadwalMatkul::select(['dosen_user_id', 'program_angkatan_id', 'waktu', 'ruangan', 'hari', 'kelas', 'id'])
@@ -268,6 +278,13 @@ class JadwalMatkulController extends Controller
                     'programAngkatan.mataKuliah:id,nama_matkul,sks',
                 ])
                 ->get(),
+
+            'histori' => JadwalMatkul::select('tahun_ajaran')
+                ->distinct()
+                ->orderBy('tahun_ajaran', 'desc')
+                ->get(),
+
+            'tahunAjaran' => $tahunAjaran
         ];
         return Inertia::render('prodi/jadwalperkuliahanberlansung', $data);
     }
