@@ -97,7 +97,7 @@ class AbsensiController extends Controller
 
 
         $data = [
-            'jadwalMatkul' => JadwalMatkul::select('dosen_user_id', 'program_angkatan_id', 'kelas')
+            'jadwalMatkul' => JadwalMatkul::select('dosen_user_id', 'tahun_ajaran', 'program_angkatan_id', 'kelas')
                 ->with([
                     'dosen:id,user_id,nidn', // Pastikan 'user_id' ikut diambil agar bisa dipakai di relasi berikutnya
                     'dosen.user:id,name', // Ambil 'name' dari tabel users
@@ -132,7 +132,7 @@ class AbsensiController extends Controller
         $prodiFromAdmin = $user->dosen->program_studi_id;
 
         $data = [
-            'jadwalMatkul' => JadwalMatkul::select('dosen_user_id', 'program_angkatan_id', 'kelas')
+            'jadwalMatkul' => JadwalMatkul::select('dosen_user_id', 'tahun_ajaran', 'program_angkatan_id', 'kelas')
                 ->with([
                     'dosen:id,user_id,nidn', // Pastikan 'user_id' ikut diambil agar bisa dipakai di relasi berikutnya
                     'dosen.user:id,name', // Ambil 'name' dari tabel users
@@ -191,7 +191,8 @@ class AbsensiController extends Controller
                         'pertemuan' => $pertemuan,
                     ],
                     [
-                        'keterangan' => $keterangan
+                        'keterangan' => $keterangan,
+                        'dosen_users_id' => Auth::user()->dosen->id
                     ]
                 );
             }

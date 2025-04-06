@@ -101,7 +101,7 @@ export default function nilaiMahasiswa() {
 
                                 <td className="pe-3 pb-1">Tahun Ajaran</td>
                                 <td className="pe-2 pb-1">:</td>
-                                <td className="pb-1">{konfigurasi.tahun_ajar}</td>
+                                <td className="pb-1">{jadwalMatkul.tahun_ajaran}</td>
                             </tr>
                         </tbody>
                     </table>

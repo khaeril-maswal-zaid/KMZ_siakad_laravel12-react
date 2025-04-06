@@ -10,6 +10,7 @@ class Absensi extends Model
         'jadwal_matkuls_id',
         'mahasiswa_user_id',
         'pertemuan',
-        'keterangan'
+        'keterangan',
+        'dosen_users_id'
     ];
 }

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('jadwal_matkuls_id')->constrained()->onDelete('cascade');
             $table->foreignId('mahasiswa_user_id')->constrained()->onDelete('cascade');
             $table->string('nilai', 1)->nullable();  // Format: "A", "B", "C", "D", "E"
+            $table->foreignId('dosen_users_id')->constrained()->onDelete('cascade');
 
             $table->unique(['jadwal_matkuls_id', 'mahasiswa_user_id']);
 

@@ -21,6 +21,8 @@ Route::get('/', function () {
 // ----------------- START MAHASISWA AREA -------------------------------------------------
 Route::middleware(['auth', 'verified', 'ruleUser:mahasiswa'])->group(function () {
     Route::get('/mahasiswa', [MahaiswaUserController::class, 'show'])->name('mahasiswa.index'); //Sengaja beda nama route dengan method
+
+    Route::get('/nilai/', [NilaiMahasiswaController::class, 'show'])->name('nilaimahasiswa.show');
 });
 // ----------------- END MAHASISWA AREA -------------------------------------------------
 
@@ -28,10 +30,11 @@ Route::middleware(['auth', 'verified', 'ruleUser:mahasiswa'])->group(function ()
 // ----------------- START DOSEN AREA -------------------------------------------------
 Route::middleware(['auth', 'verified', 'ruleUser:dosen'])->group(function () {
     Route::get('/dosen', [DosenUserController::class, 'index'])->name('dosen.index');
-    Route::get('/jadwal-mengajar', [JadwalMatkulController::class, 'mengajar'])->name('jadwalperkuliahan.mengajar');
+    Route::get('/jadwal-mengajar', [JadwalMatkulController::class, 'mengajar'])->defaults("key", "jadwal")->name('jadwalperkuliahan.mengajar');
+    Route::get('/riwayat-mengajar', [JadwalMatkulController::class, 'mengajar'])->defaults("key", "riwayat")->name('jadwalperkuliahan.riwayat');
 
     Route::get('/nilai-mahaiswa/create', [NilaiMahasiswaController::class, 'create'])->name('nilaimahasiswa.create');
-    Route::post('/nilai-mahaiswa/create', [NilaiMahasiswaController::class, 'store'])->name('nilaimahasiswa.store');
+    Route::post('/nilai-mahaiswa/store', [NilaiMahasiswaController::class, 'store'])->name('nilaimahasiswa.store');
 
     Route::get('/absensi-perkuliahan/create', [AbsensiController::class, 'create'])->name('absensi.create');
     Route::post('/absensi-perkuliahan/store', [AbsensiController::class, 'store'])->name('absensi.store');

@@ -35,4 +35,17 @@ class JadwalMatkul extends Model
     {
         return $this->belongsTo(ProgramAngkatan::class, 'program_angkatan_id', 'id');
     }
+
+    //------------------------------------------------------------------------------------
+    public function histori($prodi, $notThisYear)
+    {
+        return   $this->select('tahun_ajaran')
+            ->whereHas('programAngkatan', function ($query) use ($prodi) {
+                $query->where('program_studi_id', $prodi);
+            })
+            ->whereNot('tahun_ajaran', $notThisYear)
+            ->distinct()
+            ->orderBy('tahun_ajaran', 'asc')
+            ->get();
+    }
 }

@@ -10,7 +10,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function jadwalMengajar() {
-    const { jadwalMengajar } = usePage().props;
+    const { jadwalMengajar, key } = usePage().props;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -28,7 +28,7 @@ export default function jadwalMengajar() {
                                 <th className="border border-gray-300 px-4 py-1.5 text-sm">Hari</th>
                                 <th className="border border-gray-300 px-4 py-1.5 text-sm">Waktu</th>
                                 <th className="border border-gray-300 px-4 py-1.5 text-sm">Ruangan</th>
-                                <th className="w-1/6 border border-gray-300 px-4 py-1.5 text-sm">Aksi</th>
+                                {key !== 'riwayat' && <th className="border border-gray-300 px-4 py-1.5 text-sm">Aksi</th>}
                             </tr>
                         </thead>
                         <tbody>
@@ -48,33 +48,35 @@ export default function jadwalMengajar() {
                                         <td className="w-1/10 border border-gray-300 px-2.5 py-1.5 text-center text-sm">{data.hari}</td>
                                         <td className="w-1/8 border border-gray-300 px-2.5 py-1.5 text-center text-sm">{data.waktu}</td>
                                         <td className="w-1/8 border border-gray-300 px-2.5 py-1.5 text-center text-sm">{data.ruangan}</td>
-                                        <td className="w-1/7 border border-gray-300 px-2.5 py-1 text-center text-sm">
-                                            <button
-                                                onClick={() => {
-                                                    router.get(route('absensi.paramSession'), {
-                                                        angkatan: data.program_angkatan?.angkatan,
-                                                        kelas: data.kelas,
-                                                        idJadwal: data.id,
-                                                    });
-                                                }}
-                                                className="me-1 inline-block cursor-pointer rounded-md bg-green-700 px-2.5 py-1.5 text-center text-xs font-medium text-white hover:bg-green-800 focus:ring-4 focus:ring-green-300 focus:outline-none dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-                                            >
-                                                Absensi
-                                            </button>
+                                        {key !== 'riwayat' && (
+                                            <td className="border border-gray-300 px-2.5 py-1 text-center text-sm">
+                                                <button
+                                                    onClick={() => {
+                                                        router.get(route('absensi.paramSession'), {
+                                                            angkatan: data.program_angkatan?.angkatan,
+                                                            kelas: data.kelas,
+                                                            idJadwal: data.id,
+                                                        });
+                                                    }}
+                                                    className="me-1 inline-block cursor-pointer rounded-md bg-green-700 px-2.5 py-1.5 text-center text-xs font-medium text-white hover:bg-green-800 focus:ring-4 focus:ring-green-300 focus:outline-none dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                                                >
+                                                    Absensi
+                                                </button>
 
-                                            <button
-                                                onClick={() => {
-                                                    router.get(route('nilaimahasiswa.paramSession'), {
-                                                        angkatan: data.program_angkatan?.angkatan,
-                                                        kelas: data.kelas,
-                                                        idJadwal: data.id,
-                                                    });
-                                                }}
-                                                className="inline-block cursor-pointer rounded-md bg-blue-700 px-2.5 py-1.5 text-center text-xs font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                            >
-                                                Nilai
-                                            </button>
-                                        </td>
+                                                <button
+                                                    onClick={() => {
+                                                        router.get(route('nilaimahasiswa.paramSession'), {
+                                                            angkatan: data.program_angkatan?.angkatan,
+                                                            kelas: data.kelas,
+                                                            idJadwal: data.id,
+                                                        });
+                                                    }}
+                                                    className="inline-block cursor-pointer rounded-md bg-blue-700 px-2.5 py-1.5 text-center text-xs font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                                >
+                                                    Nilai
+                                                </button>
+                                            </td>
+                                        )}
                                     </tr>
                                 );
                             })}

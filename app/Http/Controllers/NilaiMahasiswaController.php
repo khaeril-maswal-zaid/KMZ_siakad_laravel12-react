@@ -7,6 +7,7 @@ use App\Models\JadwalMatkul;
 use App\Models\Konfigurasi;
 use App\Models\MahasiswaUser;
 use App\Models\NilaiMahasiswa;
+use App\Models\User;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -91,18 +92,19 @@ class NilaiMahasiswaController extends Controller
             return $mhs;
         });
 
+        $JadwalMatkul = JadwalMatkul::select('dosen_user_id', 'tahun_ajaran', 'program_angkatan_id', 'kelas')
+            ->with([
+                'dosen:id,user_id,nidn', // Pastikan 'user_id' ikut diambil agar bisa dipakai di relasi berikutnya
+                'dosen.user:id,name', // Ambil 'name' dari tabel users
+
+                'programAngkatan:id,mata_kuliah_id',
+                'programAngkatan.mataKuliah:id,nama_matkul',
+            ])
+            ->where('id', $paramNilaiSession['idJadwal'])
+            ->first();
+
         $data = [
-            'jadwalMatkul' => JadwalMatkul::select('dosen_user_id', 'program_angkatan_id', 'kelas')
-                ->with([
-                    'dosen:id,user_id,nidn', // Pastikan 'user_id' ikut diambil agar bisa dipakai di relasi berikutnya
-                    'dosen.user:id,name', // Ambil 'name' dari tabel users
-
-                    'programAngkatan:id,mata_kuliah_id',
-                    'programAngkatan.mataKuliah:id,nama_matkul',
-                ])
-                ->where('id', $paramNilaiSession['idJadwal'])
-                ->first(),
-
+            'jadwalMatkul' => $JadwalMatkul,
 
             'paramNilaiSession' => $paramNilaiSession,
 
@@ -185,7 +187,7 @@ class NilaiMahasiswaController extends Controller
         });
 
         $data = [
-            'jadwalMatkul' => JadwalMatkul::select('dosen_user_id', 'program_angkatan_id', 'kelas')
+            'jadwalMatkul' => JadwalMatkul::select('dosen_user_id', 'tahun_ajaran', 'program_angkatan_id', 'kelas')
                 ->with([
                     'dosen:id,user_id,nidn', // Pastikan 'user_id' ikut diambil agar bisa dipakai di relasi berikutnya
                     'dosen.user:id,name', // Ambil 'name' dari tabel users
@@ -208,8 +210,6 @@ class NilaiMahasiswaController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
-
         // Validasi input dari request
         $validated = $request->validate([
             'jadwal_matkuls_id'         => 'required|integer|exists:jadwal_matkuls,id',
@@ -241,11 +241,54 @@ class NilaiMahasiswaController extends Controller
                 ],
                 [
                     'nilai' => $item['nilai'],
+                    'dosen_users_id' => Auth::user()->dosen->id
                 ]
             );
         }
 
         $request->session()->flash('message', 'Entri nilai mahasiswa berhasil !');
         return redirect()->route('nilaimahasiswa.index');
+    }
+
+    public function show()
+    {
+        $tahunAjaranDef = Konfigurasi::value('tahun_ajar');
+        $tahunAjaran = $request->tahun_ajaran ?? $tahunAjaranDef;
+
+        // Ambil user yang sedang login
+        $user = Auth::user();
+        $prodiFromAdmin = $user->mahasiswa->program_studi_id;
+
+        $jadwalMatkul = JadwalMatkul::select('id', 'dosen_user_id', 'kelas', 'tahun_ajaran', 'program_angkatan_id')
+            ->with([
+                'dosen:id,user_id,nidn',
+                'dosen.user:id,name',
+                'programAngkatan:id,mata_kuliah_id,angkatan',
+                'programAngkatan.mataKuliah:id,nama_matkul,sks',
+            ])
+            ->whereHas('programAngkatan', function ($query) {
+                $query->where('angkatan', Auth::user()->mahasiswa->angkatan);
+            })
+            ->whereHas('programAngkatan', function ($query) use ($prodiFromAdmin) {
+                $query->where('program_studi_id', $prodiFromAdmin);
+            })
+            ->where('kelas', Auth::user()->mahasiswa->kelas)
+            ->where('tahun_ajaran', $tahunAjaran)
+            ->get();
+
+        // Ambil semua ID jadwal_matkul yang ditemukan
+        $jadwalMatkulIds = $jadwalMatkul->pluck('id');
+
+        $data = [
+            'jadwalMatkul' => $jadwalMatkul,
+
+            // Ambil semua nilai mahasiswa untuk jadwal_matkul tersebut
+            'nilaiMatkul' => NilaiMahasiswa::select('id', 'jadwal_matkuls_id', 'nilai')
+                ->where('mahasiswa_user_id', Auth::user()->mahasiswa->id)
+                ->whereIn('jadwal_matkuls_id', $jadwalMatkulIds)
+                ->get()
+        ];
+
+        return Inertia::render('mahasiswa/nilai', $data);
     }
 }

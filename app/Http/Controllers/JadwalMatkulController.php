@@ -14,12 +14,14 @@ use Inertia\Inertia;
 class JadwalMatkulController extends Controller
 {
     private $tahunAjaran;
+    private JadwalMatkul $jadwalMatkul;
 
-    public function __construct()
+    public function __construct(JadwalMatkul $jadwalMatkul)
     {
-        $tahunAjaran = Konfigurasi::select(['tahun_ajar'])->first();
-        $this->tahunAjaran = $tahunAjaran->tahun_ajar;
+        $this->jadwalMatkul = $jadwalMatkul;
+        $this->tahunAjaran = Konfigurasi::value('tahun_ajar');
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -199,9 +201,26 @@ class JadwalMatkulController extends Controller
         return to_route('jadwalperkuliahan.index');
     }
 
-    public function mengajar(Request $request)
+    public function mengajar(Request $request, $key)
     {
         $request->session()->forget(['paramNilaiSession', 'paramAbsensiSession']);
+
+        // Ambil user yang sedang login
+        $user = Auth::user();
+        $prodiFromAdmin = $user->dosen->program_studi_id;
+
+        //Jika sedang di riwayat maka ambil request kalau tidak maka ambil tahun_ajaran sekarang
+        if ($key === 'riwayat') {
+            if ($request->tahun_ajaran) {
+                $tahunAjaran = $request->tahun_ajaran;
+            } else {
+                [$awal, $akhir] = explode('/', $this->tahunAjaran);
+                $tahunAjaran = (--$awal) . '/' . (--$akhir);
+            }
+        } else {
+            $tahunAjaran = $this->tahunAjaran;
+        }
+
 
         $data = [
             'jadwalMengajar' => JadwalMatkul::select(['id', 'program_angkatan_id', 'hari', 'waktu', 'ruangan', 'kelas'])
@@ -209,9 +228,16 @@ class JadwalMatkulController extends Controller
                     'programAngkatan:id,mata_kuliah_id,angkatan',
                     'programAngkatan.mataKuliah:id,nama_matkul,sks',
                 ])
+                ->whereHas('programAngkatan', function ($query) use ($prodiFromAdmin) {
+                    $query->where('program_studi_id', $prodiFromAdmin);
+                })
                 ->where('dosen_user_id', Auth::user()->dosen->id)
-                ->where('tahun_ajaran', $this->tahunAjaran)
+                ->where('tahun_ajaran', $tahunAjaran)
                 ->get(),
+
+            'histori' => $this->jadwalMatkul->histori(Auth::user()->dosen->program_studi_id,  $this->tahunAjaran),
+
+            'key' => $key
         ];
 
         return Inertia::render('dosen/jadwalMengajar', $data);
@@ -221,8 +247,7 @@ class JadwalMatkulController extends Controller
     public function terjadwal(Request $request, $key)
     {
 
-        $tahunAjaran = $request->tahun_ajaran ?? Konfigurasi::value('tahun_ajar');
-
+        $tahunAjaran = $request->tahun_ajaran ?? $this->tahunAjaran;
 
         // Ambil user yang sedang login
         $user = Auth::user();
@@ -245,7 +270,7 @@ class JadwalMatkulController extends Controller
 
             'histori' => JadwalMatkul::select('tahun_ajaran')
                 ->distinct()
-                ->orderBy('tahun_ajaran', 'desc')
+                ->orderBy('tahun_ajaran', 'asc')
                 ->get(),
 
             'key' => $key, //untuk control button
@@ -261,8 +286,7 @@ class JadwalMatkulController extends Controller
         $user = Auth::user();
         $prodiFromAdmin = $user->adminProdi->program_studi_id;
 
-        $tahunAjaran = $request->tahun_ajaran ?? Konfigurasi::value('tahun_ajar');
-
+        $tahunAjaran = $request->tahun_ajaran ?? $this->tahunAjaran;
 
         $data = [
             'berlansung' => JadwalMatkul::select(['dosen_user_id', 'program_angkatan_id', 'waktu', 'ruangan', 'hari', 'kelas', 'id'])
@@ -281,7 +305,7 @@ class JadwalMatkulController extends Controller
 
             'histori' => JadwalMatkul::select('tahun_ajaran')
                 ->distinct()
-                ->orderBy('tahun_ajaran', 'desc')
+                ->orderBy('tahun_ajaran', 'asc')
                 ->get(),
 
             'tahunAjaran' => $tahunAjaran

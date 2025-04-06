@@ -5,6 +5,7 @@ import { usePage } from '@inertiajs/react';
 // Import semua header
 import Absensi from '@/components/kmz_headers/dosen_absensi';
 import Nilai from '@/components/kmz_headers/dosen_nilai';
+import JadwalDosen from '@/components/kmz_headers/dosen_riwayat_mengajar';
 import Jadwal from '@/components/kmz_headers/prodi_jadwal';
 import JadwalAdd from '@/components/kmz_headers/prodi_jadwal_add';
 import JadwalBerlansung from '@/components/kmz_headers/prodi_jadwal_berlansung';
@@ -22,6 +23,7 @@ const headerComponents = {
     'dosen/absensiPerkuliahan': Absensi,
     'dosen/nilaiMahasiswa': Nilai,
     'prodi/programangkatan': ProgramAngkatan,
+    'dosen/jadwalMengajar': JadwalDosen,
 };
 
 export function AppSidebarHeader({ breadcrumbs = [] }) {
