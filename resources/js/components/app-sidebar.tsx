@@ -4,7 +4,20 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem, SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Calendar, ClipboardList, FileText, GraduationCap, LayoutGrid, SquarePen, User, Users } from 'lucide-react';
+import {
+    BarChart3,
+    BookOpen,
+    BookOpenCheck,
+    CalendarClock,
+    CalendarDays,
+    ClipboardCheck,
+    ClipboardList,
+    GraduationCap,
+    History,
+    LayoutGrid,
+    UserCog,
+    Users2,
+} from 'lucide-react';
 import AppLogo from './app-logo';
 
 // Fungsi untuk mendapatkan menu berdasarkan role
@@ -21,23 +34,27 @@ const getMainNavItems = (auth: SharedData['auth']): NavItem[] => {
 
     const roleMenus: Record<string, NavItem[]> = {
         prodi: [
-            { title: 'Data Nilai', url: route('jadwalperkuliahan.nilai'), icon: GraduationCap },
+            { title: 'Data Nilai', url: route('jadwalperkuliahan.nilai'), icon: BarChart3 },
             { title: 'Absensi Mahasiswa', url: route('jadwalperkuliahan.absensi'), icon: ClipboardList },
-            { title: 'Jadwal Perkuliahan', url: route('jadwalperkuliahan.index'), icon: Calendar },
-            { title: 'Program Angkatan', url: route('programangkatan.index'), icon: SquarePen },
-            { title: 'Data Mahasiswa', url: route('mahasiswauser.index'), icon: Users },
-            { title: 'Data Dosen', url: '', icon: User },
-            { title: 'Daftar Mata Kuliah', url: route('matakuliah.index'), icon: BookOpen },
+            { title: 'Jadwal Perkuliahan', url: route('jadwalperkuliahan.index'), icon: CalendarClock },
+            { title: 'Program Angkatan', url: route('programangkatan.index'), icon: GraduationCap },
+            { title: 'Data Mahasiswa', url: route('mahasiswauser.index'), icon: Users2 },
+            { title: 'Data Dosen', url: '', icon: UserCog },
+            { title: 'Daftar Mata Kuliah', url: route('matakuliah.index'), icon: BookOpenCheck },
+            { title: 'Skripsi Mahasiswa', url: route('skripsi.index'), icon: History },
         ],
         dosen: [
-            { title: 'Jadwal Mengajar', url: route('jadwalperkuliahan.mengajar'), icon: FileText },
-            { title: 'Riwayat Mengajar', url: route('jadwalperkuliahan.riwayat'), icon: Calendar },
+            { title: 'Jadwal Mengajar', url: route('jadwalperkuliahan.mengajar'), icon: CalendarDays },
+            { title: 'Riwayat Mengajar', url: route('jadwalperkuliahan.riwayat'), icon: History },
+            { title: 'Mahasiswa Bimbingan', url: route('skripsi.pembimbing'), icon: BookOpen },
         ],
+
         mahasiswa: [
-            { title: 'Jadwal Kuliah', url: '/', icon: FileText },
-            { title: 'Absensi', url: '/', icon: GraduationCap },
-            { title: 'Nilai', url: route('nilaimahasiswa.show'), icon: GraduationCap },
-            { title: 'Program Akademik Angkatan', url: '/', icon: GraduationCap },
+            { title: 'Jadwal Kuliah', url: route('jadwalperkuliahan.show'), icon: CalendarClock },
+            { title: 'Absensi', url: route('absensi.show'), icon: ClipboardCheck },
+            { title: 'Nilai', url: route('nilaimahasiswa.show'), icon: BarChart3 },
+            { title: 'Skripsi', url: route('skripsi.create'), icon: BarChart3 },
+            { title: 'Program Akademik', url: route('programangkatan.show'), icon: GraduationCap },
         ],
         default: [], // Tambahkan default agar tidak error jika `role` tidak cocok
     };

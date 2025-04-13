@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Auth;
 
 class JadwalMatkul extends Model
 {
@@ -46,6 +47,31 @@ class JadwalMatkul extends Model
             ->whereNot('tahun_ajaran', $notThisYear)
             ->distinct()
             ->orderBy('tahun_ajaran', 'asc')
+            ->get();
+    }
+
+    //------------------------------------------------------------------------------------
+    public function mahasiswaLoged($tahunAjaran)
+    {
+        // Ambil user yang sedang login
+        $user = Auth::user();
+        $prodiFromAdmin = $user->mahasiswa->program_studi_id;
+
+        return $this->select('id', 'dosen_user_id', 'kelas', 'tahun_ajaran', 'program_angkatan_id', 'hari', 'waktu', 'ruangan')
+            ->with([
+                'dosen:id,user_id,nidn',
+                'dosen.user:id,name',
+                'programAngkatan:id,mata_kuliah_id,angkatan',
+                'programAngkatan.mataKuliah:id,nama_matkul,kode_matkul,sks',
+            ])
+            ->whereHas('programAngkatan', function ($query) {
+                $query->where('angkatan', Auth::user()->mahasiswa->angkatan);
+            })
+            ->whereHas('programAngkatan', function ($query) use ($prodiFromAdmin) {
+                $query->where('program_studi_id', $prodiFromAdmin);
+            })
+            ->where('kelas', Auth::user()->mahasiswa->kelas)
+            ->where('tahun_ajaran', $tahunAjaran)
             ->get();
     }
 }

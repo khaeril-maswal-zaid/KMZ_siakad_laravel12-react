@@ -41,15 +41,15 @@ export default function terjadwal() {
                     <table className="w-full border-collapse border border-gray-300">
                         <thead>
                             <tr className="bg-gray-100">
-                                <th className="border border-gray-300 px-2.5 py-1.5 text-xs">No</th>
-                                <th className="w-1/5 border border-gray-300 px-4 py-1.5 text-xs">Dosen Pengampu</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-xs">NIDN</th>
-                                <th className="w-1/5 border border-gray-300 px-4 py-1.5 text-xs">Mata Kuliah</th>
-                                <th className="w-1/12 border border-gray-300 px-4 py-1.5 text-xs">SKS</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-xs">Angkatan</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-xs">Kelas</th>
-                                <th className="w-1/12 border border-gray-300 px-4 py-1.5 text-xs">Semester</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-xs">Aksi</th>
+                                <th className="border border-gray-300 px-2.5 py-3 text-xs">No</th>
+                                <th className="w-auto border border-gray-300 px-2 py-3 text-xs whitespace-nowrap">Dosen Pengampu</th>
+                                <th className="border border-gray-300 px-2 py-3 text-xs">NIDN</th>
+                                <th className="w-auto border border-gray-300 px-2 py-3 text-xs whitespace-nowrap">Mata Kuliah</th>
+                                <th className="w-1/12 border border-gray-300 px-2 py-3 text-xs">SKS</th>
+                                <th className="border border-gray-300 px-2 py-3 text-xs">Angkatan</th>
+                                <th className="border border-gray-300 px-2 py-3 text-xs">Kelas</th>
+                                <th className="w-1/12 border border-gray-300 px-2 py-3 text-xs">Semester</th>
+                                <th className="border border-gray-300 px-2 py-3 text-xs">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>

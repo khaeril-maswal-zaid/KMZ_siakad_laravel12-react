@@ -133,10 +133,10 @@ export default function AbsensiPerkuliahanAdd() {
                                         <th rowSpan={2} className="w-9 border border-gray-300 py-1.5 text-xs">
                                             No
                                         </th>
-                                        <th rowSpan={2} className="w-1/7 border border-gray-300 px-4 py-1.5 text-xs">
+                                        <th rowSpan={2} className="w-auto border border-gray-300 px-4 py-1.5 text-xs whitespace-nowrap">
                                             Nama
                                         </th>
-                                        <th rowSpan={2} className="w-24 border border-gray-300 px-4 py-1.5 text-xs">
+                                        <th rowSpan={2} className="w-auto border border-gray-300 px-4 py-1.5 text-xs whitespace-nowrap">
                                             NIM
                                         </th>
                                         <th rowSpan={2} className="border border-gray-300 px-4 py-1.5 text-xs">
@@ -148,7 +148,7 @@ export default function AbsensiPerkuliahanAdd() {
                                     </tr>
                                     <tr className="bg-gray-100">
                                         {[...Array(16)].map((_, index) => (
-                                            <th key={index} className="w-16 border border-gray-300 px-4 py-1.5 text-xs">
+                                            <th key={index} className="border border-gray-300 px-4 py-1.5 text-xs">
                                                 {index + 1}
                                             </th>
                                         ))}

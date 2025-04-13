@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Absensi;
 use App\Models\JadwalMatkul;
+use App\Models\Konfigurasi;
 use App\Models\MahasiswaUser;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -192,7 +193,7 @@ class AbsensiController extends Controller
                     ],
                     [
                         'keterangan' => $keterangan,
-                        'dosen_users_id' => Auth::user()->dosen->id
+                        'created_by' => Auth::user()->dosen->id
                     ]
                 );
             }
@@ -200,5 +201,32 @@ class AbsensiController extends Controller
 
         $request->session()->flash('message', 'Entri absensi mahasiswa berhasil !');
         return redirect()->route('absensi.index');
+    }
+
+    public function show(Request $request)
+    {
+
+        $tahunAjaranDef = Konfigurasi::value('tahun_ajar');
+        $tahunAjaran = $request->tahun_ajaran ?? $tahunAjaranDef;
+
+        $jadwalMatkul = new JadwalMatkul();
+
+        // Ambil semua ID jadwal_matkul yang ditemukan
+        $jadwalMatkulIds = $jadwalMatkul->pluck('id');
+
+        $data = [
+            'jadwalMatkul' => $jadwalMatkul->mahasiswaLoged($tahunAjaran),
+
+            // Ambil semua nilai mahasiswa untuk jadwal_matkul tersebut
+            'absensis' => Absensi::select('id', 'jadwal_matkuls_id', 'keterangan', 'pertemuan')
+                ->where('mahasiswa_user_id', Auth::user()->mahasiswa->id)
+                ->whereIn('jadwal_matkuls_id', $jadwalMatkulIds)
+                ->get(),
+
+            'histori' => $jadwalMatkul->histori(Auth::user()->mahasiswa->program_studi_id,  $tahunAjaran),
+            'tahunAjaran' => $tahunAjaran,
+        ];
+
+        return Inertia::render('mahasiswa/absensi', $data);
     }
 }

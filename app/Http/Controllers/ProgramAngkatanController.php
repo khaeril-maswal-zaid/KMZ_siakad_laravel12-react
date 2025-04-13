@@ -91,7 +91,7 @@ class ProgramAngkatanController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreProgramAngkatanRequest $request)
     {
         // Ambil user yang sedang login
         $user = Auth::user();
@@ -128,9 +128,18 @@ class ProgramAngkatanController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ProgramAngkatan $programAngkatan)
+    public function show()
     {
-        //
+        $program = ProgramAngkatan::select(['id', 'semester', 'mata_kuliah_id'])
+            ->where('program_studi_id', Auth::user()->mahasiswa->program_studi_id)
+            ->where('angkatan', Auth::user()->mahasiswa->angkatan)
+            ->with([
+                'mataKuliah:id,sks,kode_matkul,nama_matkul'
+            ])
+            ->orderBy('semester', 'asc')
+            ->get();
+
+        return Inertia::render('mahasiswa/program', ['program' => $program]);
     }
 
 

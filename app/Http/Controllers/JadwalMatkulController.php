@@ -268,10 +268,8 @@ class JadwalMatkulController extends Controller
                 ])
                 ->get(),
 
-            'histori' => JadwalMatkul::select('tahun_ajaran')
-                ->distinct()
-                ->orderBy('tahun_ajaran', 'asc')
-                ->get(),
+            'histori' => $this->jadwalMatkul->histori($prodiFromAdmin,  $this->tahunAjaran),
+
 
             'key' => $key, //untuk control button
             'tahunAjaran' => $tahunAjaran
@@ -303,13 +301,26 @@ class JadwalMatkulController extends Controller
                 ])
                 ->get(),
 
-            'histori' => JadwalMatkul::select('tahun_ajaran')
-                ->distinct()
-                ->orderBy('tahun_ajaran', 'asc')
-                ->get(),
+            'histori' => $this->jadwalMatkul->histori($prodiFromAdmin,  $this->tahunAjaran),
 
             'tahunAjaran' => $tahunAjaran
         ];
         return Inertia::render('prodi/jadwalperkuliahanberlansung', $data);
+    }
+
+    public function Show(Request $request)
+    {
+        $tahunAjaranDef = Konfigurasi::value('tahun_ajar');
+        $tahunAjaran = $request->tahun_ajaran ?? $tahunAjaranDef;
+
+        $jadwalMatkul = new JadwalMatkul();
+
+        $data = [
+            'jadwal' => $jadwalMatkul->mahasiswaLoged($tahunAjaran),
+            'histori' => $jadwalMatkul->histori(Auth::user()->mahasiswa->program_studi_id,  $tahunAjaran),
+            'tahunAjaran' => $tahunAjaran,
+        ];
+
+        return Inertia::render('mahasiswa/jadwal', $data);
     }
 }

@@ -28,7 +28,7 @@ class MahaiswaUserController extends Controller
                     ->orWhere('nim', 'LIKE', "%{$request->abboya}%");
             });
 
-        // Terapkan filter program studi jika diperlukan
+
         $query->where('program_studi_id', $prodiIdAdminLogin);
 
         // Hanya tambahkan filter angkatan jika parameter tersebut ada

@@ -10,10 +10,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function nilaiMahasiswa() {
-    const { konfigurasi, fakultasProdi, flash } = usePage<SharedData>().props;
-    const { nilaiMatkul, jadwalMatkul } = usePage().props;
-
-    console.log(jadwalMatkul);
+    const { konfigurasi, fakultasProdi, flash, auth } = usePage<SharedData>().props;
+    const { nilaiMatkul, jadwalMatkul, tahunAjaran } = usePage().props;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -31,11 +29,11 @@ export default function nilaiMahasiswa() {
                             <tr>
                                 <td className="w-28 pe-3 pb-1">Fakultas</td>
                                 <td className="w-2 pe-2 pb-1">:</td>
-                                <td className="w-auto pe-7 pb-1 whitespace-nowrap">{fakultasProdi?.fakultas?.nama_fakultas}</td>
+                                <td className="w-auto pe-20 pb-1 whitespace-nowrap">{fakultasProdi?.fakultas?.nama_fakultas}</td>
 
                                 <td className="w-28 pe-3 pb-1">Nama Mahasiswa</td>
                                 <td className="w-2 pe-2 pb-1">:</td>
-                                <td className="pe-9 pb-1"></td>
+                                <td className="pe-9 pb-1">{auth.user?.name}</td>
                             </tr>
                             <tr>
                                 <td className="pe-3 pb-1">Program Studi</td>
@@ -44,25 +42,25 @@ export default function nilaiMahasiswa() {
 
                                 <td className="pe-3 pb-1">NIM</td>
                                 <td className="pe-2 pb-1">:</td>
-                                <td className="pb-1"></td>
+                                <td className="pb-1">{auth.user?.mahasiswa?.nim}</td>
                             </tr>
                             <tr>
                                 <td className="pe-3 pb-1">Angkatan</td>
                                 <td className="pe-2 pb-1">:</td>
-                                <td className="pb-1"></td>
+                                <td className="pb-1">{auth.user?.mahasiswa?.angkatan}</td>
 
                                 <td className="pe-3 pb-1">Email</td>
                                 <td className="pe-2 pb-1">:</td>
-                                <td className="pb-1"></td>
+                                <td className="pb-1">{auth.user?.email}</td>
                             </tr>
                             <tr>
                                 <td className="pe-3 pb-1">Kelas</td>
                                 <td className="pe-2 pb-1">:</td>
-                                <td className="pb-1"></td>
+                                <td className="pb-1">{auth.user?.mahasiswa?.kelas}</td>
 
                                 <td className="pe-3 pb-1">Tahun Ajaran</td>
                                 <td className="pe-2 pb-1">:</td>
-                                <td className="pb-1"></td>
+                                <td className="pb-1">{tahunAjaran}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -70,12 +68,13 @@ export default function nilaiMahasiswa() {
                     <table className="w-full border-collapse border border-gray-300">
                         <thead>
                             <tr className="bg-gray-100">
-                                <th className="w-8 border border-gray-300 py-1.5 text-sm">No</th>
-                                <th className="w-36 border border-gray-300 px-4 py-1.5 text-sm">Mata Kuliah</th>
-                                <th className="w-16 border border-gray-300 px-4 py-1.5 text-sm">SKS</th>
-                                <th className="w-20 border border-gray-300 px-2 py-1.5 text-sm">Dosen Pengampuh</th>
-                                <th className="w-20 border border-gray-300 px-2 py-1.5 text-sm">NIDN Dosen</th>
-                                <th className="w-28 border border-gray-300 px-4 py-1.5 text-sm">Nilai</th>
+                                <th className="w-16 border border-gray-300 py-2.5 text-sm">No</th>
+                                <th className="border border-gray-300 px-4 py-2.5 text-sm whitespace-nowrap">Mata Kuliah</th>
+                                <th className="border border-gray-300 px-4 py-2.5 text-sm whitespace-nowrap">Kode Matkul</th>
+                                <th className="border border-gray-300 px-4 py-2.5 text-sm whitespace-nowrap">SKS</th>
+                                <th className="border border-gray-300 px-2 py-2.5 text-sm whitespace-nowrap">Dosen Pengampuh</th>
+                                <th className="border border-gray-300 px-2 py-2.5 text-sm whitespace-nowrap">NIDN Dosen</th>
+                                <th className="border border-gray-300 px-4 py-2.5 text-sm whitespace-nowrap">Nilai</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -85,16 +84,19 @@ export default function nilaiMahasiswa() {
 
                                 return (
                                     <tr key={index} className="border-b border-gray-300">
-                                        <td className="border border-gray-300 px-2 py-1 text-center text-sm">{index + 1}</td>
-                                        <td className="border border-gray-300 px-2 py-1 text-sm">
+                                        <td className="border border-gray-300 px-2 py-2 text-center text-sm">{index + 1}</td>
+                                        <td className="border border-gray-300 px-2 py-2 text-sm">
                                             {item.program_angkatan?.mata_kuliah?.nama_matkul}
                                         </td>
-                                        <td className="border border-gray-300 px-2 py-1 text-center text-sm">
+                                        <td className="border border-gray-300 px-2 py-2 text-sm">
+                                            {item.program_angkatan?.mata_kuliah?.kode_matkul}
+                                        </td>
+                                        <td className="border border-gray-300 px-2 py-2 text-center text-sm">
                                             {item.program_angkatan?.mata_kuliah?.sks}
                                         </td>
-                                        <td className="border border-gray-300 px-2 py-1 text-sm">{item.dosen?.user?.name}</td>
-                                        <td className="border border-gray-300 px-2 py-1 text-center text-sm">{item.dosen?.nidn}</td>
-                                        <td className="border border-gray-300 px-2 py-1 text-center text-sm">{nilai}</td>
+                                        <td className="border border-gray-300 px-2 py-2 text-sm">{item.dosen?.user?.name}</td>
+                                        <td className="border border-gray-300 px-2 py-2 text-center text-sm">{item.dosen?.nidn}</td>
+                                        <td className="border border-gray-300 px-2 py-2 text-center text-sm">{nilai}</td>
                                     </tr>
                                 );
                             })}

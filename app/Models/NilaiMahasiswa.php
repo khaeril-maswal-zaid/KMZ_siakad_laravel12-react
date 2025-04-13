@@ -10,6 +10,6 @@ class NilaiMahasiswa extends Model
         'jadwal_matkuls_id',
         'mahasiswa_user_id',
         'nilai',
-        'dosen_users_id'
+        'created_by'
     ];
 }

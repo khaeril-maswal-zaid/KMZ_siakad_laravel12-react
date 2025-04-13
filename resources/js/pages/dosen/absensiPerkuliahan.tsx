@@ -109,25 +109,25 @@ export default function AbsensiPerkuliahan() {
                     <table className="min-w-full border-collapse border border-gray-300">
                         <thead>
                             <tr className="bg-gray-100">
-                                <th rowSpan={2} className="w-8 border border-gray-300 py-1.5 text-xs">
+                                <th rowSpan={2} className="w-7 border border-gray-300 px-2 py-1.5 text-xs">
                                     No
                                 </th>
-                                <th rowSpan={2} className="w-1/7 border border-gray-300 px-4 py-1.5 text-xs">
+                                <th rowSpan={2} className="border border-gray-300 px-4 py-1.5 text-xs">
                                     Nama
                                 </th>
-                                <th rowSpan={2} className="w-20 border border-gray-300 px-2 py-1.5 text-xs">
+                                <th rowSpan={2} className="border border-gray-300 px-2 py-1.5 text-xs">
                                     NIM
                                 </th>
                                 <th colSpan={16} className="border border-gray-300 px-4 py-1.5 text-xs">
                                     Pertemuan
                                 </th>
-                                <th colSpan={4} className="w-28 border border-gray-300 px-4 py-1.5 text-xs">
+                                <th colSpan={4} className="border border-gray-300 px-4 py-1.5 text-xs">
                                     Rekapitulasi
                                 </th>
                             </tr>
                             <tr className="bg-gray-100">
                                 {[...Array(16)].map((_, index) => (
-                                    <th key={index} className="w-10 border border-gray-300 py-1.5 text-xs">
+                                    <th key={index} className="w-9 border border-gray-300 py-1.5 text-xs">
                                         {index + 1}
                                     </th>
                                 ))}
@@ -141,8 +141,8 @@ export default function AbsensiPerkuliahan() {
                             {dataAbsensi.map((mhs, index) => (
                                 <tr key={mhs.id} className="text-sm">
                                     <td className="border border-gray-300 py-1.5 text-center text-xs">{index + 1}</td>
-                                    <td className="border border-gray-300 px-2.5 py-1.5 text-xs">{mhs.user?.name}</td>
-                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-xs">{mhs.nim}</td>
+                                    <td className="w-auto border border-gray-300 px-2.5 py-1.5 text-xs whitespace-nowrap">{mhs.user?.name}</td>
+                                    <td className="w-auto border border-gray-300 px-2 py-1.5 text-center text-xs whitespace-nowrap">{mhs.nim}</td>
                                     {/* Tampilkan data per pertemuan */}
                                     {[...Array(16)].map((_, i) => (
                                         <td key={i + 1} className="border border-gray-300 py-1.5 text-center text-xs">

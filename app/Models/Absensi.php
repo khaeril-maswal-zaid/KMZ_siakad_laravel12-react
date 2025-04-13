@@ -11,6 +11,6 @@ class Absensi extends Model
         'mahasiswa_user_id',
         'pertemuan',
         'keterangan',
-        'dosen_users_id'
+        'created_by'
     ];
 }

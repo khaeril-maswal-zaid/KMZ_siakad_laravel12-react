@@ -268,14 +268,14 @@ export default function jadwalPerkuliahan() {
                     <table className="w-full border-collapse border border-gray-300">
                         <thead>
                             <tr className="bg-gray-100">
-                                <th className="w-1.5 border border-gray-300 px-4 py-1.5 text-xs">No</th>
-                                <th className="w-1/5 border border-gray-300 px-4 py-1.5 text-xs">Mata Kuliah</th>
-                                <th className="w-1/12 border border-gray-300 px-4 py-1.5 text-xs">SKS</th>
-                                <th className="w-1/12 border border-gray-300 px-4 py-1.5 text-xs">Semester</th>
-                                <th className="w-1/5border border-gray-300 px-4 py-1.5 text-xs">Dosen</th>
-                                <th className="w-1/10 border border-gray-300 px-4 py-1.5 text-xs">Hari</th>
-                                <th className="w-1/10 border border-gray-300 px-4 py-1.5 text-xs">Waktu</th>
-                                <th className="w-1/10 border border-gray-300 px-4 py-1.5 text-xs">Ruangan</th>
+                                <th className="border border-gray-300 px-2 py-1.5 text-xs whitespace-nowrap">No</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-xs whitespace-nowrap">Mata Kuliah</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-xs whitespace-nowrap">SKS</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-xs whitespace-nowrap">Semester</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-xs whitespace-nowrap">Dosen</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-xs whitespace-nowrap">Hari</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-xs whitespace-nowrap">Waktu</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-xs whitespace-nowrap">Ruangan</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -297,7 +297,7 @@ export default function jadwalPerkuliahan() {
                                             <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
                                                 {data.semester}
                                             </td>
-                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                            <td className="border border-gray-300 px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-600">
                                                 {(jadwal.dosen?.user?.name || '') +
                                                     (jadwal.dosen?.user?.name && jadwal.dosen?.nidn ? ' _ ' : '') +
                                                     (jadwal.dosen?.nidn || '')}

@@ -7,13 +7,13 @@ use App\Models\JadwalMatkul;
 use App\Models\Konfigurasi;
 use App\Models\MahasiswaUser;
 use App\Models\NilaiMahasiswa;
-use App\Models\User;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class NilaiMahasiswaController extends Controller
 {
+
     public function paramNilaiSession(Request $request)
     {
         $request->session()->put('paramNilaiSession', $request->all());
@@ -231,7 +231,7 @@ class NilaiMahasiswaController extends Controller
         if ($paramNilaiSession['idJadwal'] != $validated['jadwal_matkuls_id']) {
             return redirect()->route('jadwalperkuliahan.mengajar');
         }
-
+        // dd($request->all());
 
         foreach ($validated['dataNilai'] as $item) {
             NilaiMahasiswa::updateOrCreate(
@@ -241,7 +241,7 @@ class NilaiMahasiswaController extends Controller
                 ],
                 [
                     'nilai' => $item['nilai'],
-                    'dosen_users_id' => Auth::user()->dosen->id
+                    'created_by' => Auth::user()->dosen->id
                 ]
             );
         }
@@ -250,43 +250,27 @@ class NilaiMahasiswaController extends Controller
         return redirect()->route('nilaimahasiswa.index');
     }
 
-    public function show()
+    public function show(Request $request)
     {
         $tahunAjaranDef = Konfigurasi::value('tahun_ajar');
         $tahunAjaran = $request->tahun_ajaran ?? $tahunAjaranDef;
 
-        // Ambil user yang sedang login
-        $user = Auth::user();
-        $prodiFromAdmin = $user->mahasiswa->program_studi_id;
-
-        $jadwalMatkul = JadwalMatkul::select('id', 'dosen_user_id', 'kelas', 'tahun_ajaran', 'program_angkatan_id')
-            ->with([
-                'dosen:id,user_id,nidn',
-                'dosen.user:id,name',
-                'programAngkatan:id,mata_kuliah_id,angkatan',
-                'programAngkatan.mataKuliah:id,nama_matkul,sks',
-            ])
-            ->whereHas('programAngkatan', function ($query) {
-                $query->where('angkatan', Auth::user()->mahasiswa->angkatan);
-            })
-            ->whereHas('programAngkatan', function ($query) use ($prodiFromAdmin) {
-                $query->where('program_studi_id', $prodiFromAdmin);
-            })
-            ->where('kelas', Auth::user()->mahasiswa->kelas)
-            ->where('tahun_ajaran', $tahunAjaran)
-            ->get();
+        $jadwalMatkul = new JadwalMatkul();
 
         // Ambil semua ID jadwal_matkul yang ditemukan
         $jadwalMatkulIds = $jadwalMatkul->pluck('id');
 
         $data = [
-            'jadwalMatkul' => $jadwalMatkul,
+            'jadwalMatkul' => $jadwalMatkul->mahasiswaLoged($tahunAjaran),
 
             // Ambil semua nilai mahasiswa untuk jadwal_matkul tersebut
             'nilaiMatkul' => NilaiMahasiswa::select('id', 'jadwal_matkuls_id', 'nilai')
                 ->where('mahasiswa_user_id', Auth::user()->mahasiswa->id)
                 ->whereIn('jadwal_matkuls_id', $jadwalMatkulIds)
-                ->get()
+                ->get(),
+
+            'histori' => $jadwalMatkul->histori(Auth::user()->mahasiswa->program_studi_id,  $tahunAjaran),
+            'tahunAjaran' => $tahunAjaran,
         ];
 
         return Inertia::render('mahasiswa/nilai', $data);

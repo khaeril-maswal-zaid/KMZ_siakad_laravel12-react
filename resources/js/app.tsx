@@ -6,6 +6,18 @@ import { createRoot } from 'react-dom/client';
 import { route as routeFn } from 'ziggy-js';
 import { initializeTheme } from './hooks/use-appearance';
 
+// const csrfToken = document.guerySelector('meta[name="csrf-token"]');
+// const originalFetch = window.fetch;
+// window.fetch = (input, init = {}) => {
+//     init.headers = {
+//         ...init.headers,
+//         'X-CSRF-TOKEN': csrfToken,
+//         Accept: 'application/json',
+//     };
+
+//     return originalFetch(input, init);
+// };
+
 declare global {
     const route: typeof routeFn;
 }

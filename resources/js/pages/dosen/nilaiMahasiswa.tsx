@@ -109,40 +109,40 @@ export default function nilaiMahasiswa() {
                     <table className="w-full border-collapse border border-gray-300">
                         <thead>
                             <tr className="bg-gray-100">
-                                <th rowSpan={2} className="w-8 border border-gray-300 py-1.5 text-xs">
+                                <th rowSpan={2} className="w-8 border border-gray-300 py-1.5 text-sm">
                                     No
                                 </th>
-                                <th rowSpan={2} className="w-36 border border-gray-300 px-4 py-1.5 text-xs">
+                                <th rowSpan={2} className="w-36 border border-gray-300 px-4 py-1.5 text-sm">
                                     Nama
                                 </th>
-                                <th rowSpan={2} className="w-20 border border-gray-300 px-2 py-1.5 text-xs">
+                                <th rowSpan={2} className="w-20 border border-gray-300 px-2 py-1.5 text-sm">
                                     NIM
                                 </th>
-                                <th rowSpan={2} className="w-20 border border-gray-300 px-2 py-1.5 text-xs">
+                                <th rowSpan={2} className="w-20 border border-gray-300 px-2 py-1.5 text-sm">
                                     Nilai
                                 </th>
-                                <th colSpan={4} className="w-28 border border-gray-300 px-4 py-1.5 text-xs">
+                                <th colSpan={4} className="w-28 border border-gray-300 px-4 py-1.5 text-sm">
                                     Rekapitulasi Absensi
                                 </th>
                             </tr>
                             <tr className="bg-gray-100">
-                                <th className="w-16 border border-gray-300 py-1.5 text-xs">Hadir</th>
-                                <th className="w-16 border border-gray-300 py-1.5 text-xs">Sakit</th>
-                                <th className="w-16 border border-gray-300 py-1.5 text-xs">Izin</th>
-                                <th className="w-16 border border-gray-300 py-1.5 text-xs">Alpa</th>
+                                <th className="w-16 border border-gray-300 py-1.5 text-sm">Hadir</th>
+                                <th className="w-16 border border-gray-300 py-1.5 text-sm">Sakit</th>
+                                <th className="w-16 border border-gray-300 py-1.5 text-sm">Izin</th>
+                                <th className="w-16 border border-gray-300 py-1.5 text-sm">Alpa</th>
                             </tr>
                         </thead>
                         <tbody>
                             {dataNilai.map((mhs, index) => (
                                 <tr key={mhs.id} className="text-sm">
-                                    <td className="border border-gray-300 py-1.5 text-center text-xs">{index + 1}</td>
-                                    <td className="border border-gray-300 px-2.5 py-1.5 text-xs">{mhs.user?.name}</td>
-                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-xs">{mhs.nim}</td>
-                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-xs">{mhs.nilai} </td>
-                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-xs">{mhs.rekap_absensi.H}</td>
-                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-xs">{mhs.rekap_absensi.S}</td>
-                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-xs">{mhs.rekap_absensi.I}</td>
-                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-xs">{mhs.rekap_absensi.A}</td>
+                                    <td className="border border-gray-300 py-1.5 text-center text-sm">{index + 1}</td>
+                                    <td className="border border-gray-300 px-2.5 py-1.5 text-sm">{mhs.user?.name}</td>
+                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-sm">{mhs.nim}</td>
+                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-sm">{mhs.nilai} </td>
+                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-sm">{mhs.rekap_absensi.H}</td>
+                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-sm">{mhs.rekap_absensi.S}</td>
+                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-sm">{mhs.rekap_absensi.I}</td>
+                                    <td className="border border-gray-300 px-2 py-1.5 text-center text-sm">{mhs.rekap_absensi.A}</td>
                                 </tr>
                             ))}
                         </tbody>

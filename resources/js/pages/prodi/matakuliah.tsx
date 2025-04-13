@@ -99,43 +99,44 @@ export default function mataKuliah() {
                     </div>
                 )}
 
-                <div className="grid auto-rows-min gap-4 md:grid-cols-2">
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border rounded-md border">
+                <div className="grid auto-rows-min grid-cols-1 gap-4 md:grid-cols-3">
+                    {/* Kolom Tabel - Lebar */}
+                    <div className="border-sidebar-border/70 dark:border-sidebar-border overflow-x-auto rounded-md border md:col-span-2">
                         <table className="w-full border-collapse border border-gray-300">
                             <thead>
                                 <tr className="bg-gray-100">
                                     <th className="border border-gray-300 px-2.5 py-1.5 text-xs">No</th>
-                                    <th className="w-auto border border-gray-300 px-2.5 py-1.5 text-xs whitespace-nowrap">Kode Matkul</th>
+                                    <th className="w-auto border border-gray-300 px-1.5 py-1.5 text-xs whitespace-nowrap">Kode Matkul</th>
                                     <th className="border border-gray-300 px-4 py-1.5 text-xs">Nama Matkul</th>
                                     <th className="border border-gray-300 px-4 py-1.5 text-xs">Singkatan Matkul</th>
                                     <th className="border border-gray-300 px-4 py-1.5 text-xs">SKS</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {mataKuliahs.map((item, index) => {
-                                    return (
-                                        <tr key={index}>
-                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
-                                                {index + 1}
-                                            </td>
-                                            <td className="w-auto border border-gray-300 px-2.5 py-1.5 text-center text-xs whitespace-nowrap text-gray-700 dark:text-gray-600">
-                                                {item.kode_matkul}
-                                            </td>
-                                            <td className="border border-gray-300 px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-600">
-                                                {item.nama_matkul}
-                                            </td>
-                                            <td className="border border-gray-300 px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-600">
-                                                {item.singkatan_matkul}
-                                            </td>
-                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
-                                                {item.sks}
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
+                                {mataKuliahs.map((item, index) => (
+                                    <tr key={index}>
+                                        <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                            {index + 1}
+                                        </td>
+                                        <td className="w-auto border border-gray-300 px-2.5 py-1.5 text-center text-xs whitespace-nowrap text-gray-700 dark:text-gray-600">
+                                            {item.kode_matkul}
+                                        </td>
+                                        <td className="border border-gray-300 px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-600">
+                                            {item.nama_matkul}
+                                        </td>
+                                        <td className="border border-gray-300 px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-600">
+                                            {item.singkatan_matkul}
+                                        </td>
+                                        <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                            {item.sks}
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                     </div>
+
+                    {/* Kolom Form - Ramping */}
                     <div className="border-sidebar-border/70 dark:border-sidebar-border rounded-md border bg-gray-50 p-4">
                         <h2 className="mb-2 font-semibold">Tambah Mata Kuliah</h2>
                         <hr className="mb-4 border border-b-gray-300" />
@@ -184,7 +185,7 @@ export default function mataKuliah() {
                             </div>
 
                             <div className="mb-6">
-                                <label htmlFor="singkatan" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                                <label htmlFor="sks" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
                                     Jumlah SKS
                                 </label>
                                 <input
@@ -197,7 +198,7 @@ export default function mataKuliah() {
                                 />
                             </div>
 
-                            <div className="">
+                            <div>
                                 <button
                                     type="submit"
                                     className="cursor-pointer rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"

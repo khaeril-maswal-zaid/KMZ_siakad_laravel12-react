@@ -9,9 +9,9 @@ use App\Http\Controllers\MataKuliahController;
 use App\Http\Controllers\NilaiMahasiswaController;
 use App\Http\Controllers\ProdiUserController;
 use App\Http\Controllers\ProgramAngkatanController;
+use App\Http\Controllers\SkripsiController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Auth;
 
 
 Route::get('/', function () {
@@ -22,7 +22,18 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified', 'ruleUser:mahasiswa'])->group(function () {
     Route::get('/mahasiswa', [MahaiswaUserController::class, 'show'])->name('mahasiswa.index'); //Sengaja beda nama route dengan method
 
+    Route::get('/jadwal-perkulihan/', [JadwalMatkulController::class, 'show'])->name('jadwalperkuliahan.show');
     Route::get('/nilai/', [NilaiMahasiswaController::class, 'show'])->name('nilaimahasiswa.show');
+    Route::get('/absensi/', [AbsensiController::class, 'show'])->name('absensi.show');
+
+    Route::get('/progres-skripsi', [SkripsiController::class, 'create'])->name('skripsi.create');
+    Route::post('/skripsi/store', [SkripsiController::class, 'store'])->name('skripsi.store');
+    Route::patch('/skripsi/edit/{skripsi}', [SkripsiController::class, 'edit'])->name('skripsi.edit');
+    Route::patch('/skripsi/ujia-tutup/{skripsi}', [SkripsiController::class, 'tutup'])->name('skripsi.tutup');
+    Route::patch('/skripsi/acc-proposal/{skripsi}', [SkripsiController::class, 'accproposal'])->name('skripsi.accproposal');
+    Route::patch('/skripsi/daftar-ujian-hasil/{skripsi}', [SkripsiController::class, 'DaftarHasil'])->name('skripsi.daftarhasil');
+
+    Route::get('/program-akademik', [ProgramAngkatanController::class, 'show'])->name('programangkatan.show');
 });
 // ----------------- END MAHASISWA AREA -------------------------------------------------
 
@@ -38,6 +49,8 @@ Route::middleware(['auth', 'verified', 'ruleUser:dosen'])->group(function () {
 
     Route::get('/absensi-perkuliahan/create', [AbsensiController::class, 'create'])->name('absensi.create');
     Route::post('/absensi-perkuliahan/store', [AbsensiController::class, 'store'])->name('absensi.store');
+
+    Route::get('/mahasiswa-bimbingan/', [SkripsiController::class, 'index'])->name('skripsi.pembimbing');
 });
 // ----------------- END DOSEN AREA -------------------------------------------------
 
@@ -56,7 +69,7 @@ Route::middleware(['auth', 'verified', 'ruleUser:prodi'])->group(function () {
     Route::get('/jadwal-perkuliahan', [JadwalMatkulController::class, 'index'])->name('jadwalperkuliahan.index');
     Route::get('/jadwal-perkuliahan/create', [JadwalMatkulController::class, 'create'])->name('jadwalperkuliahan.create');
     Route::post('/jadwal-perkuliahan', [JadwalMatkulController::class, 'store'])->name('jadwalperkuliahan.store');
-    Route::post('/jadwal-perkuliahan/update', [JadwalMatkulController::class, 'update'])->name('jadwalperkuliahan.update');
+    Route::patch('/jadwal-perkuliahan/update', [JadwalMatkulController::class, 'update'])->name('jadwalperkuliahan.update');
 
     Route::get('/jadwal-perkuliahan/data-nilai', [JadwalMatkulController::class, 'terjadwal'])->defaults("key", "nilai")->name('jadwalperkuliahan.nilai');
     Route::get('/jadwal-perkuliahan/absensi-mahasiswa', [JadwalMatkulController::class, 'terjadwal'])->defaults("key", "absensi")->name('jadwalperkuliahan.absensi');
@@ -71,6 +84,11 @@ Route::middleware(['auth', 'verified', 'ruleUser:prodi'])->group(function () {
 
     Route::get('/daftar-mata-kuliah', [MataKuliahController::class, 'index'])->name('matakuliah.index');
     Route::post('/daftar-mata-kuliah/store', [MataKuliahController::class, 'store'])->name('matakuliah.store');
+
+    Route::get('/skripsi/', [SkripsiController::class, 'index'])->name('skripsi.index');
+    Route::patch('/skripsi/update/{skripsi}', [SkripsiController::class, 'update'])->name('skripsi.update');
+    Route::patch('/skripsi/ujian-proposal/{skripsi}', [SkripsiController::class, 'UjianProposal'])->name('skripsi.propsal');
+    Route::patch('/skripsi/ujian-hasil/{skripsi}', [SkripsiController::class, 'UjianHasil'])->name('skripsi.hasil');
 });
 // ----------------- END PRODI AREA -------------------------------------------------
 

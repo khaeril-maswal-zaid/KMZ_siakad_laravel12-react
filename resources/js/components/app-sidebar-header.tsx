@@ -6,8 +6,10 @@ import { usePage } from '@inertiajs/react';
 import Absensi from '@/components/kmz_headers/dosen_absensi';
 import Nilai from '@/components/kmz_headers/dosen_nilai';
 import JadwalDosen from '@/components/kmz_headers/dosen_riwayat_mengajar';
+import MahasiswaAbsensi from '@/components/kmz_headers/mahasiswa_absensi';
+import MahasiswaJadwal from '@/components/kmz_headers/mahasiswa_jadwal';
+import MahasiswaNilai from '@/components/kmz_headers/mahasiswa_nilai';
 import Jadwal from '@/components/kmz_headers/prodi_jadwal';
-import JadwalAdd from '@/components/kmz_headers/prodi_jadwal_add';
 import JadwalBerlansung from '@/components/kmz_headers/prodi_jadwal_berlansung';
 import Terjadwal from '@/components/kmz_headers/prodi_jadwal_terjadwal';
 import Mahasiswa from '@/components/kmz_headers/prodi_mahasiswa';
@@ -17,13 +19,15 @@ import ProgramAngkatan from '@/components/kmz_headers/prodi_program_angkatan';
 const headerComponents = {
     'prodi/mahasiswa': Mahasiswa,
     'prodi/jadwalperkuliahan': Jadwal,
-    'prodi/jadwalperkuliahanadd': JadwalAdd,
     'prodi/jadwalperkuliahanberlansung': JadwalBerlansung,
     'prodi/jadwalperkuliahanterjadwal': Terjadwal,
     'dosen/absensiPerkuliahan': Absensi,
     'dosen/nilaiMahasiswa': Nilai,
     'prodi/programangkatan': ProgramAngkatan,
     'dosen/jadwalMengajar': JadwalDosen,
+    'mahasiswa/nilai': MahasiswaNilai,
+    'mahasiswa/absensi': MahasiswaAbsensi,
+    'mahasiswa/jadwal': MahasiswaJadwal,
 };
 
 export function AppSidebarHeader({ breadcrumbs = [] }) {

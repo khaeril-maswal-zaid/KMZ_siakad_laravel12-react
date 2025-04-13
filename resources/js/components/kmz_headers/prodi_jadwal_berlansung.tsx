@@ -25,6 +25,11 @@ export default function JadwalBerlansung() {
                 value={selectedTahun}
                 onChange={handleChange}
             >
+                {histori.length === 0 && (
+                    <option className="text-xs" value="">
+                        Riwayat belum ada
+                    </option>
+                )}
                 {histori.map((item, index) => (
                     <option className="text-xs" key={index} value={item.tahun_ajaran}>
                         {item.tahun_ajaran}

@@ -2,7 +2,7 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import { MoreHorizontal } from 'lucide-react';
+import { Eye, MoreHorizontal, Pencil, Trash } from 'lucide-react';
 import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -220,20 +220,28 @@ export default function jadwalPerkuliahan() {
                                     <td className="border border-gray-300 px-2 text-center text-xs">
                                         <DropdownMenu.Root>
                                             <DropdownMenu.Trigger asChild>
-                                                <button className="cursor-pointer rounded-full bg-gray-200 p-1 hover:bg-gray-300">
-                                                    <MoreHorizontal className="h-3 w-3" />
+                                                <button className="cursor-pointer rounded-full bg-gray-100 p-1 transition hover:bg-gray-200">
+                                                    <MoreHorizontal className="h-4 w-4 text-gray-600" />
                                                 </button>
                                             </DropdownMenu.Trigger>
 
                                             <DropdownMenu.Portal>
-                                                <DropdownMenu.Content className="z-50 w-32 rounded-md bg-white p-1 shadow-md">
-                                                    <DropdownMenu.Item className="hover:bo cursor-pointer px-3 py-2 text-sm hover:bg-gray-100">
+                                                <DropdownMenu.Content
+                                                    className="animate-in fade-in zoom-in-95 z-50 w-40 rounded-xl border border-gray-200 bg-white p-1 shadow-lg"
+                                                    sideOffset={8}
+                                                >
+                                                    <DropdownMenu.Item className="group flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100">
+                                                        <Eye className="h-4 w-4 text-gray-500 group-hover:text-blue-500" />
                                                         Detail
                                                     </DropdownMenu.Item>
-                                                    <DropdownMenu.Item className="cursor-pointer px-3 py-2 text-sm hover:bg-gray-100">
+
+                                                    <DropdownMenu.Item className="group flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100">
+                                                        <Pencil className="h-4 w-4 text-gray-500 group-hover:text-yellow-500" />
                                                         Edit
                                                     </DropdownMenu.Item>
-                                                    <DropdownMenu.Item className="cursor-pointer px-3 py-2 text-sm text-red-500 hover:bg-red-100">
+
+                                                    <DropdownMenu.Item className="group flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm text-red-500 transition-colors hover:bg-red-50">
+                                                        <Trash className="h-4 w-4 text-red-400 group-hover:text-red-600" />
                                                         Hapus
                                                     </DropdownMenu.Item>
                                                 </DropdownMenu.Content>
