@@ -10,7 +10,9 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function jadwalMengajar() {
-    const { jadwalMengajar, key } = usePage().props;
+    const { konfigurasi, fakultasProdi, flash, auth } = usePage<SharedData>().props;
+
+    const { jadwalMengajar, key, tahunAjaran } = usePage().props;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -18,17 +20,39 @@ export default function jadwalMengajar() {
 
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 overflow-hidden rounded-md border md:min-h-min">
+                    <table className="mx-3 my-5 w-full text-xs">
+                        <tbody>
+                            <tr>
+                                <td className="w-28 pe-3 pb-1">Fakultas</td>
+                                <td className="w-2 pe-2 pb-1">:</td>
+                                <td className="pb-1">{fakultasProdi?.fakultas?.nama_fakultas}</td>
+                            </tr>
+                            <tr>
+                                <td className="w-28 pe-3 pb-1">Prodi</td>
+                                <td className="w-2 pe-2 pb-1">:</td>
+                                <td className="pb-1">{fakultasProdi?.nama_prodi}</td>
+                            </tr>
+                            <tr>
+                                <td className="pe-3 pb-1">Tahun Ajaran</td>
+                                <td className="pe-2 pb-1">:</td>
+                                <td className="pb-1">{tahunAjaran}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
                     <table className="w-full border-collapse border border-gray-300">
                         <thead>
                             <tr className="bg-gray-100">
-                                <th className="w-12 border border-gray-300 px-4 py-1.5 text-sm">No</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-sm">Mata Kuliah</th>
-                                <th className="w-1/12 border border-gray-300 px-4 py-1.5 text-sm">SKS</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-sm">Kelas</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-sm">Hari</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-sm">Waktu</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-sm">Ruangan</th>
-                                {key !== 'riwayat' && <th className="border border-gray-300 px-4 py-1.5 text-sm">Aksi</th>}
+                                <th className="w-12 border border-gray-300 px-4 py-1.5 text-sm dark:border-gray-500 dark:text-gray-900">No</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-sm dark:border-gray-500 dark:text-gray-900">Mata Kuliah</th>
+                                <th className="w-1/12 border border-gray-300 px-4 py-1.5 text-sm dark:border-gray-500 dark:text-gray-900">SKS</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-sm dark:border-gray-500 dark:text-gray-900">Kelas</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-sm dark:border-gray-500 dark:text-gray-900">Hari</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-sm dark:border-gray-500 dark:text-gray-900">Waktu</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-sm dark:border-gray-500 dark:text-gray-900">Ruangan</th>
+                                {key !== 'riwayat' && (
+                                    <th className="border border-gray-300 px-4 py-1.5 text-sm dark:border-gray-500 dark:text-gray-900">Aksi</th>
+                                )}
                             </tr>
                         </thead>
                         <tbody>

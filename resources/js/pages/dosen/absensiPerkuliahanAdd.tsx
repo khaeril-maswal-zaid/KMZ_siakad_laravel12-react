@@ -12,6 +12,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function AbsensiPerkuliahanAdd() {
     const { konfigurasi, fakultasProdi } = usePage<SharedData>().props;
     const { mahasiswas, jadwalMatkul, absensi, paramAbsensiSession } = usePage().props;
+    console.log(paramAbsensiSession);
 
     // 1. Buat 'map' untuk mempercepat pencarian absensi yang sudah ada
     const absensiMap = {};
@@ -130,25 +131,31 @@ export default function AbsensiPerkuliahanAdd() {
                             <table className="min-w-[1460px] border-collapse border border-gray-300">
                                 <thead>
                                     <tr className="bg-gray-100">
-                                        <th rowSpan={2} className="w-9 border border-gray-300 py-1.5 text-xs">
+                                        <th rowSpan={2} className="w-9 border border-gray-300 py-1.5 text-xs dark:text-gray-900">
                                             No
                                         </th>
-                                        <th rowSpan={2} className="w-auto border border-gray-300 px-4 py-1.5 text-xs whitespace-nowrap">
+                                        <th
+                                            rowSpan={2}
+                                            className="w-auto border border-gray-300 px-4 py-1.5 text-xs whitespace-nowrap dark:text-gray-900"
+                                        >
                                             Nama
                                         </th>
-                                        <th rowSpan={2} className="w-auto border border-gray-300 px-4 py-1.5 text-xs whitespace-nowrap">
+                                        <th
+                                            rowSpan={2}
+                                            className="w-auto border border-gray-300 px-4 py-1.5 text-xs whitespace-nowrap dark:text-gray-900"
+                                        >
                                             NIM
                                         </th>
-                                        <th rowSpan={2} className="border border-gray-300 px-4 py-1.5 text-xs">
+                                        <th rowSpan={2} className="border border-gray-300 px-4 py-1.5 text-xs dark:text-gray-900">
                                             Status
                                         </th>
-                                        <th colSpan={16} className="border border-gray-300 px-4 py-1.5 text-xs">
+                                        <th colSpan={16} className="border border-gray-300 px-4 py-1.5 text-xs dark:text-gray-900">
                                             Pertemuan
                                         </th>
                                     </tr>
                                     <tr className="bg-gray-100">
                                         {[...Array(16)].map((_, index) => (
-                                            <th key={index} className="border border-gray-300 px-4 py-1.5 text-xs">
+                                            <th key={index} className="border border-gray-300 px-4 py-1.5 text-xs dark:text-gray-900">
                                                 {index + 1}
                                             </th>
                                         ))}
@@ -168,7 +175,7 @@ export default function AbsensiPerkuliahanAdd() {
                                                 return (
                                                     <td key={pertemuanKe} className="ps-1 text-xs">
                                                         <select
-                                                            className="block w-full cursor-pointer rounded-lg border border-gray-300 p-1 text-xs text-gray-900"
+                                                            className="bg-background block w-full cursor-pointer rounded-lg border border-gray-300 p-1 text-xs text-gray-900 dark:text-gray-100"
                                                             onChange={(e) => handleAbsensiChange(mhs.id, pertemuanKe, e.target.value)}
                                                             value={selectedValue}
                                                         >

@@ -64,7 +64,6 @@ export default function Index() {
                         </ul>
                     </div>
                 </div>
-                );
             </div>
         </AppLayout>
     );

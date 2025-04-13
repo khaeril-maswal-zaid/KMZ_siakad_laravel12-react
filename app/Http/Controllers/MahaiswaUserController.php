@@ -40,7 +40,6 @@ class MahaiswaUserController extends Controller
             'mahasiswas' => $query->orderBy('nim', 'asc')->paginate(15)
         ];
 
-
         return Inertia::render('prodi/mahasiswa', $data);
     }
 

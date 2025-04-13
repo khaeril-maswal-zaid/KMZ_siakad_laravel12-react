@@ -43,7 +43,7 @@ class JadwalMatkulController extends Controller
                     'dosen:id,user_id,nidn', // Pastikan 'user_id' ikut diambil agar bisa dipakai di relasi berikutnya
                     'dosen.user:id,name', // Ambil 'name' dari tabel users
 
-                    'programAngkatan:id', // formalitas
+                    'programAngkatan:id,angkatan', // formalitas
                 ])
                 ->where('kelas', $request->kelas)
                 ->get(),
@@ -203,6 +203,7 @@ class JadwalMatkulController extends Controller
 
     public function mengajar(Request $request, $key)
     {
+
         $request->session()->forget(['paramNilaiSession', 'paramAbsensiSession']);
 
         // Ambil user yang sedang login
@@ -237,7 +238,8 @@ class JadwalMatkulController extends Controller
 
             'histori' => $this->jadwalMatkul->histori(Auth::user()->dosen->program_studi_id,  $this->tahunAjaran),
 
-            'key' => $key
+            'key' => $key,
+            'tahunAjaran' => $tahunAjaran
         ];
 
         return Inertia::render('dosen/jadwalMengajar', $data);

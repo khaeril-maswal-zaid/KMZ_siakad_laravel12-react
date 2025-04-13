@@ -28,7 +28,6 @@ import { useState } from 'react';
 export default function CardSkripsi() {
     const { konfigurasi, fakultasProdi, flash, auth } = usePage<SharedData>().props;
     const { title, resercher } = usePage().props;
-    const { errors } = usePage().props; // ← Inertia shared errors
     const [showAlert, setShowAlert] = useState(true);
 
     const statusComponents = {
@@ -100,16 +99,6 @@ export default function CardSkripsi() {
                                 />
                             </svg>
                         </button>
-                    </div>
-                )}
-
-                {Object.keys(errors).length > 0 && (
-                    <div className="mb-4 rounded-md border border-red-400 bg-red-100 p-4 text-sm text-red-700">
-                        <ul className="list-disc pl-5">
-                            {Object.entries(errors).map(([key, message], index) => (
-                                <li key={index}>{message}</li>
-                            ))}
-                        </ul>
                     </div>
                 )}
 

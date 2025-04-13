@@ -7,7 +7,7 @@ export default function Index() {
     // Cek jika key bukan 'riwayat', return null (tidak render apa pun)
     if (key !== 'riwayat') return null;
 
-    const [selectedTahun, setSelectedTahun] = useState(histori.length > 0 ? histori[0].tahun_ajaran : '');
+    const [selectedTahun, setSelectedTahun] = useState();
 
     const handleChange = (event) => {
         const value = event.target.value;

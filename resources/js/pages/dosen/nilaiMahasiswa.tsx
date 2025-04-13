@@ -109,27 +109,27 @@ export default function nilaiMahasiswa() {
                     <table className="w-full border-collapse border border-gray-300">
                         <thead>
                             <tr className="bg-gray-100">
-                                <th rowSpan={2} className="w-8 border border-gray-300 py-1.5 text-sm">
+                                <th rowSpan={2} className="w-8 border border-gray-300 py-1.5 text-sm dark:text-black">
                                     No
                                 </th>
-                                <th rowSpan={2} className="w-36 border border-gray-300 px-4 py-1.5 text-sm">
+                                <th rowSpan={2} className="w-36 border border-gray-300 px-4 py-1.5 text-sm dark:text-black">
                                     Nama
                                 </th>
-                                <th rowSpan={2} className="w-20 border border-gray-300 px-2 py-1.5 text-sm">
+                                <th rowSpan={2} className="w-20 border border-gray-300 px-2 py-1.5 text-sm dark:text-black">
                                     NIM
                                 </th>
-                                <th rowSpan={2} className="w-20 border border-gray-300 px-2 py-1.5 text-sm">
+                                <th rowSpan={2} className="w-20 border border-gray-300 px-2 py-1.5 text-sm dark:text-black">
                                     Nilai
                                 </th>
-                                <th colSpan={4} className="w-28 border border-gray-300 px-4 py-1.5 text-sm">
+                                <th colSpan={4} className="w-28 border border-gray-300 px-4 py-1.5 text-sm dark:text-black">
                                     Rekapitulasi Absensi
                                 </th>
                             </tr>
                             <tr className="bg-gray-100">
-                                <th className="w-16 border border-gray-300 py-1.5 text-sm">Hadir</th>
-                                <th className="w-16 border border-gray-300 py-1.5 text-sm">Sakit</th>
-                                <th className="w-16 border border-gray-300 py-1.5 text-sm">Izin</th>
-                                <th className="w-16 border border-gray-300 py-1.5 text-sm">Alpa</th>
+                                <th className="w-16 border border-gray-300 py-1.5 text-sm dark:text-black">Hadir</th>
+                                <th className="w-16 border border-gray-300 py-1.5 text-sm dark:text-black">Sakit</th>
+                                <th className="w-16 border border-gray-300 py-1.5 text-sm dark:text-black">Izin</th>
+                                <th className="w-16 border border-gray-300 py-1.5 text-sm dark:text-black">Alpa</th>
                             </tr>
                         </thead>
                         <tbody>

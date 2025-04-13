@@ -19,7 +19,7 @@ class MataKuliahController extends Controller
             'mataKuliahs' => MataKuliah::select(['id', 'kode_matkul', 'nama_matkul', 'singkatan_matkul', 'sks'])
                 ->where('program_studi_id', $prodiFromAdmin)
                 ->orderBy('kode_matkul', 'asc')
-                ->get()
+                ->paginate(15)
         ];
         return Inertia::render('prodi/matakuliah', $data);
     }

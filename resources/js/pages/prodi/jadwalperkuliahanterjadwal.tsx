@@ -41,46 +41,50 @@ export default function terjadwal() {
                     <table className="w-full border-collapse border border-gray-300">
                         <thead>
                             <tr className="bg-gray-100">
-                                <th className="border border-gray-300 px-2.5 py-3 text-xs">No</th>
-                                <th className="w-auto border border-gray-300 px-2 py-3 text-xs whitespace-nowrap">Dosen Pengampu</th>
-                                <th className="border border-gray-300 px-2 py-3 text-xs">NIDN</th>
-                                <th className="w-auto border border-gray-300 px-2 py-3 text-xs whitespace-nowrap">Mata Kuliah</th>
-                                <th className="w-1/12 border border-gray-300 px-2 py-3 text-xs">SKS</th>
-                                <th className="border border-gray-300 px-2 py-3 text-xs">Angkatan</th>
-                                <th className="border border-gray-300 px-2 py-3 text-xs">Kelas</th>
-                                <th className="w-1/12 border border-gray-300 px-2 py-3 text-xs">Semester</th>
-                                <th className="border border-gray-300 px-2 py-3 text-xs">Aksi</th>
+                                <th className="border border-gray-300 px-2.5 py-3 text-xs dark:border-gray-600 dark:text-black">No</th>
+                                <th className="w-auto border border-gray-300 px-2 py-3 text-xs whitespace-nowrap dark:border-gray-600 dark:text-black">
+                                    Dosen Pengampu
+                                </th>
+                                <th className="border border-gray-300 px-2 py-3 text-xs dark:border-gray-600 dark:text-black">NIDN</th>
+                                <th className="w-auto border border-gray-300 px-2 py-3 text-xs whitespace-nowrap dark:border-gray-600 dark:text-black">
+                                    Mata Kuliah
+                                </th>
+                                <th className="w-1/12 border border-gray-300 px-2 py-3 text-xs dark:border-gray-600 dark:text-black">SKS</th>
+                                <th className="border border-gray-300 px-2 py-3 text-xs dark:border-gray-600 dark:text-black">Angkatan</th>
+                                <th className="border border-gray-300 px-2 py-3 text-xs dark:border-gray-600 dark:text-black">Kelas</th>
+                                <th className="w-1/12 border border-gray-300 px-2 py-3 text-xs dark:border-gray-600 dark:text-black">Semester</th>
+                                <th className="border border-gray-300 px-2 py-3 text-xs dark:border-gray-600 dark:text-black">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             {berlansung.map((data, index) => {
                                 return (
                                     <tr key={data.id || index}>
-                                        <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                        <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-200">
                                             {index + 1}
                                         </td>
-                                        <td className="border border-gray-300 px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-600">
+                                        <td className="border border-gray-300 px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-200">
                                             {data.dosen?.user?.name}
                                         </td>
-                                        <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                        <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-200">
                                             {data.dosen?.nidn}
                                         </td>
-                                        <td className="border border-gray-300 px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-600">
+                                        <td className="border border-gray-300 px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-200">
                                             {data.program_angkatan?.mata_kuliah?.nama_matkul}
                                         </td>
-                                        <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                        <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-200">
                                             {data.program_angkatan?.mata_kuliah?.sks}
                                         </td>
-                                        <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                        <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-200">
                                             {data.program_angkatan?.angkatan}
                                         </td>
-                                        <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                        <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-200">
                                             {data.kelas}
                                         </td>
-                                        <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                        <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-200">
                                             {data.program_angkatan?.semester}
                                         </td>
-                                        <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                        <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-200">
                                             {key == 'nilai' && (
                                                 <button
                                                     onClick={() => {

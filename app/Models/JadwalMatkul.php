@@ -27,7 +27,7 @@ class JadwalMatkul extends Model
      */
     protected $with = ['programAngkatan', 'dosen'];
 
-    public function dosen()
+    public function dosen(): BelongsTo
     {
         return $this->belongsTo(DosenUser::class, 'dosen_user_id', 'id');
     }
@@ -46,7 +46,7 @@ class JadwalMatkul extends Model
             })
             ->whereNot('tahun_ajaran', $notThisYear)
             ->distinct()
-            ->orderBy('tahun_ajaran', 'asc')
+            ->orderBy('tahun_ajaran', 'desc')
             ->get();
     }
 

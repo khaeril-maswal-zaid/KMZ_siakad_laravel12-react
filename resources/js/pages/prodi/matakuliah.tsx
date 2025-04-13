@@ -105,39 +105,53 @@ export default function mataKuliah() {
                         <table className="w-full border-collapse border border-gray-300">
                             <thead>
                                 <tr className="bg-gray-100">
-                                    <th className="border border-gray-300 px-2.5 py-1.5 text-xs">No</th>
-                                    <th className="w-auto border border-gray-300 px-1.5 py-1.5 text-xs whitespace-nowrap">Kode Matkul</th>
-                                    <th className="border border-gray-300 px-4 py-1.5 text-xs">Nama Matkul</th>
-                                    <th className="border border-gray-300 px-4 py-1.5 text-xs">Singkatan Matkul</th>
-                                    <th className="border border-gray-300 px-4 py-1.5 text-xs">SKS</th>
+                                    <th className="border border-gray-300 px-2.5 py-2 text-xs dark:text-gray-900">No</th>
+                                    <th className="w-auto border border-gray-300 px-2 py-2 text-xs whitespace-nowrap dark:text-gray-900">
+                                        Kode Matkul
+                                    </th>
+                                    <th className="border border-gray-300 px-4 py-2 text-xs dark:text-gray-900">Nama Matkul</th>
+                                    <th className="border border-gray-300 px-4 py-2 text-xs dark:text-gray-900">Singkatan Matkul</th>
+                                    <th className="border border-gray-300 px-4 py-2 text-xs dark:text-gray-900">SKS</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {mataKuliahs.map((item, index) => (
+                                {mataKuliahs.data.map((item, index) => (
                                     <tr key={index}>
-                                        <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                        <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-200">
                                             {index + 1}
                                         </td>
-                                        <td className="w-auto border border-gray-300 px-2.5 py-1.5 text-center text-xs whitespace-nowrap text-gray-700 dark:text-gray-600">
+                                        <td className="w-auto border border-gray-300 px-2.5 py-1.5 text-center text-xs whitespace-nowrap text-gray-700 dark:text-gray-200">
                                             {item.kode_matkul}
                                         </td>
-                                        <td className="border border-gray-300 px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-600">
+                                        <td className="border border-gray-300 px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-200">
                                             {item.nama_matkul}
                                         </td>
-                                        <td className="border border-gray-300 px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-600">
+                                        <td className="border border-gray-300 px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-200">
                                             {item.singkatan_matkul}
                                         </td>
-                                        <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                        <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-200">
                                             {item.sks}
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
+
+                        <div className="my-4 flex justify-center">
+                            {mataKuliahs?.links?.map((link, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => link.url && (window.location.href = link.url)}
+                                    disabled={!link.url}
+                                    className={`mx-1 cursor-pointer rounded-lg px-3 py-1 text-xs ${link.active ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:text-black'}`}
+                                    dangerouslySetInnerHTML={{ __html: link.label }}
+                                />
+                            ))}
+                        </div>
                     </div>
 
                     {/* Kolom Form - Ramping */}
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border rounded-md border bg-gray-50 p-4">
+                    <div className="border-sidebar-border/70 dark:border-sidebar-border rounded-md border bg-gray-50 p-4 dark:bg-neutral-900">
                         <h2 className="mb-2 font-semibold">Tambah Mata Kuliah</h2>
                         <hr className="mb-4 border border-b-gray-300" />
 
@@ -151,8 +165,9 @@ export default function mataKuliah() {
                                     name="kode"
                                     value={data.kode}
                                     onChange={(e) => setData('kode', e.target.value)}
-                                    className="block w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+                                    className="block w-full rounded-lg border border-gray-300 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:text-white"
                                     required
+                                    autoFocus
                                 />
                             </div>
 
@@ -165,7 +180,7 @@ export default function mataKuliah() {
                                     name="nama"
                                     value={data.nama}
                                     onChange={(e) => setData('nama', e.target.value)}
-                                    className="block w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+                                    className="block w-full rounded-lg border border-gray-300 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:text-white"
                                     required
                                 />
                             </div>
@@ -179,7 +194,7 @@ export default function mataKuliah() {
                                     name="singkatan"
                                     value={data.singkatan}
                                     onChange={(e) => setData('singkatan', e.target.value)}
-                                    className="block w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+                                    className="block w-full rounded-lg border border-gray-300 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:text-white"
                                     required
                                 />
                             </div>
@@ -193,7 +208,7 @@ export default function mataKuliah() {
                                     name="sks"
                                     value={data.sks}
                                     onChange={(e) => setData('sks', e.target.value)}
-                                    className="block w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+                                    className="block w-full rounded-lg border border-gray-300 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:text-white"
                                     required
                                 />
                             </div>

@@ -195,15 +195,15 @@ export default function jadwalPerkuliahan() {
                     <table className="w-full border-collapse border border-gray-300">
                         <thead>
                             <tr className="bg-gray-100">
-                                <th className="w-5 border border-gray-300 px-2 py-1.5 text-xs">No</th>
-                                <th className="border border-gray-300 px-2 py-1.5 text-xs">NIM</th>
-                                <th className="border border-gray-300 px-2 py-1.5 text-xs">Nama</th>
-                                <th className="border border-gray-300 px-2 py-1.5 text-xs">Kelas</th>
-                                <th className="border border-gray-300 px-2 py-1.5 text-xs">Email</th>
-                                <th className="border border-gray-300 px-2 py-1.5 text-xs">JK</th>
-                                <th className="border border-gray-300 px-2 py-1.5 text-xs">Tanggal Lahir</th>
-                                <th className="border border-gray-300 px-2 py-1.5 text-xs">No Hp</th>
-                                <th className="border border-gray-300 px-2 py-1.5 text-xs">Aksi</th>
+                                <th className="w-5 border border-gray-300 px-2 py-1.5 text-xs dark:text-black">No</th>
+                                <th className="border border-gray-300 px-2 py-1.5 text-xs dark:text-black">NIM</th>
+                                <th className="border border-gray-300 px-2 py-1.5 text-xs dark:text-black">Nama</th>
+                                <th className="border border-gray-300 px-2 py-1.5 text-xs dark:text-black">Kelas</th>
+                                <th className="border border-gray-300 px-2 py-1.5 text-xs dark:text-black">Email</th>
+                                <th className="border border-gray-300 px-2 py-1.5 text-xs dark:text-black">JK</th>
+                                <th className="border border-gray-300 px-2 py-1.5 text-xs dark:text-black">Tanggal Lahir</th>
+                                <th className="border border-gray-300 px-2 py-1.5 text-xs dark:text-black">No Hp</th>
+                                <th className="border border-gray-300 px-2 py-1.5 text-xs dark:text-black">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -260,7 +260,7 @@ export default function jadwalPerkuliahan() {
                             key={index}
                             onClick={() => link.url && (window.location.href = link.url)}
                             disabled={!link.url}
-                            className={`mx-1 cursor-pointer rounded-lg px-3 py-1 text-xs ${link.active ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                            className={`mx-1 cursor-pointer rounded-lg px-3 py-1 text-xs ${link.active ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:text-black'}`}
                             dangerouslySetInnerHTML={{ __html: link.label }}
                         />
                     ))}

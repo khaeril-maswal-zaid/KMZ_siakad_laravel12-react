@@ -2,7 +2,7 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import { MoreHorizontal } from 'lucide-react';
+import { Eye, MoreHorizontal, Pencil } from 'lucide-react';
 import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -83,49 +83,55 @@ export default function programAngkatan() {
                         <table className="w-full border-collapse border border-gray-300">
                             <thead>
                                 <tr className="bg-gray-100">
-                                    <th className="border border-gray-300 px-4 py-1.5 text-xs">No</th>
-                                    <th className="border border-gray-300 px-4 py-1.5 text-xs">Angkatan</th>
-                                    <th className="border border-gray-300 px-4 py-1.5 text-xs">Total SKS</th>
-                                    <th className="border border-gray-300 px-4 py-1.5 text-xs">Jumlah Matkul</th>
-                                    <th className="border border-gray-300 px-4 py-1.5 text-xs">Aksi</th>
+                                    <th className="border border-gray-300 px-4 py-1.5 text-xs dark:text-gray-900">No</th>
+                                    <th className="border border-gray-300 px-4 py-1.5 text-xs dark:text-gray-900">Angkatan</th>
+                                    <th className="border border-gray-300 px-4 py-1.5 text-xs dark:text-gray-900">Total SKS</th>
+                                    <th className="border border-gray-300 px-4 py-1.5 text-xs dark:text-gray-900">Jumlah Matkul</th>
+                                    <th className="border border-gray-300 px-4 py-1.5 text-xs dark:text-gray-900">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {prolan.map((item, index) => {
                                     return (
                                         <tr key={item.id || index}>
-                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-200">
                                                 {index + 1}
                                             </td>
-                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-200">
                                                 {item.angkatan}
                                             </td>
-                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-200">
                                                 {item.totalSks}
                                             </td>
-                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-200">
                                                 {item.jumlahMatkul}
                                             </td>
-                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-200">
                                                 <DropdownMenu.Root>
                                                     <DropdownMenu.Trigger asChild>
-                                                        <button className="cursor-pointer rounded-full bg-gray-200 p-1 hover:bg-gray-300">
-                                                            <MoreHorizontal className="h-3 w-3" />
+                                                        <button className="cursor-pointer rounded-full bg-gray-100 p-1 transition hover:bg-gray-200">
+                                                            <MoreHorizontal className="h-4 w-4 text-gray-600" />
                                                         </button>
                                                     </DropdownMenu.Trigger>
 
                                                     <DropdownMenu.Portal>
-                                                        <DropdownMenu.Content className="z-50 w-40 rounded-md bg-white p-1 shadow-md">
+                                                        <DropdownMenu.Content
+                                                            className="animate-in fade-in zoom-in-95 z-50 w-40 rounded-xl border border-gray-200 bg-white p-1 shadow-lg"
+                                                            sideOffset={8}
+                                                        >
                                                             <DropdownMenu.Item
                                                                 onClick={() => {
                                                                     router.get(route('programangkatan.showindex', item.angkatan));
                                                                 }}
-                                                                className="hover:bo cursor-pointer px-3 py-2 text-sm hover:bg-gray-100"
+                                                                className="group flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm text-gray-800 transition-colors hover:bg-gray-100"
                                                             >
+                                                                <Eye className="h-4 w-4 text-gray-500 group-hover:text-blue-500" />
                                                                 View
                                                             </DropdownMenu.Item>
-                                                            <DropdownMenu.Item className="cursor-pointer px-3 py-2 text-sm hover:bg-gray-100">
-                                                                Copy for next year
+
+                                                            <DropdownMenu.Item className="group flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm text-gray-800 transition-colors hover:bg-gray-100">
+                                                                <Pencil className="h-4 w-4 text-gray-500 group-hover:text-yellow-500" />
+                                                                Copy next year
                                                             </DropdownMenu.Item>
                                                         </DropdownMenu.Content>
                                                     </DropdownMenu.Portal>
@@ -161,30 +167,30 @@ export default function programAngkatan() {
                         <table className="w-full border-collapse border border-gray-300">
                             <thead>
                                 <tr className="bg-gray-100">
-                                    <th className="border border-gray-300 px-4 py-1.5 text-xs">No</th>
-                                    <th className="border border-gray-300 px-4 py-1.5 text-xs">Kode Matkul</th>
-                                    <th className="border border-gray-300 px-4 py-1.5 text-xs">Mata Kuliah</th>
-                                    <th className="border border-gray-300 px-4 py-1.5 text-xs">SKS</th>
-                                    <th className="border border-gray-300 px-4 py-1.5 text-xs">Semester</th>
+                                    <th className="border border-gray-300 px-4 py-1.5 text-xs dark:text-gray-900">No</th>
+                                    <th className="border border-gray-300 px-4 py-1.5 text-xs dark:text-gray-900">Kode Matkul</th>
+                                    <th className="border border-gray-300 px-4 py-1.5 text-xs dark:text-gray-900">Mata Kuliah</th>
+                                    <th className="border border-gray-300 px-4 py-1.5 text-xs dark:text-gray-900">SKS</th>
+                                    <th className="border border-gray-300 px-4 py-1.5 text-xs dark:text-gray-900">Semester</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {details.map((data, index) => {
                                     return (
                                         <tr key={data.id || index}>
-                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-200">
                                                 {index + 1}
                                             </td>
-                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-200">
                                                 {data.mata_kuliah?.kode_matkul}
                                             </td>
-                                            <td className="border border-gray-300 px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-600">
+                                            <td className="border border-gray-300 px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-200">
                                                 {data.mata_kuliah?.nama_matkul}
                                             </td>
-                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-200">
                                                 {data.mata_kuliah?.sks}
                                             </td>
-                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-200">
                                                 {data.semester}
                                             </td>
                                         </tr>

@@ -4,7 +4,7 @@ import { useState } from 'react';
 export default function Absensi() {
     const { histori, key } = usePage().props; // Ambil tahun ajaran dari backend
 
-    const [selectedTahun, setSelectedTahun] = useState(histori.length > 0 ? histori[0].tahun_ajaran : '');
+    const [selectedTahun, setSelectedTahun] = useState();
 
     const handleChange = (event) => {
         const value = event.target.value;
@@ -29,6 +29,7 @@ export default function Absensi() {
                 value={selectedTahun}
                 onChange={handleChange}
             >
+                <option value="">Pilih</option>
                 {histori.length === 0 && (
                     <option className="text-xs" value="">
                         Riwayat belum ada

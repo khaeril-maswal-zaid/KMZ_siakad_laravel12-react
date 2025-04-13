@@ -322,13 +322,13 @@ export default function jadwalPerkuliahan() {
                     <table className="w-full border-collapse border border-gray-300">
                         <thead>
                             <tr className="bg-gray-100">
-                                <th className="border border-gray-300 px-4 py-1.5 text-xs">No</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-xs">Mata Kuliah</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-xs">SKS</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-xs">Dosen</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-xs">Hari</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-xs">Waktu</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-xs">Ruangan</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-xs dark:text-black">No</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-xs dark:text-black">Mata Kuliah</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-xs dark:text-black">SKS</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-xs dark:text-black">Dosen</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-xs dark:text-black">Hari</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-xs dark:text-black">Waktu</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-xs dark:text-black">Ruangan</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -355,7 +355,7 @@ export default function jadwalPerkuliahan() {
                                                     name={`rows[${index}].dosen`}
                                                     onChange={(e) => handleRowChange(index, 'dosen', e.target.value)}
                                                     value={rows[index]?.dosen || jadwal.dosen_user_id || ''}
-                                                    className="block w-full cursor-pointer rounded-lg border border-gray-300 p-2 text-xs text-gray-900"
+                                                    className="bg-background block w-full cursor-pointer rounded-lg border border-gray-300 p-2 text-xs text-gray-900 dark:text-white"
                                                 >
                                                     <option value="">Pilih Dosen</option>
                                                     {dosens.map((dosen, indexx) => (
@@ -372,7 +372,7 @@ export default function jadwalPerkuliahan() {
                                                     name={`rows[${index}].hari`}
                                                     onChange={(e) => handleRowChange(index, 'hari', e.target.value)}
                                                     value={rows[index]?.hari || jadwal.hari || ''}
-                                                    className="block w-full cursor-pointer rounded-lg border border-gray-300 p-2 text-xs text-gray-900"
+                                                    className="bg-background block w-full cursor-pointer rounded-lg border border-gray-300 p-2 text-xs text-gray-900 dark:text-white"
                                                 >
                                                     <option value="">Pilih Hari</option>
                                                     <option value="Senin">Senin</option>
@@ -390,7 +390,7 @@ export default function jadwalPerkuliahan() {
                                                     name={`rows[${index}].waktu`}
                                                     onChange={(e) => handleRowChange(index, 'waktu', e.target.value)}
                                                     value={rows[index]?.waktu || jadwal.waktu || ''}
-                                                    className="block w-full rounded-lg border border-gray-300 p-2 text-xs text-gray-900"
+                                                    className="block w-full rounded-lg border border-gray-300 p-2 text-xs text-gray-900 dark:text-white"
                                                     ref={index === 0 ? firstInputRef : null}
                                                 />
                                             </td>
@@ -401,7 +401,7 @@ export default function jadwalPerkuliahan() {
                                                     name={`rows[${index}].ruangan`}
                                                     onChange={(e) => handleRowChange(index, 'ruangan', e.target.value)}
                                                     value={rows[index]?.ruangan || jadwal.ruangan || ''}
-                                                    className="block w-full rounded-lg border border-gray-300 p-2 text-xs text-gray-900"
+                                                    className="block w-full rounded-lg border border-gray-300 p-2 text-xs text-gray-900 dark:text-white"
                                                 />
                                             </td>
                                         </tr>

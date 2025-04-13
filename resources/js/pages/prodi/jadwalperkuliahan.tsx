@@ -245,16 +245,12 @@ export default function jadwalPerkuliahan() {
                                 <td className="w-2 pe-2 pb-1">:</td>
                                 <td className="pb-1">{fakultasProdi?.nama_prodi}</td>
                             </tr>
-                            <tr>
-                                <td className="pe-3 pb-1">Tahun Ajaran</td>
-                                <td className="pe-2 pb-1">:</td>
-                                <td className="pb-1">{konfigurasi.tahun_ajar}</td>
-                            </tr>
+
                             <tr>
                                 <td className="pe-3 pb-1">Angkatan/ Kelas</td>
                                 <td className="pe-2 pb-1">:</td>
                                 <td className="pb-1">
-                                    {selectedAngkatan}/ {selectedKelas}
+                                    {resulstApiJadwal[0]?.program_angkatan.angkatan}/ {resulstApiJadwal[0]?.kelas}
                                 </td>
                             </tr>
                             <tr>
@@ -268,14 +264,14 @@ export default function jadwalPerkuliahan() {
                     <table className="w-full border-collapse border border-gray-300">
                         <thead>
                             <tr className="bg-gray-100">
-                                <th className="border border-gray-300 px-2 py-1.5 text-xs whitespace-nowrap">No</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-xs whitespace-nowrap">Mata Kuliah</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-xs whitespace-nowrap">SKS</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-xs whitespace-nowrap">Semester</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-xs whitespace-nowrap">Dosen</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-xs whitespace-nowrap">Hari</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-xs whitespace-nowrap">Waktu</th>
-                                <th className="border border-gray-300 px-4 py-1.5 text-xs whitespace-nowrap">Ruangan</th>
+                                <th className="border border-gray-300 px-2 py-1.5 text-xs whitespace-nowrap dark:text-black">No</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-xs whitespace-nowrap dark:text-black">Mata Kuliah</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-xs whitespace-nowrap dark:text-black">SKS</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-xs whitespace-nowrap dark:text-black">Semester</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-xs whitespace-nowrap dark:text-black">Dosen</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-xs whitespace-nowrap dark:text-black">Hari</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-xs whitespace-nowrap dark:text-black">Waktu</th>
+                                <th className="border border-gray-300 px-4 py-1.5 text-xs whitespace-nowrap dark:text-black">Ruangan</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -285,30 +281,30 @@ export default function jadwalPerkuliahan() {
 
                                     return (
                                         <tr key={data.id || index}>
-                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-200">
                                                 {index + 1}
                                             </td>
-                                            <td className="border border-gray-300 px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-600">
+                                            <td className="border border-gray-300 px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-200">
                                                 {data.mata_kuliah?.nama_matkul}
                                             </td>
-                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-200">
                                                 {data.mata_kuliah?.sks}
                                             </td>
-                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-200">
                                                 {data.semester}
                                             </td>
-                                            <td className="border border-gray-300 px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-600">
+                                            <td className="border border-gray-300 px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-200">
                                                 {(jadwal.dosen?.user?.name || '') +
                                                     (jadwal.dosen?.user?.name && jadwal.dosen?.nidn ? ' _ ' : '') +
                                                     (jadwal.dosen?.nidn || '')}
                                             </td>
-                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-200">
                                                 {jadwal.hari}
                                             </td>
-                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-200">
                                                 {jadwal.waktu}
                                             </td>
-                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-600">
+                                            <td className="border border-gray-300 px-2.5 py-1.5 text-center text-xs text-gray-700 dark:text-gray-200">
                                                 {jadwal.ruangan}
                                             </td>
                                         </tr>

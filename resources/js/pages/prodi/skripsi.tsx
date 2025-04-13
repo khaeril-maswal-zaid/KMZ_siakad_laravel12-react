@@ -17,7 +17,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function jadwalPerkuliahan() {
-    const { konfigurasi, fakultasProdi, flash } = usePage<SharedData>().props;
+    const { konfigurasi, fakultasProdi, flash, auth } = usePage<SharedData>().props;
     const { resercher, role, dosens } = usePage().props;
     const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i);
 
@@ -29,7 +29,11 @@ export default function jadwalPerkuliahan() {
     };
 
     const handleFilter = (year) => {
-        router.get(route('skripsi.index'), { angkatan: year }, { preserveState: true });
+        if (auth.user?.role == 'dosen') {
+            router.get(route('skripsi.pembimbing'), { angkatan: year }, { preserveState: true });
+        } else if (auth.user?.role == 'prodi') {
+            router.get(route('skripsi.index'), { angkatan: year }, { preserveState: true });
+        }
     };
 
     // ---------------------------------------------------------------
@@ -39,7 +43,11 @@ export default function jadwalPerkuliahan() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        get(route('skripsi.index'));
+        if (auth.user?.role == 'dosen') {
+            get(route('skripsi.pembimbing'));
+        } else if (auth.user?.role == 'prodi') {
+            get(route('skripsi.index'));
+        }
     };
 
     // ---------------------------------------------------------------
@@ -69,6 +77,7 @@ export default function jadwalPerkuliahan() {
             preserveScroll: true,
             onSuccess: () => {
                 setOpenPembimbing(false);
+                resetPemb();
             },
             onError: () => {
                 //
@@ -103,6 +112,7 @@ export default function jadwalPerkuliahan() {
             preserveScroll: true,
             onSuccess: () => {
                 setOpenPenguji(false);
+                resetPeng();
             },
             onError: (pengErrors) => {},
         });
@@ -132,12 +142,12 @@ export default function jadwalPerkuliahan() {
 
     const handleSubmitPengujiHasil = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log(pengData.id_skripsi);
 
         patchHas(route('skripsi.hasil', pengData.id_skripsi), {
             preserveScroll: true,
             onSuccess: () => {
                 setOpenPengujiHasil(false);
+                resetHas();
             },
             onError: (pengErrors) => {
                 console.log(pengErrors);
@@ -191,7 +201,7 @@ export default function jadwalPerkuliahan() {
                     <div className="relative w-full">
                         <select
                             id="selectProdi"
-                            className="peer block w-full appearance-none rounded-lg border border-gray-300 bg-gray-100 p-2.5 px-3 py-2 pt-5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                            className="peer block w-full appearance-none rounded-lg border border-gray-300 bg-gray-100 p-2.5 px-3 py-2 pt-5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-900 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                         >
                             <option>{fakultasProdi?.fakultas?.nama_fakultas}</option>
                         </select>
@@ -218,7 +228,7 @@ export default function jadwalPerkuliahan() {
                     <div className="relative w-full">
                         <select
                             id="SelectProdi"
-                            className="peer block w-full cursor-pointer appearance-none rounded-lg border border-gray-300 bg-gray-100 p-2.5 px-3 py-2 pt-5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                            className="peer block w-full cursor-pointer appearance-none rounded-lg border border-gray-300 bg-gray-100 p-2.5 px-3 py-2 pt-5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-900 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                         >
                             <option>{fakultasProdi?.nama_prodi}</option>
                         </select>
@@ -308,6 +318,7 @@ export default function jadwalPerkuliahan() {
                                     className="block w-full rounded-lg border border-gray-300 p-2.5 ps-9 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                                     placeholder="Name, NIM, NIK"
                                     name="abboya"
+                                    autoFocus
                                     value={data.abboya}
                                     onChange={(e) => setData('abboya', e.target.value)}
                                 />
@@ -327,15 +338,21 @@ export default function jadwalPerkuliahan() {
                     <table className="w-full border-collapse border border-gray-300">
                         <thead>
                             <tr className="bg-gray-100">
-                                <th className="w-5 border border-gray-300 px-2 py-1.5 text-xs">No</th>
-                                <th className="border border-gray-300 px-2 py-1.5 text-xs">Nama</th>
-                                <th className="border border-gray-300 px-2 py-1.5 text-xs">NIM</th>
-                                <th className="border border-gray-300 px-2 py-1.5 text-xs">Kelas</th>
-                                <th className="border border-gray-300 px-2 py-1.5 text-xs">Judul</th>
-                                <th className="border border-gray-300 px-2 py-1.5 text-xs text-nowrap">Pembimbing I</th>
-                                <th className="border border-gray-300 px-2 py-1.5 text-xs text-nowrap">Pembimbing II</th>
-                                <th className="border border-gray-300 px-2 py-1.5 text-xs">Status Progres</th>
-                                {role == 'prodi' && <th className="border border-gray-300 px-2 py-1.5 text-xs">Aksi</th>}
+                                <th className="w-5 border border-gray-300 px-2 py-1.5 text-xs dark:border-gray-400 dark:text-gray-900">No</th>
+                                <th className="border border-gray-300 px-2 py-1.5 text-xs dark:border-gray-400 dark:text-gray-900">Nama</th>
+                                <th className="border border-gray-300 px-2 py-1.5 text-xs dark:border-gray-400 dark:text-gray-900">NIM</th>
+                                <th className="border border-gray-300 px-2 py-1.5 text-xs dark:border-gray-400 dark:text-gray-900">Kelas</th>
+                                <th className="border border-gray-300 px-2 py-1.5 text-xs dark:border-gray-400 dark:text-gray-900">Judul</th>
+                                <th className="border border-gray-300 px-2 py-1.5 text-xs text-nowrap dark:border-gray-400 dark:text-gray-900">
+                                    Pembimbing I
+                                </th>
+                                <th className="border border-gray-300 px-2 py-1.5 text-xs text-nowrap dark:border-gray-400 dark:text-gray-900">
+                                    Pembimbing II
+                                </th>
+                                <th className="border border-gray-300 px-2 py-1.5 text-xs dark:border-gray-400 dark:text-gray-900">Status Progres</th>
+                                {role == 'prodi' && (
+                                    <th className="border border-gray-300 px-2 py-1.5 text-xs dark:border-gray-400 dark:text-gray-900">Aksi</th>
+                                )}
                             </tr>
                         </thead>
                         <tbody>
@@ -425,7 +442,7 @@ export default function jadwalPerkuliahan() {
                             key={index}
                             onClick={() => link.url && (window.location.href = link.url)}
                             disabled={!link.url}
-                            className={`mx-1 cursor-pointer rounded-lg px-3 py-1 text-xs ${link.active ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                            className={`mx-1 cursor-pointer rounded-lg px-3 py-1 text-xs ${link.active ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:text-gray-900'}`}
                             dangerouslySetInnerHTML={{ __html: link.label }}
                         />
                     ))}
@@ -487,7 +504,7 @@ export default function jadwalPerkuliahan() {
                                         <div>
                                             <label className="mb-1 block text-sm font-medium text-gray-700">Pembimbing 1</label>
                                             <Select value={pembData.pembimbing1} onValueChange={(val) => setPembData('pembimbing1', val)}>
-                                                <SelectTrigger className="w-full rounded-lg border border-gray-300 bg-white text-sm shadow-sm focus:ring-1 focus:ring-blue-500">
+                                                <SelectTrigger className="w-full rounded-lg border border-gray-300 text-sm shadow-sm focus:ring-1 focus:ring-blue-500 dark:text-gray-900">
                                                     <SelectValue placeholder="-- Pilih Dosen --" />
                                                 </SelectTrigger>
                                                 <SelectContent side="bottom">
@@ -498,13 +515,14 @@ export default function jadwalPerkuliahan() {
                                                     ))}
                                                 </SelectContent>
                                             </Select>
+                                            {pembErrors.pembimbing1 && <div className="mt-2 text-xs text-red-500">{pembErrors.pembimbing1}</div>}
                                         </div>
 
                                         {/* Pembimbing 2 */}
                                         <div>
                                             <label className="mb-1 block text-sm font-medium text-gray-700">Pembimbing 2</label>
                                             <Select value={pembData.pembimbing2} onValueChange={(val) => setPembData('pembimbing2', val)}>
-                                                <SelectTrigger className="w-full rounded-lg border border-gray-300 bg-white text-sm shadow-sm focus:ring-1 focus:ring-blue-500">
+                                                <SelectTrigger className="w-full rounded-lg border border-gray-300 text-sm shadow-sm focus:ring-1 focus:ring-blue-500 dark:text-gray-900">
                                                     <SelectValue placeholder="-- Pilih Dosen --" />
                                                 </SelectTrigger>
                                                 <SelectContent>
@@ -515,6 +533,7 @@ export default function jadwalPerkuliahan() {
                                                     ))}
                                                 </SelectContent>
                                             </Select>
+                                            {pembErrors.pembimbing2 && <div className="mt-2 text-xs text-red-500">{pembErrors.pembimbing2}</div>}
                                         </div>
                                     </div>
                                 </div>
@@ -601,6 +620,7 @@ export default function jadwalPerkuliahan() {
                                                     ))}
                                                 </SelectContent>
                                             </Select>
+                                            {pengErrors.penguji1 && <div className="mt-2 text-xs text-red-500">{pengErrors.penguji1}</div>}
                                         </div>
 
                                         {/* Penguji 2 */}
@@ -618,6 +638,7 @@ export default function jadwalPerkuliahan() {
                                                     ))}
                                                 </SelectContent>
                                             </Select>
+                                            {pengErrors.penguji2 && <div className="mt-2 text-xs text-red-500">{pengErrors.penguji2}</div>}
                                         </div>
                                     </div>
                                     <div className="">
@@ -628,7 +649,7 @@ export default function jadwalPerkuliahan() {
                                             value={pengData.tanggalujian}
                                             onChange={(e) => setPengData('tanggalujian', e.target.value)}
                                         />
-                                        {pengErrors.tanggalujian && <div className="mt-1 text-sm text-red-500">{pengErrors.tanggal}</div>}
+                                        {pengErrors.tanggalujian && <div className="mt-1 text-xs text-red-500">{pengErrors.tanggalujian}</div>}
                                     </div>
                                 </div>
 
@@ -714,6 +735,7 @@ export default function jadwalPerkuliahan() {
                                                     ))}
                                                 </SelectContent>
                                             </Select>
+                                            {hasErrors.penguji1 && <div className="mt-2 text-xs text-red-500">{hasErrors.penguji1}</div>}
                                         </div>
 
                                         {/* Penguji 2 */}
@@ -731,6 +753,7 @@ export default function jadwalPerkuliahan() {
                                                     ))}
                                                 </SelectContent>
                                             </Select>
+                                            {hasErrors.penguji2 && <div className="mt-2 text-xs text-red-500">{hasErrors.penguji2}</div>}
                                         </div>
                                         {/* Penguji 3 */}
                                         <div>
@@ -747,9 +770,10 @@ export default function jadwalPerkuliahan() {
                                                     ))}
                                                 </SelectContent>
                                             </Select>
+                                            {hasErrors.penguji3 && <div className="mt-2 text-xs text-red-500">{hasErrors.penguji3}</div>}
                                         </div>
 
-                                        {/* Penguji 2 */}
+                                        {/* Penguji 4 */}
                                         <div>
                                             <label className="mb-1 block text-sm font-medium text-gray-700">Penguji 4</label>
                                             <Select value={hasData.penguji4} onValueChange={(val) => setHasData('penguji4', val)}>
@@ -764,6 +788,7 @@ export default function jadwalPerkuliahan() {
                                                     ))}
                                                 </SelectContent>
                                             </Select>
+                                            {hasErrors.penguji4 && <div className="mt-2 text-xs text-red-500">{hasErrors.penguji4}</div>}
                                         </div>
                                     </div>
                                     <div className="">
@@ -774,7 +799,7 @@ export default function jadwalPerkuliahan() {
                                             value={hasData.tanggalujian}
                                             onChange={(e) => setHasData('tanggalujian', e.target.value)}
                                         />
-                                        {hasErrors.tanggalujian && <div className="mt-1 text-sm text-red-500">{hasErrors.tanggal}</div>}
+                                        {hasErrors.tanggalujian && <div className="mt-1 text-sm text-red-500">{hasErrors.tanggalujian}</div>}
                                     </div>
                                 </div>
 

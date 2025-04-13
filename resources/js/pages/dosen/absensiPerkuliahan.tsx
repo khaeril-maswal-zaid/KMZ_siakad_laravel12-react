@@ -68,9 +68,9 @@ export default function AbsensiPerkuliahan() {
                             <tr>
                                 <td className="w-28 pe-3 pb-1">Fakultas</td>
                                 <td className="w-2 pe-2 pb-1">:</td>
-                                <td className="w-auto pe-7 pb-1 whitespace-nowrap">{fakultasProdi?.fakultas?.nama_fakultas}</td>
+                                <td className="w-auto pe-12 pb-1 whitespace-nowrap">{fakultasProdi?.fakultas?.nama_fakultas}</td>
 
-                                <td className="w-28 pe-3 pb-1">Mata Kuliah</td>
+                                <td className="w-25 pe-3 pb-1">Mata Kuliah</td>
                                 <td className="w-2 pe-2 pb-1">:</td>
                                 <td className="pe-9 pb-1">{jadwalMatkul.program_angkatan?.mata_kuliah?.nama_matkul}</td>
                             </tr>
@@ -109,32 +109,32 @@ export default function AbsensiPerkuliahan() {
                     <table className="min-w-full border-collapse border border-gray-300">
                         <thead>
                             <tr className="bg-gray-100">
-                                <th rowSpan={2} className="w-7 border border-gray-300 px-2 py-1.5 text-xs">
+                                <th rowSpan={2} className="w-7 border border-gray-300 px-2 py-1.5 text-xs dark:text-gray-900">
                                     No
                                 </th>
-                                <th rowSpan={2} className="border border-gray-300 px-4 py-1.5 text-xs">
+                                <th rowSpan={2} className="border border-gray-300 px-4 py-1.5 text-xs dark:text-gray-900">
                                     Nama
                                 </th>
-                                <th rowSpan={2} className="border border-gray-300 px-2 py-1.5 text-xs">
+                                <th rowSpan={2} className="border border-gray-300 px-2 py-1.5 text-xs dark:text-gray-900">
                                     NIM
                                 </th>
-                                <th colSpan={16} className="border border-gray-300 px-4 py-1.5 text-xs">
+                                <th colSpan={16} className="border border-gray-300 px-4 py-1.5 text-xs dark:text-gray-900">
                                     Pertemuan
                                 </th>
-                                <th colSpan={4} className="border border-gray-300 px-4 py-1.5 text-xs">
+                                <th colSpan={4} className="border border-gray-300 px-4 py-1.5 text-xs dark:text-gray-900">
                                     Rekapitulasi
                                 </th>
                             </tr>
                             <tr className="bg-gray-100">
                                 {[...Array(16)].map((_, index) => (
-                                    <th key={index} className="w-9 border border-gray-300 py-1.5 text-xs">
+                                    <th key={index} className="w-9 border border-gray-300 py-1.5 text-xs dark:text-gray-900">
                                         {index + 1}
                                     </th>
                                 ))}
-                                <th className="w-10 border border-gray-300 py-2 text-xs">Hadir</th>
-                                <th className="w-10 border border-gray-300 py-2 text-xs">Sakit</th>
-                                <th className="w-10 border border-gray-300 py-2 text-xs">Izin</th>
-                                <th className="w-10 border border-gray-300 py-2 text-xs">Alpa</th>
+                                <th className="w-10 border border-gray-300 py-2 text-xs dark:text-gray-900">Hadir</th>
+                                <th className="w-10 border border-gray-300 py-2 text-xs dark:text-gray-900">Sakit</th>
+                                <th className="w-10 border border-gray-300 py-2 text-xs dark:text-gray-900">Izin</th>
+                                <th className="w-10 border border-gray-300 py-2 text-xs dark:text-gray-900">Alpa</th>
                             </tr>
                         </thead>
                         <tbody>
