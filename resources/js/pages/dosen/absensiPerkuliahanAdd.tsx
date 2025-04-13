@@ -12,7 +12,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function AbsensiPerkuliahanAdd() {
     const { konfigurasi, fakultasProdi } = usePage<SharedData>().props;
     const { mahasiswas, jadwalMatkul, absensi, paramAbsensiSession } = usePage().props;
-    console.log(paramAbsensiSession);
+    // console.log(paramAbsensiSession);
 
     // 1. Buat 'map' untuk mempercepat pencarian absensi yang sudah ada
     const absensiMap = {};
@@ -24,6 +24,7 @@ export default function AbsensiPerkuliahanAdd() {
     // 2. Inisialisasi form
     const { data, setData, post, processing, errors } = useForm({
         jadwal_matkuls_id: paramAbsensiSession['idJadwal'],
+        program_angkatan_id: paramAbsensiSession['id_angkatan'],
         absensi: mahasiswas.map((mhs) => ({
             id: mhs.id,
             pertemuan: Object.fromEntries(
@@ -46,6 +47,7 @@ export default function AbsensiPerkuliahanAdd() {
     // 4. Handle submit ke server
     const handleSubmit = (e) => {
         e.preventDefault();
+        console.log(data);
         post(route('absensi.store'));
     };
 

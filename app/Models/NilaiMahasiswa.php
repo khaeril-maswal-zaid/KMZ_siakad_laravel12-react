@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class NilaiMahasiswa extends Model
 {
     protected $fillable = [
-        'jadwal_matkuls_id',
+        'program_angkatan_id',
         'mahasiswa_user_id',
         'nilai',
         'created_by'

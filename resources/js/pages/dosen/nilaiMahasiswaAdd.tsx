@@ -18,6 +18,7 @@ export default function NilaiMahasiswaAdd() {
 
     // Inisialisasi form
     const { data, setData, post, processing, errors } = useForm({
+        program_angkatan_id: paramNilaiSession.id_angkatan,
         jadwal_matkuls_id: paramNilaiSession.idJadwal,
         // dataNilai sudah mengandung informasi lengkap per mahasiswa
         dataNilai: dataNilai.map((mhs) => ({
@@ -123,27 +124,27 @@ export default function NilaiMahasiswaAdd() {
                         <table className="w-full border-collapse border border-gray-300">
                             <thead>
                                 <tr className="bg-gray-100">
-                                    <th rowSpan={2} className="w-8 border border-gray-300 py-1.5 text-sm">
+                                    <th rowSpan={2} className="w-8 border border-gray-300 py-1.5 text-sm dark:text-gray-900">
                                         No
                                     </th>
-                                    <th rowSpan={2} className="w-36 border border-gray-300 px-4 py-1.5 text-sm">
+                                    <th rowSpan={2} className="w-36 border border-gray-300 px-4 py-1.5 text-sm dark:text-gray-900">
                                         Nama
                                     </th>
-                                    <th rowSpan={2} className="w-20 border border-gray-300 px-2 py-1.5 text-sm">
+                                    <th rowSpan={2} className="w-20 border border-gray-300 px-2 py-1.5 text-sm dark:text-gray-900">
                                         NIM
                                     </th>
-                                    <th rowSpan={2} className="w-20 border border-gray-300 px-2 py-1.5 text-sm">
+                                    <th rowSpan={2} className="w-20 border border-gray-300 px-2 py-1.5 text-sm dark:text-gray-900">
                                         Nilai
                                     </th>
-                                    <th colSpan={4} className="w-28 border border-gray-300 px-4 py-1.5 text-sm">
+                                    <th colSpan={4} className="w-28 border border-gray-300 px-4 py-1.5 text-sm dark:text-gray-900">
                                         Rekapitulasi Absensi
                                     </th>
                                 </tr>
                                 <tr className="bg-gray-100">
-                                    <th className="w-16 border border-gray-300 py-1.5 text-sm">Hadir</th>
-                                    <th className="w-16 border border-gray-300 py-1.5 text-sm">Sakit</th>
-                                    <th className="w-16 border border-gray-300 py-1.5 text-sm">Izin</th>
-                                    <th className="w-16 border border-gray-300 py-1.5 text-sm">Alpa</th>
+                                    <th className="w-16 border border-gray-300 py-1.5 text-sm dark:text-gray-900">Hadir</th>
+                                    <th className="w-16 border border-gray-300 py-1.5 text-sm dark:text-gray-900">Sakit</th>
+                                    <th className="w-16 border border-gray-300 py-1.5 text-sm dark:text-gray-900">Izin</th>
+                                    <th className="w-16 border border-gray-300 py-1.5 text-sm dark:text-gray-900">Alpa</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -155,7 +156,7 @@ export default function NilaiMahasiswaAdd() {
                                         <td className="text-center">
                                             <select
                                                 ref={index === 0 ? firstInputRef : null}
-                                                className="w-full cursor-pointer rounded-lg border border-gray-300 p-1.5 px-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                                className="bg-background w-full cursor-pointer rounded-lg border border-gray-300 p-1.5 px-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:text-gray-100"
                                                 value={item.nilai}
                                                 onChange={(e) => handleChange(index, e.target.value)}
                                             >

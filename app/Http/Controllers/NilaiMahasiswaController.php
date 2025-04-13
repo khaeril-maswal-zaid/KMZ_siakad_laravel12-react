@@ -51,12 +51,12 @@ class NilaiMahasiswaController extends Controller
 
         // Query data nilai final (misalnya huruf: A, B, C, dst)
         $nilaiSaved = NilaiMahasiswa::select('mahasiswa_user_id', 'nilai')
-            ->where('jadwal_matkuls_id', $paramNilaiSession['idJadwal'])
+            ->where('program_angkatan_id', $paramNilaiSession['id_angkatan'])
             ->get();
 
         // Query data absensi
-        $absensis = Absensi::select('mahasiswa_user_id', 'keterangan', 'jadwal_matkuls_id')
-            ->where('jadwal_matkuls_id', $paramNilaiSession['idJadwal'])
+        $absensis = Absensi::select('mahasiswa_user_id', 'keterangan', 'program_angkatan_id')
+            ->where('program_angkatan_id', $paramNilaiSession['id_angkatan'])
             ->get();
 
         // Buat mapping nilai: key = mahasiswa_user_id, value = nilai (huruf)
@@ -145,12 +145,12 @@ class NilaiMahasiswaController extends Controller
 
         // Query data nilai final (misalnya huruf: A, B, C, dst)
         $nilaiSaved = NilaiMahasiswa::select('mahasiswa_user_id', 'nilai')
-            ->where('jadwal_matkuls_id', $paramNilaiSession['idJadwal'])
+            ->where('program_angkatan_id', $paramNilaiSession['id_angkatan'])
             ->get();
 
         // Query data absensi
-        $absensis = Absensi::select('mahasiswa_user_id', 'keterangan', 'jadwal_matkuls_id')
-            ->where('jadwal_matkuls_id', $paramNilaiSession['idJadwal'])
+        $absensis = Absensi::select('mahasiswa_user_id', 'keterangan', 'program_angkatan_id')
+            ->where('program_angkatan_id', $paramNilaiSession['id_angkatan'])
             ->get();
 
         // Buat mapping nilai: key = mahasiswa_user_id, value = nilai (huruf)
@@ -212,6 +212,7 @@ class NilaiMahasiswaController extends Controller
     {
         // Validasi input dari request
         $validated = $request->validate([
+            'program_angkatan_id'         => 'required|integer|exists:program_angkatans,id',
             'jadwal_matkuls_id'         => 'required|integer|exists:jadwal_matkuls,id',
             'dataNilai'                     => 'required|array',
             'dataNilai.*.mahasiswa_user_id' => 'required|integer|exists:users,id',
@@ -236,7 +237,7 @@ class NilaiMahasiswaController extends Controller
         foreach ($validated['dataNilai'] as $item) {
             NilaiMahasiswa::updateOrCreate(
                 [
-                    'jadwal_matkuls_id' => $validated['jadwal_matkuls_id'],
+                    'program_angkatan_id' => $validated['program_angkatan_id'],
                     'mahasiswa_user_id' => $item['mahasiswa_user_id'],
                 ],
                 [
@@ -264,9 +265,9 @@ class NilaiMahasiswaController extends Controller
             'jadwalMatkul' => $jadwalMatkul->mahasiswaLoged($tahunAjaran),
 
             // Ambil semua nilai mahasiswa untuk jadwal_matkul tersebut
-            'nilaiMatkul' => NilaiMahasiswa::select('id', 'jadwal_matkuls_id', 'nilai')
+            'nilaiMatkul' => NilaiMahasiswa::select('id', 'program_angkatan_id', 'nilai')
                 ->where('mahasiswa_user_id', Auth::user()->mahasiswa->id)
-                ->whereIn('jadwal_matkuls_id', $jadwalMatkulIds)
+                ->whereIn('program_angkatan_id', $jadwalMatkulIds)
                 ->get(),
 
             'histori' => $jadwalMatkul->histori(Auth::user()->mahasiswa->program_studi_id,  $tahunAjaran),

@@ -42,8 +42,8 @@ class AbsensiController extends Controller
 
         //-----------------------------------------
         // Ambil data absensi
-        $absensis = Absensi::select(['pertemuan', 'mahasiswa_user_id', 'keterangan', 'jadwal_matkuls_id'])
-            ->where('jadwal_matkuls_id', $paramAbsensiSession['idJadwal'])
+        $absensis = Absensi::select(['pertemuan', 'mahasiswa_user_id', 'keterangan', 'program_angkatan_id'])
+            ->where('program_angkatan_id', $paramAbsensiSession['id_angkatan'])
             ->get();
 
         // Buat mapping absensi per mahasiswa per pertemuan
@@ -152,8 +152,8 @@ class AbsensiController extends Controller
                 ->orderBy('nim', 'asc')
                 ->get(),
 
-            'absensi' => Absensi::select(['pertemuan', 'mahasiswa_user_id', 'keterangan', 'jadwal_matkuls_id'])
-                ->where('jadwal_matkuls_id', $paramAbsensiSession['idJadwal'])
+            'absensi' => Absensi::select(['pertemuan', 'mahasiswa_user_id', 'keterangan', 'program_angkatan_id'])
+                ->where('program_angkatan_id', $paramAbsensiSession['id_angkatan'])
                 ->get(),
 
             'paramAbsensiSession' => $paramAbsensiSession
@@ -165,7 +165,8 @@ class AbsensiController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'jadwal_matkuls_id' => 'required|exists:jadwal_matkuls,id',
+            'program_angkatan_id' => 'required|integer|exists:program_angkatans,id',
+            'jadwal_matkuls_id' => 'required|integer|exists:jadwal_matkuls,id',
             'absensi' => 'required|array',
             'absensi.*.id' => 'required|exists:mahasiswa_users,id', // Sesuaikan dengan tabel mahasiswa
             'absensi.*.pertemuan' => 'required|array',
@@ -187,7 +188,7 @@ class AbsensiController extends Controller
             foreach ($absen['pertemuan'] as $pertemuan => $keterangan) {
                 Absensi::updateOrCreate(
                     [
-                        'jadwal_matkuls_id' => $validated['jadwal_matkuls_id'],
+                        'program_angkatan_id' => $validated['program_angkatan_id'],
                         'mahasiswa_user_id' => $absen['id'],
                         'pertemuan' => $pertemuan,
                     ],
@@ -205,7 +206,6 @@ class AbsensiController extends Controller
 
     public function show(Request $request)
     {
-
         $tahunAjaranDef = Konfigurasi::value('tahun_ajar');
         $tahunAjaran = $request->tahun_ajaran ?? $tahunAjaranDef;
 
@@ -218,9 +218,9 @@ class AbsensiController extends Controller
             'jadwalMatkul' => $jadwalMatkul->mahasiswaLoged($tahunAjaran),
 
             // Ambil semua nilai mahasiswa untuk jadwal_matkul tersebut
-            'absensis' => Absensi::select('id', 'jadwal_matkuls_id', 'keterangan', 'pertemuan')
+            'absensis' => Absensi::select('id', 'program_angkatan_id', 'keterangan', 'pertemuan')
                 ->where('mahasiswa_user_id', Auth::user()->mahasiswa->id)
-                ->whereIn('jadwal_matkuls_id', $jadwalMatkulIds)
+                ->whereIn('program_angkatan_id', $jadwalMatkulIds)
                 ->get(),
 
             'histori' => $jadwalMatkul->histori(Auth::user()->mahasiswa->program_studi_id,  $tahunAjaran),

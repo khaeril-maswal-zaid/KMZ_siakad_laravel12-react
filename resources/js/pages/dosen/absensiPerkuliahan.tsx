@@ -13,6 +13,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function AbsensiPerkuliahan() {
     const { konfigurasi, fakultasProdi, flash } = usePage<SharedData>().props;
     const { dataAbsensi, jadwalMatkul, paramAbsensiSession } = usePage().props;
+    console.log(dataAbsensi);
 
     const [showAlert, setShowAlert] = useState(true);
 

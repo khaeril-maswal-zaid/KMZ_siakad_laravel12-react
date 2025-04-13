@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('absensis', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('jadwal_matkuls_id')->constrained()->onDelete('cascade');
+            $table->foreignId('program_angkatan_id')->constrained()->onDelete('cascade');
             $table->foreignId('mahasiswa_user_id')->constrained()->onDelete('cascade');
             $table->string('keterangan', 1)->nullable(); // Format: "H", "A", "I", "S"
             $table->string('pertemuan', 2);
             $table->foreignId('created_by')->constrained('dosen_users')->onDelete('cascade');
 
-            $table->unique(['jadwal_matkuls_id', 'mahasiswa_user_id', 'pertemuan']);
+            $table->unique(['program_angkatan_id', 'mahasiswa_user_id', 'pertemuan']);
 
             $table->timestamps();
         });

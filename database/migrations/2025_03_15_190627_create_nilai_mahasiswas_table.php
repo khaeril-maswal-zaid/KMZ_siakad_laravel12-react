@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('nilai_mahasiswas', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('jadwal_matkuls_id')->constrained()->onDelete('cascade');
+            $table->foreignId('program_angkatan_id')->constrained()->onDelete('cascade');
             $table->foreignId('mahasiswa_user_id')->constrained()->onDelete('cascade');
-            $table->enum('nilai', ["A", "B", "C", "D", "E"])->nullable();
+            $table->enum('nilai', ["A", "B", "C", "D", "E", "T"])->nullable();
             $table->foreignId('created_by')->constrained('dosen_users')->onDelete('cascade');
 
-            $table->unique(['jadwal_matkuls_id', 'mahasiswa_user_id']);
+            $table->unique(['program_angkatan_id', 'mahasiswa_user_id']);
 
             $table->timestamps();
         });

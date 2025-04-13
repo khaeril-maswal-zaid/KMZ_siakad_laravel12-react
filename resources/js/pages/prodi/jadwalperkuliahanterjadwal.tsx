@@ -90,6 +90,7 @@ export default function terjadwal() {
                                                     onClick={() => {
                                                         router.get(route('nilaimahasiswa.paramSession'), {
                                                             angkatan: data.program_angkatan?.angkatan,
+                                                            id_angkatan: data.program_angkatan?.id,
                                                             kelas: data.kelas,
                                                             idJadwal: data.id,
                                                         });
@@ -105,6 +106,7 @@ export default function terjadwal() {
                                                     onClick={() => {
                                                         router.get(route('absensi.paramSession'), {
                                                             angkatan: data.program_angkatan?.angkatan,
+                                                            id_angkatan: data.program_angkatan?.id,
                                                             kelas: data.kelas,
                                                             idJadwal: data.id,
                                                         });
