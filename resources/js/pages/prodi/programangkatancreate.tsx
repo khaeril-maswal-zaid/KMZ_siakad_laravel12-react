@@ -103,7 +103,7 @@ export default function programAngkatanCreate() {
                 <div className="container mx-auto p-4">
                     <div className="flex flex-col gap-4 md:flex-row">
                         {/* Panel Kiri: Daftar Mata Kuliah */}
-                        <div className={`md:w-1/2 ${errorProdi ? 'rounded border border-red-500' : ''}`}>
+                        <div className={`shadow md:w-1/2 dark:shadow-gray-50 ${errorProdi ? 'rounded border border-red-500' : ''}`}>
                             {errorProdi && <div className="mb-2 rounded bg-red-100 p-2 text-xs text-red-500">Anda harus memilih mata kuliah!</div>}
                             <div className="mb-4">
                                 <input
@@ -115,7 +115,7 @@ export default function programAngkatanCreate() {
                                     autoFocus
                                 />
                             </div>
-                            <div className="rounded bg-white p-4 shadow">
+                            <div className="rounded p-4 shadow">
                                 <h2 className="mb-2 font-semibold">Daftar Mata Kuliah {fakultasProdi.nama_prodi}</h2>
                                 <ul>
                                     {filteredMataKuliahs.map((matkul) => (
@@ -144,14 +144,14 @@ export default function programAngkatanCreate() {
 
                         {/* Panel Kanan: Program Angkatan */}
                         <div className="md:w-1/2">
-                            <div className="rounded bg-white p-4 shadow">
+                            <div className="rounde p-4 shadow dark:shadow-gray-50">
                                 <div className="mb-3 flex items-center justify-between">
                                     <h2 className="font-semibold">Program Akademik Angkatan</h2>
                                     <div className="flex flex-col text-xs">
                                         <select
                                             value={angkatan}
                                             onChange={(e) => setAngkatan(e.target.value)}
-                                            className={`rounded border px-2 py-1 ${errorAngkatan ? 'border-red-500' : 'border-gray-300'}`}
+                                            className={`bg-background rounded border px-2 py-1 ${errorAngkatan ? 'border-red-500' : 'border-gray-300'}`}
                                         >
                                             <option value="">Pilih Angkatan</option>
                                             {years.map((year) => (
@@ -186,7 +186,7 @@ export default function programAngkatanCreate() {
                                                         <select
                                                             value={item.semester}
                                                             onChange={(e) => handleChangeSemester(item.id, Number(e.target.value))}
-                                                            className="h-full w-full rounded border px-2 py-1"
+                                                            className="bg-background h-full w-full rounded border px-2 py-1"
                                                         >
                                                             {semesters.map((s) => (
                                                                 <option key={s} value={s}>

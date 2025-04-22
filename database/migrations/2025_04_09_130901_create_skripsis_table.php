@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('pembimbing2')->nullable()->constrained('dosen_users')->onDelete('cascade');
             $table->foreignId('mahasiswa_user_id')->constrained()->onDelete('cascade');
             $table->string('judul', 255);
+            $table->string('tahun_ajaran', 10);
             $table->date('tanggal_ujian')->nullable();
             $table->string('tautan_skripsi', 2083);
             $table->string('mores')->nullable();

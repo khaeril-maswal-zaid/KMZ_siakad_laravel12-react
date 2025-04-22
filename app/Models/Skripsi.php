@@ -15,6 +15,7 @@ class Skripsi extends Model
         'pembimbing2',
         'mahasiswa_user_id',
         'judul',
+        'tahun_ajaran',
         'tanggal_ujian',
         'tautan_skripsi',
         'mores',

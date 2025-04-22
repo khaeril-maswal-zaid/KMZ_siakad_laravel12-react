@@ -27,7 +27,7 @@ export default function CardSkripsi() {
     };
 
     return (
-        <Card className="p-6">
+        <Card className="border-gray-200 p-6 shadow-md">
             <h2 className="mb-0 text-xl font-semibold">Pengajuan Judul Skripsi</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="mb-7">
@@ -56,7 +56,7 @@ export default function CardSkripsi() {
                 </div>
 
                 <div className="mb-7">
-                    <label className="mb-1 block text-sm font-medium">Tautan Dokumen (Google Drive)</label>
+                    <label className="mb-1 block text-sm font-medium">Tautan Lembar Pengesahan (Google Drive)</label>
                     <input
                         type="url"
                         className={`w-full rounded-md border p-2 ${isBlocked ? 'cursor-not-allowed bg-gray-100 text-gray-500' : ''}`}

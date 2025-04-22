@@ -85,7 +85,8 @@ Route::middleware(['auth', 'verified', 'ruleUser:prodi'])->group(function () {
     Route::get('/daftar-mata-kuliah', [MataKuliahController::class, 'index'])->name('matakuliah.index');
     Route::post('/daftar-mata-kuliah/store', [MataKuliahController::class, 'store'])->name('matakuliah.store');
 
-    Route::get('/skripsi/', [SkripsiController::class, 'index'])->name('skripsi.index');
+    Route::get('/skripsi', [SkripsiController::class, 'home'])->name('skripsi.home');
+    Route::get('/skripsi/{skripsi:status}/', [SkripsiController::class, 'index'])->name('skripsi.index');
     Route::patch('/skripsi/update/{skripsi}', [SkripsiController::class, 'update'])->name('skripsi.update');
     Route::patch('/skripsi/ujian-proposal/{skripsi}', [SkripsiController::class, 'UjianProposal'])->name('skripsi.propsal');
     Route::patch('/skripsi/ujian-hasil/{skripsi}', [SkripsiController::class, 'UjianHasil'])->name('skripsi.hasil');

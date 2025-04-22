@@ -28,7 +28,7 @@ export default function FormUjianHasil() {
     };
 
     return (
-        <Card className="p-6">
+        <Card className="border-gray-200 p-6 shadow-md">
             <h2 className="mb-0 text-xl font-semibold">Formulir Pendaftaran Ujian Hasil</h2>
             <form className="space-y-4" onSubmit={handleSubmit}>
                 <div className="mb-6">

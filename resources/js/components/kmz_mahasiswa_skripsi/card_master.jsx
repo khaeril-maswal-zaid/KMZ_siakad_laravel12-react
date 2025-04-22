@@ -20,7 +20,7 @@ export default function StatusCard({ status, items }) {
     );
 
     return (
-        <Card className="space-y-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-md">
+        <Card className="bg-transparan space-y-6 rounded-2xl border border-gray-200 p-6 shadow-md">
             <div className="mb-0 flex items-center justify-between">
                 <h2 className="text-xl font-semibold">Informasi Proges Skrispi</h2>
                 <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700 shadow-sm">{status}</span>

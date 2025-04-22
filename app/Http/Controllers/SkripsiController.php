@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ACcSkripsiProposal;
 use App\Http\Requests\ACcSkripsiProposalRequests;
 use App\Http\Requests\DHasilSkripsiRequests;
 use App\Http\Requests\DTutupSkripsiRequest;
@@ -13,6 +12,7 @@ use App\Http\Requests\EditSkripsiRequest;
 use App\Http\Requests\UHasilSkripsiRequest;
 use App\Http\Requests\UProposalSkripsiRequest;
 use App\Models\DosenUser;
+use App\Models\Konfigurasi;
 use App\Models\PengujiSkripsi;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -21,6 +21,41 @@ use Illuminate\Http\Request;
 
 class SkripsiController extends Controller
 {
+    private $tahunAjaran;
+
+    public function __construct()
+    {
+        $this->tahunAjaran = Konfigurasi::value('tahun_ajar');
+    }
+
+    public function home()
+    {
+        $user = Auth::user();
+        $prodiIdAdminLogin = $user->adminProdi->program_studi_id;
+
+        $status  = [
+            'Penentuan Pembimbing',
+            'Bimbingan Proposal',
+            'Mendaftar U-Proposal',
+            'Telah U-Proposal',
+            'Bimbingan Skripsi',
+            'Mendaftar U-Hasil',
+            'Telah U-Hasil',
+            'Mendaftar U-Tutup',
+            'Skripsi Final'
+        ];
+
+        $count =  [];
+        foreach ($status as $stat) {
+            $count[$stat] = Skripsi::select('status')
+                ->where('program_studi_id', $prodiIdAdminLogin)
+                ->where('status', $stat)
+                ->count();
+        }
+
+        return Inertia::render('prodi/skripsi-home', ['count' => $count]);
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -34,9 +69,6 @@ class SkripsiController extends Controller
         } elseif ($user->role == 'prodi') {
             $prodiIdAdminLogin = $user->adminProdi->program_studi_id;
         };
-
-
-        // Ambil program_studi_id dari Admin yang sedang Login
 
         $query = Skripsi::select(['id', 'pembimbing1', 'pembimbing2', 'mahasiswa_user_id', 'judul', 'tanggal_ujian', 'tautan_skripsi', 'mores', 'status'])
             ->where('program_studi_id', $prodiIdAdminLogin)
@@ -98,6 +130,7 @@ class SkripsiController extends Controller
         Skripsi::create([
             'program_studi_id' => Auth::user()->mahasiswa->program_studi_id,
             'judul' => $request->judul,
+            'tahun_ajaran' => $this->tahunAjaran,
             'mores' => $request->tanggal,
             'tautan_skripsi' => $request->tautan,
             'mahasiswa_user_id' => Auth::user()->mahasiswa->id,
@@ -132,7 +165,8 @@ class SkripsiController extends Controller
         $skripsi->update([
             'pembimbing1' => $request->pembimbing1,
             'pembimbing2' => $request->pembimbing2,
-            'status' => 'Bimbingan Proposal'
+            'status' => 'Bimbingan Proposal',
+            'tahun_ajaran' => $this->tahunAjaran,
         ]);
 
         $request->session()->flash('message', 'Pembimbing mahasiswa berhasil dibuat!');
@@ -152,7 +186,8 @@ class SkripsiController extends Controller
         $skripsi->update([
             'mores' => $request->tautan_pengesahan,
             'tautan_skripsi' => $request->tautan_proposal,
-            'status' => 'Mendaftar U-Proposal'
+            'status' => 'Mendaftar U-Proposal',
+            'tahun_ajaran' => $this->tahunAjaran,
         ]);
 
         $request->session()->flash('message', 'Pendaftaran Ujian Proposal berhasil!');
@@ -174,7 +209,8 @@ class SkripsiController extends Controller
 
         $skripsi->update([
             'tanggal_ujian' => $request->tanggalujian,
-            'status' => 'Telah U-Proposal'
+            'status' => 'Telah U-Proposal',
+            'tahun_ajaran' => $this->tahunAjaran,
         ]);
 
         $request->session()->flash('message', 'Dosen penguji Ujian Proposal berhasil dibuat!');
@@ -191,7 +227,8 @@ class SkripsiController extends Controller
         $skripsi->update([
             'tanggal_ujian' => $request->tanggal_acc,
             'mores' => $request->tautan_pengesahan,
-            'status' => 'Bimbingan Skripsi'
+            'status' => 'Bimbingan Skripsi',
+            'tahun_ajaran' => $this->tahunAjaran,
         ]);
 
         $request->session()->flash('message', 'Pendaftaran Ujian Hasil berhasil!');
@@ -211,7 +248,8 @@ class SkripsiController extends Controller
         $skripsi->update([
             'mores' => $request->tautan_pengesahan,
             'tautan_skripsi' => $request->tautan_skripsi,
-            'status' => 'Mendaftar U-Hasil'
+            'status' => 'Mendaftar U-Hasil',
+            'tahun_ajaran' => $this->tahunAjaran,
         ]);
 
         $request->session()->flash('message', 'Pendaftaran Ujian Hasil berhasil!');
@@ -233,7 +271,8 @@ class SkripsiController extends Controller
 
         $skripsi->update([
             'tanggal_ujian' => $request->tanggalujian,
-            'status' => 'Telah U-Hasil'
+            'status' => 'Telah U-Hasil',
+            'tahun_ajaran' => $this->tahunAjaran,
         ]);
 
         $request->session()->flash('message', 'Dosen penguji Ujian Hasil berhasil dibuat!');
@@ -253,7 +292,8 @@ class SkripsiController extends Controller
         $skripsi->update([
             'mores' => $request->tautan_pengesahan,
             'tautan_skripsi' => $request->tautan_skripsi,
-            'status' => 'Mendaftar U-Tutup'
+            'status' => 'Mendaftar U-Tutup',
+            'tahun_ajaran' => $this->tahunAjaran,
         ]);
 
         $request->session()->flash('message', 'Pendaftaran Ujian Tutup berhasil!');

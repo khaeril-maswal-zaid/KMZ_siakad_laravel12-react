@@ -41,7 +41,7 @@ const getMainNavItems = (auth: SharedData['auth']): NavItem[] => {
             { title: 'Data Mahasiswa', url: route('mahasiswauser.index'), icon: Users2 },
             { title: 'Data Dosen', url: '', icon: UserCog },
             { title: 'Daftar Mata Kuliah', url: route('matakuliah.index'), icon: BookOpenCheck },
-            { title: 'Skripsi Mahasiswa', url: route('skripsi.index'), icon: History },
+            { title: 'Skripsi Mahasiswa', url: route('skripsi.home'), icon: History },
         ],
         dosen: [
             { title: 'Jadwal Mengajar', url: route('jadwalperkuliahan.mengajar'), icon: CalendarDays },

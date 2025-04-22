@@ -11,7 +11,7 @@ class StoreProgramAngkatanRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,17 @@ class StoreProgramAngkatanRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            [
+                'angkatan'                      => 'required|integer|unique:program_angkatans,angkatan',
+                'selectedMatkul'                => 'required|array',
+                'selectedMatkul.*.id'           => 'required|integer|exists:mata_kuliahs,id',
+                'selectedMatkul.*.semester'     => 'required|integer', // misalnya nilai A, B, dst.
+            ],
+            [
+                'selectedMatkul.*.id.required'       => 'Wajib memilih mata kuliah!',
+                'angkatan.required'       => 'Wajib memilih mata angkatan!',
+                'angkatan.unique'       => 'Program Akademik Angkatan telah tersediah',
+            ]
         ];
     }
 }
